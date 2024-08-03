@@ -5,18 +5,11 @@ import {ERC20Permit, ERC20} from "@openzeppelin/contracts/token/ERC20/extensions
 
 /// @title A contract representing an ERC20Permit used for representing liquidity pool ownership.
 contract Token is ERC20Permit {
-    address public immutable stargate;
     uint8 internal immutable tokenDecimals;
 
     error LPToken_Unauthorized();
 
-    modifier onlyStargate() {
-        if (msg.sender != stargate) revert LPToken_Unauthorized();
-        _;
-    }
-
-    constructor() ERC20("Test", "Test") ERC20Permit("Test") {
-        stargate = msg.sender;
+    constructor() ERC20("USDC", "USDC") ERC20Permit("USDC") {
         tokenDecimals = 18;
     }
 
