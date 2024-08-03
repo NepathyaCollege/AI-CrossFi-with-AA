@@ -1,6 +1,14 @@
 [profile.default]
 src = "src"
 out = "out"
-libs = ["lib"]
+libs = ['node_modules', 'lib']
+remappings = [
+    '@chainlink/contracts/=node_modules/@chainlink/contracts',
+    '@chainlink/contracts-ccip/=node_modules/@chainlink/contracts-ccip',
+    '@chainlink/local=node_modules/@chainlink/local',
+]
+solc = '0.8.20'
 
-# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+
+[rpc_endpoints]
+base_sepolia = "https://public.stackup.sh/api/v1/node/base-sepolia"
