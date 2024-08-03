@@ -75,3 +75,6 @@ Our custom stable token has been deployed on the following network:
 
  **Base Sepolia**
  [View on BaseScan](https://sepolia.basescan.org/address/0x84cec3f89a0f28803f177575bbf7b2010a62d2ec)
+
+ **Sepolia**
+ [View On Scan](https://sepolia.etherscan.io/address/0x7013f03df627cba867d6892bece4126d2fc0c35e#code)
