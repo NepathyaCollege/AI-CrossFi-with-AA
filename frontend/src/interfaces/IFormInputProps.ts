@@ -6,7 +6,7 @@
  * properties include `readonly` to specify if the input is read-only, and custom event handlers for
  * handling changes and blur events.
  *
- * @interface FormInputProps
+ * @interface IFormInputProps
  */
 export interface IFormInputProps {
   /**
