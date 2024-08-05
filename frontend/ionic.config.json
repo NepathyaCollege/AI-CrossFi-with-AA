@@ -1,0 +1,7 @@
+{
+  "name": "new-defi",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
