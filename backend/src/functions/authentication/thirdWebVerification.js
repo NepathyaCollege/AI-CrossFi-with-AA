@@ -1,14 +1,15 @@
-export const handler = async (event) => {
-  try {
+import { verifyTokenEndpoint } from './tokenVerification';
 
+const thirdWebVerificationHandler = async (event) => {
+  try {
     // Response object to return
     const response = {
       userId: "hellouserid",
       email: "nirajbhattarai19@gmail.com",
       exp: Math.floor(Date.now() / 1000) + 3 * 60 + 60 * 3000000,
     };
-    // deleting used key
 
+    // Returning response
     return {
       statusCode: 200,
       headers: {
@@ -31,3 +32,6 @@ export const handler = async (event) => {
     };
   }
 };
+
+// Wrap the handler with middleware
+export const handler = verifyTokenEndpoint(thirdWebVerificationHandler);
