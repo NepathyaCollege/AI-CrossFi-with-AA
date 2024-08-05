@@ -12,5 +12,5 @@ docs/
 
 # Dotenv file
 .env
-node_modules/*
+smartcontract/node_modules/*
 broadcast
