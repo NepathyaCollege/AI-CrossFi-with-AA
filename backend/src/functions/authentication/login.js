@@ -1,7 +1,7 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
-import successHandler from "../common/successHandler";
-import errorHandler from "../common/errorHandler";
+import successHandler from "../../common/successHandler";
+import errorHandler from "../../common/errorHandler";
 import bcrypt from "bcryptjs";
 
 const client = new DynamoDBClient({});

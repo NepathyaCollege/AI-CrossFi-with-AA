@@ -1,7 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, GetCommand, PutCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
-import errorHandler from "../common/errorHandler";
-import successHandler from "../common/successHandler";
+import errorHandler from "../../common/errorHandler";
+import successHandler from "../../common/successHandler";
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);

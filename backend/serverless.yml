@@ -29,13 +29,6 @@ plugins:
   - serverless-bundle
 
 functions:
-  hello:
-    handler: handler.hello
-    events:
-      - http:
-          path: /
-          method: get
-          cors: true
   signUp:
     handler: src/functions/authentication/signup.signUp
     events:
