@@ -1,11 +1,11 @@
 import { IonContent, IonPage, IonRouterOutlet } from "@ionic/react";
 import { Switch, Route } from "react-router";
-import Home from "./pages/Home";
 import LoginOrSignup from "./pages/auth/LoginOrSignup";
 import SignupEmail from "./pages/auth/SignupEmail";
 import SignupPassword from "./pages/auth/SignupPassword";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import Login from "./pages/auth/Login";
+import BridgeForm from "../forms/BridgeForm";
 
 const App: React.FC = () => {
   return (
@@ -17,7 +17,7 @@ const App: React.FC = () => {
           <Route path="/signup/email" exact component={SignupEmail} />
           <Route path="/signup/password" exact component={SignupPassword} />
           <Route path="/signup/verifyEmail" exact component={VerifyEmail} />
-          <Route path="/home" exact component={Home} />
+          <Route path="/swap" exact component={BridgeForm} />
         </Switch>
       </IonRouterOutlet>
     </IonPage>
