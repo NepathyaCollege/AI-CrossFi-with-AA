@@ -1,26 +1,80 @@
-# Welcome to serverless. Read the docs
-# https://serverless.com/framework/docs/
-
-# Serverless.yml is the configuration the CLI
-# uses to deploy your code to your provider of choice
-
-# The `service` block is the name of the service
-service: backend
+# Serverless service configuration
+service: superhackbackend
 
 frameworkVersion: "3"
 
-# The `provider` block defines where your service will be deployed
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs20.x
 
-# The `functions` block defines what code to deploy
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - cognito-idp:*
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:UpdateItem
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeStream
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:ListStreams
+        - dynamodb:BatchGetItem
+      Resource:
+        - "*"
+
+plugins:
+  - serverless-bundle
+
 functions:
-  helloWorld:
-    handler: handler.helloWorld
-    # The `events` block defines how to trigger the handler.helloWorld code
+  hello:
+    handler: handler.hello
     events:
       - http:
-          path: hello-world
+          path: /
           method: get
           cors: true
+  signUp:
+    handler: src/functions/authentication/signup.signUp
+    events:
+      - http:
+          path: /signup
+          method: post
+          cors: true
+  checkEmail:
+    handler: src/functions/authentication/login.checkEmail
+    events:
+      - http:
+          path: /checkEmail
+          method: post
+          cors: true
+  checkPassword:
+    handler: src/functions/authentication/login.checkPassword
+    events:
+      - http:
+          path: /checkPassword
+          method: post
+          cors: true
+  verifyOTP:
+    handler: src/functions/authentication/signup.verifyOTP
+    events:
+      - http:
+          path: /verifyOTP
+          method: post
+          cors: true
+  thirdWebVerification:
+    handler: src/functions/authentication/thirdWebVerification.handler
+    events:
+      - http:
+          path: /thirdWebVerification
+          method: post
+          cors: true
+
+custom:
+  bundle:
+    packager: 'npm'
+    packagerOptions:
+      scripts:
+        prepack: 'rm -rf .webpack'
