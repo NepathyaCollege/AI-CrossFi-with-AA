@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
-import successHandler from "../common/successHandler";
-import errorHandler from "../common/errorHandler";
+import successHandler from "../../common/successHandler";
+import errorHandler from "../../common/errorHandler";
 
 // Function to generate a random OTP
 export function generateOTP() {

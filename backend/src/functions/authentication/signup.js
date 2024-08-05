@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import successHandler from "../common/successHandler";
-import errorHandler from "../common/errorHandler";
+import successHandler from "../../common/successHandler";
+import errorHandler from "../../common/errorHandler";
 import bcrypt from "bcryptjs";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
