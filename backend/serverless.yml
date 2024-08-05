@@ -27,6 +27,17 @@ provider:
 
 plugins:
   - serverless-bundle
+  - serverless-domain-manager
+
+custom:
+  customDomain:
+    domainName: api.nepathyacollege.com
+    basePath: 'ai'
+  bundle:
+    packager: 'npm'
+    packagerOptions:
+      scripts:
+        prepack: 'rm -rf .webpack'  
 
 functions:
   signUp:
@@ -64,10 +75,4 @@ functions:
           path: /thirdWebVerification
           method: post
           cors: true
-
-custom:
-  bundle:
-    packager: 'npm'
-    packagerOptions:
-      scripts:
-        prepack: 'rm -rf .webpack'
+  
