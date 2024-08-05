@@ -14,3 +14,5 @@ docs/
 .env
 contracts/node_modules/*
 broadcast
+frontend/node_modules/*
+backend/node_modules/*
