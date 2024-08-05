@@ -15,6 +15,7 @@ import "@ionic/react/css/text-alignment.css";
 import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
+import "@ionic/react/css/palettes/dark.always.css";
 import App from "./App";
 
 setupIonicReact();
@@ -23,7 +24,7 @@ const root = createRoot(container!);
 
 root.render(
   <React.Fragment>
-    <IonApp className="h-screen w-screen ">
+    <IonApp className="h-screen w-screen">
       <IonReactRouter>
         <App />
       </IonReactRouter>
