@@ -5,16 +5,32 @@ import { RootState } from "../store/store";
 import Wallet from "../components/home/Wallet";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store/store";
-import { connectWallet } from "../store/wallet/walletThunk";
+import { client, connectWallet } from "../store/wallet/walletThunk";
+import { getBalance } from "../../contracts/erc20";
+import { Account } from "thirdweb/wallets";
+import { baseSepolia } from "thirdweb/chains";
 
-const Home = () => {
+const Home: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const { smartAccount }: Account | any = useSelector((state: RootState) => state.wallet);
   useEffect(() => {
     dispatch(connectWallet());
-  }, []);
+
+    // const fetchBalance = async () => {
+    //   if (smartAccount?.address) {
+    //     let a = await getBalance({
+    //       accountAddress: smartAccount?.address,
+    //       client: client,
+    //       contractAddress: "safasfa",
+    //       chain: baseSepolia,
+    //     });
+    //   }
+    // };
+    // fetchBalance();
+  }, [smartAccount?.address]);
 
   return (
-    <IonContent className="ion-padding  ">
+    <IonContent className="ion-padding">
       <IonGrid className=" h-full w-full">
         <IonRow>
           <IonText className="text-xl font-semibold">Nepathya AI Defi Wallet</IonText>

@@ -1,18 +1,15 @@
-import React from "react";
 import {
-  IonMenu,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
   IonButtons,
+  IonHeader,
   IonImg,
-  IonMenuButton,
-  IonPage,
   IonItem,
+  IonMenuButton,
   IonText,
+  IonToolbar,
 } from "@ionic/react";
+import React from "react";
 import { useLocation } from "react-router-dom";
+import Menu from "./Menu";
 
 const Header: React.FC = () => {
   const location = useLocation();
@@ -20,15 +17,8 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <IonMenu contentId="main-content">
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Menu Content</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding">This is the menu content.</IonContent>
-      </IonMenu>
-      <div id="main-content">
+      <Menu />
+      <div id="main-content" className="">
         <IonHeader>
           <IonToolbar className="bg-background-secondary py-2">
             <IonButtons slot="start">

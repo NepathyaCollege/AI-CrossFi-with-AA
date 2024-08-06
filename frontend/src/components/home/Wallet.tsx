@@ -17,10 +17,8 @@ import { Account } from "thirdweb/wallets";
 import QrCode from "./QrCode";
 
 const Wallet: React.FC = () => {
-  console.log("s");
   const { smartAccount, loading }: Account | any = useSelector<RootState>((state) => state.wallet);
   const [isOpenQrScanner, setIsOpenQrScanner] = useState<boolean>(false);
-  console.log(smartAccount);
   const toggleQrScanner = () => {
     setIsOpenQrScanner(!isOpenQrScanner);
   };
@@ -53,7 +51,7 @@ const Wallet: React.FC = () => {
                   ) : (
                     <>
                       <IonText>
-                        {smartAccount?.address && formatAddress(smartAccount?.address)}
+                        {smartAccount?.address && formatAddress(smartAccount?.address, 14)}
                       </IonText>
                       <br />
                       <IonText>${0}</IonText>
@@ -77,6 +75,7 @@ const Wallet: React.FC = () => {
                     size="default"
                     className="h-10 w-28 rounded-md bg-secondary font-semibold text-white cursor-pointer"
                     fill="clear"
+                    disabled={loading}
                   >
                     Deposit
                   </IonButton>
@@ -85,6 +84,7 @@ const Wallet: React.FC = () => {
                     mode="md"
                     className="ion-margin-start h-10 w-28 rounded-md bg-text-textfield1 text-white"
                     fill="clear"
+                    disabled={loading}
                   >
                     Withdraw
                   </IonButton>
