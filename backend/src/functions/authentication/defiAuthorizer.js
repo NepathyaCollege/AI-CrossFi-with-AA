@@ -4,9 +4,7 @@ export const handler = async (event) => {
   console.log(event);
 
   // Extract the token from the Authorization header
-  const headers = event.headers || {};
-  const authHeader = headers["authorization"] || headers["Authorization"];
-  const token = authHeader ? authHeader.replace("Bearer ", "") : null;
+  const token = event.authorizationToken.replace("Bearer ", "");
   if (!token) {
     console.error("No token provided in Authorization header");
     return{
