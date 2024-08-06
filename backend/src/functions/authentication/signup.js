@@ -88,6 +88,7 @@ export const verifyOTP = async (event) => {
     // Create the user account
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = {
+      id:uuidv4(),
       email,
       password: hashedPassword,
       walletId: uuidv4(),

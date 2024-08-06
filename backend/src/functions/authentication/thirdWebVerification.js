@@ -1,5 +1,3 @@
-import { verifyTokenEndpoint } from './tokenVerification';
-
 const thirdWebVerificationHandler = async (event) => {
   try {
     // Response object to return
@@ -34,4 +32,4 @@ const thirdWebVerificationHandler = async (event) => {
 };
 
 // Wrap the handler with middleware
-export const handler = verifyTokenEndpoint(thirdWebVerificationHandler);
+export const handler = thirdWebVerificationHandler;

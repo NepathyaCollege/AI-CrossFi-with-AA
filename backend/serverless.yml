@@ -44,6 +44,8 @@ custom:
         prepack: 'rm -rf .webpack'  
 
 functions:
+  defiAuthorizer:
+    handler: src/functions/authentication/defiAuthorizer.handler
   signUp:
     handler: src/functions/authentication/signup.signUp
     events:
@@ -79,4 +81,12 @@ functions:
           path: /thirdWebVerification
           method: post
           cors: true
-  
+  hello:
+    handler: src/handler.hello
+    events:
+      - http:
+          path: /
+          method: get
+          cors: true
+          authorizer:
+            name: defiAuthorizer
