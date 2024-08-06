@@ -3,8 +3,6 @@ pragma solidity ^0.8.20;
 
 import {Script} from "forge-std/Script.sol";
 import "../src/chainlink/NepathyaPool.sol";
-import {IERC20} from
-    "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/IERC20.sol";
 import "../src/helpers/Token.sol";
 
 contract NepathyaPoolBaseDeployer is Script {

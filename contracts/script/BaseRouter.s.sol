@@ -3,8 +3,6 @@ pragma solidity ^0.8.20;
 
 import {Script} from "forge-std/Script.sol";
 import "../src/chainlink/CrossChainTokenRouter.sol";
-import {IERC20} from
-    "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/IERC20.sol";
 import "../src/helpers/Token.sol";
 
 contract BaseRouter is Script {
@@ -30,7 +28,9 @@ contract BaseRouter is Script {
 
         IERC20(tokenAddress).approve(address(cctr), 1000000000000000000000000000000000000);
 
-        cctr.bridgeToken(tokenAddress, 16015286601757825753, 0x75998e806D0BE5B37c5DE74AcfA0006B3C7DCdfF, 10000000000000000000000);
+        cctr.bridgeToken(
+            tokenAddress, 16015286601757825753, 0x75998e806D0BE5B37c5DE74AcfA0006B3C7DCdfF, 10000000000000000000000
+        );
 
         vm.stopBroadcast();
     }
