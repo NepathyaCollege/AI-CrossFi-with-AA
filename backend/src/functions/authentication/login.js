@@ -3,7 +3,7 @@ const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
 import successHandler from "../../common/successHandler";
 import errorHandler from "../../common/errorHandler";
 import bcrypt from 'bcryptjs';
-import { generateTokens } from './token';
+import { generateTokens } from './tokenVerification';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
@@ -67,8 +67,8 @@ export const checkPassword = async (event) => {
       );
     }
     const userPayload = {
+      id:result.Item.id,
       email: result.Item.email,
-      walletId: result.Item.walletId,
     };
     const tokens = generateTokens(userPayload);
 
