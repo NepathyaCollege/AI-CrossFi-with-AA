@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   IonButton,
   IonCol,
+  IonContent,
   IonGrid,
   IonIcon,
   IonImg,
@@ -28,9 +29,9 @@ import {
   getFilteredTokenOptions,
 } from "../src/config/helpers";
 import { AppDispatch, RootState } from "../src/store/store";
-import { connectWallet } from "../src/store/wallet/walletThunk";
 import { arrowBackOutline } from "ionicons/icons";
 import { useHistory } from "react-router";
+import { connectWallet } from "../src/store/wallet/walletThunk";
 
 const defaultAllowanceAmount =
   "1000000000000000000000000000000000000000000000000000000000000000000000000000";
@@ -141,130 +142,147 @@ const MyForm: React.FC = () => {
         chain: chainDetail.chain,
         smartAccount,
       });
-
-      console.log(bridgeToken);
     } catch (error) {
       console.error("Errror during swap", error);
     }
   };
 
   return (
-    <IonGrid className="grid gap-4 rounded-lg p-4 py-32">
-      <IonRow className="ion-justify-content-between flex w-full justify-between gap-3">
-        <IonCol size="auto" onClick={() => history.goBack()} className="cursor-pointer">
-          <IonIcon className="text-3xl" icon={arrowBackOutline} />
-        </IonCol>
-        <IonCol size="auto">
-          <IonImg className="h-8 w-auto" src="AppLogo.svg" />
-        </IonCol>
-      </IonRow>
-
-      <IonRow className="gap-6">
-        <IonCol>
-          <IonGrid>
+    <>
+      <IonContent>
+        <div>
+          <IonGrid className="ion-padding">
             <IonRow>
-              <IonLabel>Token</IonLabel>
-              <IonSelect
-                interface="popover"
-                placeholder="Select "
-                value={fromToken ? `${fromToken}-${fromChain}` : ""}
-                onIonChange={(e) => handleTokenChange(e.detail.value, true)}
-              >
-                {getTokenOptions().map((option) => (
-                  <IonSelectOption key={option.value} value={option.value}>
-                    {option.label}
-                  </IonSelectOption>
-                ))}
-              </IonSelect>
+              <IonCol className="ion-padding">
+                <IonLabel>Token</IonLabel>
+              </IonCol>
+            </IonRow>
+
+            <IonRow>
+              <IonCol>
+                <IonItem>
+                  <IonSelect
+                    interface="popover"
+                    placeholder="Select "
+                    value={fromToken ? `${fromToken}-${fromChain}` : ""}
+                    onIonChange={(e) => handleTokenChange(e.detail.value, true)}
+                  >
+                    {getTokenOptions().map((option) => (
+                      <IonSelectOption key={option.value} value={option.value}>
+                        {option.label}
+                      </IonSelectOption>
+                    ))}
+                  </IonSelect>
+                </IonItem>
+              </IonCol>
+            </IonRow>
+
+            <IonRow>
+              <IonCol className="ion-padding">
+                <IonLabel>From</IonLabel>
+              </IonCol>
+            </IonRow>
+
+            <IonRow>
+              <IonCol>
+                <IonItem>
+                  <IonSelect
+                    interface="popover"
+                    placeholder="Select "
+                    value={fromChain}
+                    onIonChange={(e) => handleChainChange(e.detail.value, true)}
+                    disabled={!fromToken}
+                  >
+                    {availableFromChains.map((chainName) => (
+                      <IonSelectOption key={chainName} value={chainName}>
+                        {chainName}
+                      </IonSelectOption>
+                    ))}
+                  </IonSelect>
+                </IonItem>
+              </IonCol>
             </IonRow>
           </IonGrid>
-        </IonCol>
 
-        <IonCol>
-          <IonGrid>
+          <IonGrid className="ion-padding">
             <IonRow>
-              <IonLabel>From </IonLabel>
-              <IonSelect
-                interface="popover"
-                placeholder="Select "
-                value={fromChain}
-                onIonChange={(e) => handleChainChange(e.detail.value, true)}
-                disabled={!fromToken}
-              >
-                {availableFromChains.map((chainName) => (
-                  <IonSelectOption key={chainName} value={chainName}>
-                    {chainName}
-                  </IonSelectOption>
-                ))}
-              </IonSelect>
+              <IonCol className="ion-padding">
+                <IonLabel>Token</IonLabel>
+              </IonCol>
+            </IonRow>
+
+            <IonRow>
+              <IonCol>
+                <IonItem>
+                  <IonSelect
+                    interface="popover"
+                    placeholder="Select "
+                    value={toToken ? `${toToken}-${toChain}` : ""}
+                    onIonChange={(e) => handleTokenChange(e.detail.value, false)}
+                  >
+                    {getFilteredTokenOptions(fromToken, fromChain).map((option) => (
+                      <IonSelectOption key={option.value} value={option.value}>
+                        {option.label}
+                      </IonSelectOption>
+                    ))}
+                  </IonSelect>
+                </IonItem>
+              </IonCol>
+            </IonRow>
+
+            <IonRow>
+              <IonCol className="ion-padding">
+                <IonLabel>To</IonLabel>
+              </IonCol>
+            </IonRow>
+
+            <IonRow>
+              <IonCol>
+                <IonItem>
+                  <IonSelect
+                    interface="popover"
+                    placeholder="Select "
+                    value={toChain}
+                    onIonChange={(e) => handleChainChange(e.detail.value, false)}
+                    disabled={!toToken}
+                  >
+                    {availableToChains.map((chainName) => (
+                      <IonSelectOption key={chainName} value={chainName}>
+                        {chainName}
+                      </IonSelectOption>
+                    ))}
+                  </IonSelect>
+                </IonItem>
+              </IonCol>
             </IonRow>
           </IonGrid>
-        </IonCol>
-      </IonRow>
 
-      <IonRow className="gap-6">
-        <IonCol>
-          <IonGrid>
-            <IonRow>
-              <IonLabel> Token</IonLabel>
-              <IonSelect
-                interface="popover"
-                placeholder="Select "
-                value={toToken ? `${toToken}-${toChain}` : ""}
-                onIonChange={(e) => handleTokenChange(e.detail.value, false)}
-              >
-                {getFilteredTokenOptions(fromToken, fromChain).map((option) => (
-                  <IonSelectOption key={option.value} value={option.value}>
-                    {option.label}
-                  </IonSelectOption>
-                ))}
-              </IonSelect>
+          <IonGrid className="ion-padding">
+            <IonRow className="">
+              <IonCol>
+                <IonItem className="rounded-md ion-margin-bottom">
+                  <IonInput
+                    type="number"
+                    value={amount}
+                    label="Amount"
+                    labelPlacement="floating"
+                    onIonChange={(e) => setAmount(e.detail.value!)}
+                  />
+                </IonItem>
+              </IonCol>
+            </IonRow>
+
+            <IonRow className="ion-padding-top">
+              <IonCol>
+                <IonButton expand="block" color="primary" onClick={handleSwap}>
+                  Swap
+                </IonButton>
+              </IonCol>
             </IonRow>
           </IonGrid>
-        </IonCol>
-
-        <IonCol>
-          <IonGrid>
-            <IonRow>
-              <IonLabel>To </IonLabel>
-              <IonSelect
-                interface="popover"
-                placeholder="Select "
-                value={toChain}
-                onIonChange={(e) => handleChainChange(e.detail.value, false)}
-                disabled={!toToken}
-              >
-                {availableToChains.map((chainName) => (
-                  <IonSelectOption key={chainName} value={chainName}>
-                    {chainName}
-                  </IonSelectOption>
-                ))}
-              </IonSelect>
-            </IonRow>
-          </IonGrid>
-        </IonCol>
-      </IonRow>
-
-      <IonRow className="gap-6">
-        <IonCol>
-          <IonItem className="rounded-md">
-            <IonInput
-              type="number"
-              value={amount}
-              label="Amount"
-              labelPlacement="floating"
-              onIonChange={(e) => setAmount(e.detail.value!)}
-            />
-          </IonItem>
-        </IonCol>
-      </IonRow>
-
-      <IonRow className="mt-2 flex w-full justify-end">
-        <IonButton color="primary" onClick={handleSwap}>
-          Swap
-        </IonButton>
-      </IonRow>
-    </IonGrid>
+        </div>
+      </IonContent>
+    </>
   );
 };
 
