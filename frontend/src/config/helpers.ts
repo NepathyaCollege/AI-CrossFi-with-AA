@@ -62,3 +62,16 @@ export const validateTokenAndChain = (
     toChainDetails,
   };
 };
+
+// format address util
+
+export const formatAddress = (str: string) => {
+  if (str.length <= 14) {
+    return str; // Return the string as is if it's too short to split
+  }
+
+  const firstPart = str.slice(0, 6);
+  const lastPart = str.slice(-3);
+
+  return `${firstPart}...${lastPart}`;
+};

@@ -19,6 +19,7 @@ import FormInput from "../../components/common/FormInput";
 import { CHECK_PASSWORD_URL } from "../../config/apiUrl";
 import { loginValidation } from "../../form-validation-schemas/schema";
 import { ILocationState } from "../../interfaces/ILocationState";
+import { storeTokens } from "../../config/authTokens";
 
 const Login: React.FC = () => {
   const history = useHistory();
@@ -34,6 +35,9 @@ const Login: React.FC = () => {
           password: values.password,
         });
         if (res.status === 200) {
+          const { accessToken, refreshToken } = res.data.tokens;
+          storeTokens(accessToken, refreshToken);
+
           history.replace("/home");
         }
       } catch (error: AxiosError | unknown) {
@@ -53,7 +57,7 @@ const Login: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen>
-        <IonGrid className="ion-padding h-full w-full">
+        <IonGrid className="ion-padding h-full w-full ">
           <IonRow className="ion-justify-content-between flex w-full justify-between gap-3">
             <IonCol size="auto" onClick={() => history.goBack()} className="cursor-pointer">
               <IonIcon className="text-3xl" icon={arrowBackOutline} />
