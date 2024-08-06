@@ -25,3 +25,13 @@
   --highlight-color-focused: none;
 }
 
+
+.ion-item{
+  background-color: wheat;
+}
+
+.vertical-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

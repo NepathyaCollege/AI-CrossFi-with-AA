@@ -15,23 +15,23 @@ import {
   IonText,
 } from "@ionic/react";
 
-import { bridgeToken } from "../contracts/crossChainTokenRouter";
+import { bridgeToken } from "../../../contracts/crossChainTokenRouter";
 import { BigNumber } from "ethers";
 import { useDispatch, useSelector } from "react-redux";
-import { approveERC20, checkAllowance } from "../contracts/erc20";
+import { approveERC20, checkAllowance } from "../../../contracts/erc20";
 
-import { chainDetails } from "../src/config/chains";
+import { chainDetails } from "../../config/chains";
 import {
   getAvailableChains,
   createClient,
   validateTokenAndChain,
   getTokenOptions,
   getFilteredTokenOptions,
-} from "../src/config/helpers";
-import { AppDispatch, RootState } from "../src/store/store";
+} from "../../config/helpers";
+import { AppDispatch, RootState } from "../../store/store";
 import { arrowBackOutline } from "ionicons/icons";
 import { useHistory } from "react-router";
-import { connectWallet } from "../src/store/wallet/walletThunk";
+import { connectWallet } from "../../store/wallet/walletThunk";
 
 const defaultAllowanceAmount =
   "1000000000000000000000000000000000000000000000000000000000000000000000000000";

@@ -27,7 +27,6 @@ const Swallet = smartWallet({
 export const connectWallet = createAsyncThunk(
   "wallet/connectWallet",
   async (_, { rejectWithValue }) => {
-    console.log("called");
     try {
       // Connect to personal wallet
       const personalAccount = await personalWallet.connect({
