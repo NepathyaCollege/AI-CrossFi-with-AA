@@ -1,5 +1,4 @@
 export default function (response, statusCode = 200) {
-
   return {
     statusCode: statusCode,
     headers: {

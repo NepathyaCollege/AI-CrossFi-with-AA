@@ -32,8 +32,8 @@ export const verifyTokenEndpoint = (handler) => async (event) => {
       statusCode: 400,
       body: JSON.stringify({ message: 'Missing Token' }),
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
     };
   }
@@ -46,10 +46,10 @@ export const verifyTokenEndpoint = (handler) => async (event) => {
     console.log(err);
     return {
       statusCode: 401,
-      body: JSON.stringify({ message: 'Invalid Token' }),
+      body: JSON.stringify({ message: 'Invalid or Expired Token ' }),
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
     };
   }
