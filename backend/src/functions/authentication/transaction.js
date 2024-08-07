@@ -1,9 +1,7 @@
-// src/handler.jsimport { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
-// import { verifyTokenEndpoint } from "./tokenVerification";
 import successHandler from '../../common/successHandler';
 import errorHandler from '../../common/errorHandler';
-import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb';
 import { verifyTokenEndpoint } from './tokenVerification';
 
 const client = new DynamoDBClient({});
@@ -35,15 +33,18 @@ export const storeTransaction = verifyTokenEndpoint(async (event) => {
   }
 });
 
-export const getTransactions = async (event) => {
+export const getTransactions = verifyTokenEndpoint(async (event) => {
   const { limit = 10, lastEvaluatedKey } = event.queryStringParameters || {};
+  const { email } = event.decoded;
 
   // Parse and sanitize limit
-  const parsedLimit = Math.min(parseInt(limit, 10), 50); // Maximum of 50 results per page
-
-  // Set up the parameters for DynamoDB Scan
+  const parsedLimit = Math.min(parseInt(limit, 10), 50);
   const params = {
     TableName: 'TransactionHistory',
+    KeyConditionExpression: 'email = :email',
+    ExpressionAttributeValues: {
+      ':email': { S: email },
+    },
     Limit: parsedLimit,
     ExclusiveStartKey: lastEvaluatedKey
       ? JSON.parse(lastEvaluatedKey)
@@ -51,23 +52,22 @@ export const getTransactions = async (event) => {
   };
 
   try {
-    // Scan the DynamoDB table
-    const result = await docClient.send(new ScanCommand(params));
+    // Query the DynamoDB table
+    const result = await docClient.send(new QueryCommand(params));
 
     // Transform DynamoDB items to plain JS objects
-    const transactions = (result.Items || []).map((item) => ({
-      email: item.email.S,
-      transactionHash: item.transactionHash.S,
-    }));
+    const transactions = (result.Items || []).map(
+      (item) => item.transactionHash.S
+    );
 
     // Return paginated results
     return successHandler(
       {
-        transactions,
+        transactions: transactions,
         limit: parsedLimit,
         nextPageToken: result.LastEvaluatedKey
-          ? (JSON.stringify(result.LastEvaluatedKey))
-          : null, // Pass next page token for pagination
+          ? JSON.stringify(result.LastEvaluatedKey)
+          : null,
       },
       200
     );
@@ -75,4 +75,4 @@ export const getTransactions = async (event) => {
     console.error('DynamoDB error:', error);
     return errorHandler({ message: 'Internal Server Error' }, 500);
   }
-};
+});

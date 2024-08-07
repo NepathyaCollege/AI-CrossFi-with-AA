@@ -97,3 +97,5 @@ functions:
           path: /transaction
           method: get
           cors: true
+          authorizer:
+            name: defiAuthorizer
