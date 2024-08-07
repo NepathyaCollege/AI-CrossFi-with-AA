@@ -47,7 +47,7 @@ export const getTransactions = verifyTokenEndpoint(async (event) => {
     },
     Limit: parsedLimit,
     ExclusiveStartKey: lastEvaluatedKey
-      ? JSON.parse(lastEvaluatedKey)
+      ? JSON.parse(decodeURIComponent(lastEvaluatedKey))
       : undefined,
   };
 
@@ -56,9 +56,10 @@ export const getTransactions = verifyTokenEndpoint(async (event) => {
     const result = await docClient.send(new QueryCommand(params));
 
     // Transform DynamoDB items to plain JS objects
-    const transactions = (result.Items || []).map(
-      (item) => item.transactionHash.S
-    );
+    const transactions = (result.Items || []).map((item) => ({
+      transactionHash: item.transactionHash.S,
+      timestamp: item.timestamp.S,
+    }));
 
     // Return paginated results
     return successHandler(
@@ -66,7 +67,7 @@ export const getTransactions = verifyTokenEndpoint(async (event) => {
         transactions: transactions,
         limit: parsedLimit,
         nextPageToken: result.LastEvaluatedKey
-          ? JSON.stringify(result.LastEvaluatedKey)
+          ? encodeURIComponent(JSON.stringify(result.LastEvaluatedKey))
           : null,
       },
       200
