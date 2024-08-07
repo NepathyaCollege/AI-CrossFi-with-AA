@@ -1,49 +1,34 @@
-import React, { useState } from "react";
 import {
-  IonButtons,
   IonButton,
-  IonModal,
-  IonHeader,
+  IonButtons,
+  IonCol,
   IonContent,
-  IonToolbar,
   IonGrid,
+  IonIcon,
+  IonImg,
+  IonModal,
   IonRow,
   IonText,
-  IonPage,
-  IonCol,
-  IonItem,
-  IonTitle,
-  IonImg,
-  IonIcon,
+  IonToolbar,
 } from "@ionic/react";
+import { closeCircleOutline, copyOutline } from "ionicons/icons";
 import QRCode from "qrcode.react";
+import React, { useState } from "react";
 import { formatAddress } from "../../config/helpers";
-import { close, closeCircleOutline, copyOutline } from "ionicons/icons";
+import useClipboard from "../../hooks/useClipboard";
 
 interface QrCodeProps {
   isOpenQrScanner: boolean;
   toggleQrScanner: () => void;
-  smartAddress: string;
+  smartAddress: string | undefined;
 }
 
 const QrCode: React.FC<QrCodeProps> = ({ isOpenQrScanner, toggleQrScanner, smartAddress }) => {
   const [isUnderstood, setIsUnderstood] = useState<boolean>(false);
-  const [copySuccess, setCopySuccess] = useState<boolean>(false);
-
-  const handleCopy = async () => {
-    if (smartAddress) {
-      try {
-        await navigator.clipboard.writeText(smartAddress);
-        setCopySuccess(true);
-        setTimeout(() => setCopySuccess(false), 2000);
-      } catch (err) {
-        console.error("Failed to copy: ", err);
-      }
-    }
-  };
+  const { copySuccess, error, handleCopy } = useClipboard();
 
   return (
-    <IonModal isOpen={isOpenQrScanner}>
+    <IonModal className="md:w-1/2 md:mx-auto" isOpen={isOpenQrScanner}>
       <IonToolbar className="px-2">
         <IonButtons slot="end">
           <IonButton
@@ -53,8 +38,7 @@ const QrCode: React.FC<QrCodeProps> = ({ isOpenQrScanner, toggleQrScanner, smart
               setIsUnderstood(false);
             }}
           >
-            <IonIcon className="text-xl pr-1" icon={closeCircleOutline}></IonIcon>
-            <IonText>Close</IonText>
+            Close
           </IonButton>
         </IonButtons>
       </IonToolbar>
@@ -69,7 +53,7 @@ const QrCode: React.FC<QrCodeProps> = ({ isOpenQrScanner, toggleQrScanner, smart
 "
                   bgColor="fs31"
                   size={300}
-                  value={smartAddress}
+                  value={smartAddress ? smartAddress : ""}
                 />
               </IonRow>
 
@@ -84,11 +68,16 @@ const QrCode: React.FC<QrCodeProps> = ({ isOpenQrScanner, toggleQrScanner, smart
                   <IonIcon
                     icon={copyOutline}
                     className="bg-background-tertiary absolute hover:brightness-150 cursor-pointer right-1.5 h-8 px-2 top-1 my-auto rounded"
-                    onClick={handleCopy}
+                    onClick={() => smartAddress && handleCopy(smartAddress)}
                   ></IonIcon>
                   {copySuccess && (
                     <IonText className="text-success absolute py-1 px-3 text-sm  rounded-md bg-background-tertiary  right-0 -top-9">
                       Copied!
+                    </IonText>
+                  )}
+                  {error && (
+                    <IonText className="text-danger absolute py-1 px-3 text-sm rounded-md bg-background-tertiary right-0 -top-9">
+                      {error}
                     </IonText>
                   )}
                 </IonCol>

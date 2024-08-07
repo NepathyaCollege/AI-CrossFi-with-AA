@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import {
   IonButton,
   IonButtons,
@@ -6,36 +5,34 @@ import {
   IonContent,
   IonGrid,
   IonHeader,
-  IonIcon,
-  IonImg,
   IonInput,
   IonItem,
   IonLabel,
+  IonLoading,
   IonModal,
   IonRow,
   IonSelect,
   IonSelectOption,
-  IonText,
   IonTitle,
-  IonToolbar,
   IonToast,
-  IonLoading,
+  IonToolbar,
 } from "@ionic/react";
 import { BigNumber } from "ethers";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { checkAllowance, approveERC20 } from "../../contracts/erc20";
+import { bridgeToken } from "../../contracts/crossChainTokenRouter";
+import { approveERC20, checkAllowance } from "../../contracts/erc20";
 import { chainDetails } from "../config/chains";
 import {
-  getAvailableChains,
   createClient,
-  validateTokenAndChain,
-  getTokenOptions,
+  getAvailableChains,
   getFilteredTokenOptions,
+  getTokenOptions,
+  validateTokenAndChain,
 } from "../config/helpers";
 import { AppDispatch, RootState } from "../store/store";
 import { connectWallet } from "../store/wallet/walletThunk";
-import { bridgeToken } from "../../contracts/crossChainTokenRouter";
 import Transaction from "./Transaction";
 
 const defaultAllowanceAmount =
@@ -295,15 +292,14 @@ const MyForm: React.FC = () => {
             </IonRow>
           </IonGrid>
 
-          <IonModal isOpen={isOpen} mode="ios">
-            <IonHeader>
-              <IonToolbar>
-                <IonTitle>Transaction Details</IonTitle>
-                <IonButtons slot="end">
-                  <IonButton onClick={() => setIsOpen(false)}>Close</IonButton>
-                </IonButtons>
-              </IonToolbar>
-            </IonHeader>
+          <IonModal isOpen={isOpen} className="md:w-1/2 md:mx-auto">
+            <IonToolbar className="px-2">
+              <IonTitle className="ion-padding-horizontal">Transaction Details</IonTitle>
+              <IonButtons slot="end">
+                <IonButton onClick={() => setIsOpen(false)}>Close</IonButton>
+              </IonButtons>
+            </IonToolbar>
+
             <IonContent>
               {/* <p>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni illum quidem

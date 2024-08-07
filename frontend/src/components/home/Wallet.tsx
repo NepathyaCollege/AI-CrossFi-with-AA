@@ -1,23 +1,25 @@
 import {
-  IonRow,
-  IonGrid,
-  IonCol,
+  IonAlert,
   IonButton,
+  IonCol,
+  IonGrid,
+  IonIcon,
   IonImg,
-  IonText,
-  IonContent,
-  IonPopover,
+  IonRow,
   IonSkeletonText,
+  IonText,
 } from "@ionic/react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
 import { formatAddress } from "../../config/helpers";
-import { Account } from "thirdweb/wallets";
+import { RootState } from "../../store/store";
 import QrCode from "./QrCode";
+import useClipboard from "../../hooks/useClipboard";
+import { copyOutline } from "ionicons/icons";
 
 const Wallet: React.FC = () => {
-  const { smartAccount, loading }: Account | any = useSelector<RootState>((state) => state.wallet);
+  const { smartAccount, loading, error } = useSelector((state: RootState) => state.wallet);
+  const { copySuccess, error: copyError, handleCopy } = useClipboard();
   const [isOpenQrScanner, setIsOpenQrScanner] = useState<boolean>(false);
   const toggleQrScanner = () => {
     setIsOpenQrScanner(!isOpenQrScanner);
@@ -34,9 +36,12 @@ const Wallet: React.FC = () => {
             </IonButton>
           </IonCol>
           <IonCol>
-            <IonGrid className="font-medium">
+            <IonGrid className="font-medium relative">
               <IonRow>
                 <IonCol>
+                  {error && (
+                    <IonAlert header="Error" isOpen={true} message={error} buttons={["OK"]} />
+                  )}
                   {loading ? (
                     <>
                       <IonSkeletonText
@@ -51,10 +56,26 @@ const Wallet: React.FC = () => {
                   ) : (
                     <>
                       <IonText>
-                        {smartAccount?.address && formatAddress(smartAccount?.address, 14)}
+                        {smartAccount?.address && formatAddress(smartAccount?.address, 20)}
                       </IonText>
+                      <IonIcon
+                        icon={copyOutline}
+                        className="bg-background-tertiary absolute hover:brightness-150 cursor-pointer right-1.5 p-3 text-2xl top-0 my-auto rounded"
+                        onClick={() => smartAccount?.address && handleCopy(smartAccount?.address)}
+                      ></IonIcon>
+                      {copySuccess && (
+                        <IonText className="text-success absolute py-1 px-3 text-sm  rounded-md bg-background-tertiary  right-0 -top-9">
+                          Copied!
+                        </IonText>
+                      )}
+                      {copyError && (
+                        <IonText className="text-danger absolute py-1 px-3 text-sm rounded-md bg-background-tertiary right-0 -top-9">
+                          {copyError}
+                        </IonText>
+                      )}
+
                       <br />
-                      <IonText>${0}</IonText>
+                      <IonText>$ {0}</IonText>
                     </>
                   )}
                 </IonCol>

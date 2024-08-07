@@ -13,6 +13,7 @@ import {
 } from "@ionic/react";
 import {
   cashOutline,
+  homeOutline,
   logOutOutline,
   optionsOutline,
   personOutline,
@@ -22,6 +23,11 @@ import {
 import { clearTokens } from "../config/authTokens";
 
 const menuItems = [
+  {
+    label: "Home",
+    link: "/home",
+    icon: <IonIcon icon={homeOutline} />,
+  },
   {
     label: "Bridge",
     link: "/bridge",

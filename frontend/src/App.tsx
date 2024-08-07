@@ -22,7 +22,7 @@ const App: React.FC = () => {
   const isLoggedIn = isTokenValid(token);
   useEffect(() => {
     if (isLoggedIn) {
-      // history.push("/home");
+      history.push("/home");
     }
   }, [isLoggedIn, history]);
 

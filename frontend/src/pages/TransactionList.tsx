@@ -1,57 +1,96 @@
-import { IonCol, IonContent, IonGrid, IonRow, IonText } from "@ionic/react";
-import React from "react";
-
-interface TransactionDetail {
-  txHash: string;
-  txTime: string;
-  fromAddress: string;
-  toAddress: string;
-}
-
-const transactions: TransactionDetail[] = [
-  {
-    txHash: "0x129a...1c13",
-    txTime: "27 seconds ago (August 7, 2024 at 07:47:17 UTC)",
-    fromAddress: "0xe1c1...7a04",
-    toAddress: "0xe1c1...7a04",
-  },
-  {
-    txHash: "0x234b...2d14",
-    txTime: "1 minute ago (August 7, 2024 at 07:48:15 UTC)",
-    fromAddress: "0x5f32...a8e7",
-    toAddress: "0x9b67...e4d9",
-  },
-  // Add more transactions here
-];
+import {
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonIcon,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
+  IonRow,
+  IonText,
+  IonSpinner,
+  IonAlert,
+} from "@ionic/react";
+import { openOutline } from "ionicons/icons";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { formatAddress, formatTimestamp } from "../config/helpers";
+import { AppDispatch, RootState } from "../store/store";
+import { fetchTransactions } from "../store/transaction/transactionThunk";
+import { IonInfiniteScrollCustomEvent } from "@ionic/core";
 
 const TransactionList: React.FC = () => {
-  console.log(1);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { transactions, nextPageToken, loading, error, loadingSkeleton } = useSelector(
+    (state: RootState) => state.transaction
+  );
+
+  useEffect(() => {
+    dispatch(fetchTransactions(nextPageToken));
+  }, [dispatch]);
+
+  const loadMoreTransaction = async (e: IonInfiniteScrollCustomEvent<void>) => {
+    if (!nextPageToken) {
+      e.target.disabled = true;
+      console.log("No more transactions to load");
+    } else {
+      await dispatch(fetchTransactions(nextPageToken)).unwrap();
+      e.target.complete();
+    }
+  };
+
   return (
     <IonContent className="ion-padding">
       <IonGrid className="h-full w-full">
-        <IonRow>
-          <IonText className="text-xl font-semibold">Latest Transactions</IonText>
-        </IonRow>
-        {transactions.map((transaction, index) => (
-          <IonRow
-            key={index}
-            className="ion-margin-top text-sm bg-background-secondary rounded-md ion-padding shadow-md shadow-black"
-          >
-            <IonGrid>
-              <IonRow className="ion-margin-bottom">
-                <IonText className="text-lg rounded-full w-10 bg-background-tertiary flex items-center justify-center text-center h-10 font-medium">
-                  TX
-                </IonText>
-              </IonRow>
-              <IonRow className="">{transaction.txHash}</IonRow>
-
-              <IonRow className="ion-margin-top text-opacity-60 text-white ">
-                <IonCol size="12">From : 0xe1c1...7a04</IonCol>
-                <IonCol size="12">From : 0xe1c1...7a04</IonCol>
-              </IonRow>
-            </IonGrid>
+        {error && <IonAlert isOpen={true} header={"Error"} message={error} buttons={["OK"]} />}
+        {loading && loadingSkeleton ? (
+          <IonRow className="ion-justify-content-center ion-margin-top">
+            <Skeletons />
           </IonRow>
-        ))}
+        ) : (
+          transactions.map((transaction, index) => (
+            <IonRow
+              key={index}
+              className="ion-margin-top text-sm bg-background-secondary rounded-md px-4 py-4 shadow-md shadow-black"
+            >
+              <IonGrid>
+                <IonRow className="ion-align-items-center gap-3">
+                  <IonText className="text-base rounded-full mr-2 w-10 bg-background-tertiary flex items-center justify-center text-center h-10 font-medium">
+                    TX
+                  </IonText>
+
+                  <IonCol>
+                    <IonGrid>
+                      <IonRow className="ion-align1-items-center gap-2 text-gray-200 text-base ">
+                        {formatAddress(transaction?.transactionHash, 22)}
+                      </IonRow>
+                      <IonRow className="text-text-textfield2">
+                        {formatTimestamp(transaction?.timestamp)}
+                        <br />
+                      </IonRow>
+                    </IonGrid>
+                  </IonCol>
+
+                  <IonIcon
+                    onClick={() =>
+                      window.open(`https://ccip.chain.link/msg/${transaction?.transactionHash}`)
+                    }
+                    className="text-2xl cursor-pointer hover:text-blue-400"
+                    icon={openOutline}
+                  />
+                </IonRow>
+              </IonGrid>
+            </IonRow>
+          ))
+        )}
+        <IonInfiniteScroll
+          className="my-7"
+          threshold="100px"
+          disabled={!nextPageToken}
+          onIonInfinite={loadMoreTransaction}
+        >
+          <IonInfiniteScrollContent loadingText="Loading more transactions..." />
+        </IonInfiniteScroll>
       </IonGrid>
     </IonContent>
   );
@@ -59,28 +98,17 @@ const TransactionList: React.FC = () => {
 
 export default TransactionList;
 
-const re = {
-  messageId: "0xa4de784ceeded3993e533c3b0da6087feb5713a5ba548419245a7a44056fbd42", // tx hash
-
-  sourceNetworkName: "ethereum-mainnet-optimism-1", //source network name
-  destNetworkName: "ethereum-mainnet-base-1", //destination network name
-
-  root: null, //no root
-
-  origin: "0xb86facf3572377d41ef58dfa598be906ba8acc7d", //origin
-
-  sender: "0xe1c14b9f065dead2e89ee35382f8bd42bdb87a04", //from
-  receiver: "0xe1c14b9f065dead2e89ee35382f8bd42bdb87a04", //receiver
-  sourceChainId: "10", //source chain
-  destChainId: "8453", //destiation chain
-
-  sendTransactionHash: "0xc4bd31d62c7ac191b96391671f2b3d2f155d0fb58fb1403dd6e71e68def489fb", //source tx hash
-  sendTimestamp: "2024-08-07T08:13:51", //timestamp
-
-  tokenAmounts: [
-    {
-      token: "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
-      amount: "1788148298",
-    },
-  ],
+const Skeletons = () => {
+  return (
+    <>
+      {Array(10)
+        .fill(10)
+        .map((_, index) => (
+          <IonRow
+            key={index}
+            className="ion-margin-top w-full animate-pulse h-16  bg-background-secondary rounded-md"
+          ></IonRow>
+        ))}
+    </>
+  );
 };
