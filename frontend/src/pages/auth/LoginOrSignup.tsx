@@ -56,7 +56,6 @@ const LoginOrSignup: React.FC = () => {
 
     const storedValues: any = location.state;
 
-    console.log(location.state);
     if (storedValues) {
       console.log(storedValues);
       formik.setValues(storedValues);
@@ -99,7 +98,11 @@ const LoginOrSignup: React.FC = () => {
                 </IonRow>
 
                 <IonRow className="mb-7 w-full">
-                  <FormButton type="submit" disabled={formik.isSubmitting}>
+                  <FormButton
+                    type="submit"
+                    showSpinner={formik.isSubmitting}
+                    disabled={formik.isSubmitting}
+                  >
                     Continue
                   </FormButton>
                 </IonRow>

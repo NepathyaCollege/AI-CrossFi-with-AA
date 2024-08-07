@@ -34,5 +34,5 @@ export const verifyEmailValidation = Yup.object().shape({
     .matches(/[A-Z]/, "Password must contain at least one capital letter")
     .matches(/[!?.@#$%^&*]/, "Password must contain at least one special character (!.?@#$%^&*)")
     .required("Password is required"),
-  code: Yup.string().required("Code is required").min(4, "Code must be 6 characters long"),
+  code: Yup.string().required("Code is required").min(6, "Code must be 6 characters long"),
 });

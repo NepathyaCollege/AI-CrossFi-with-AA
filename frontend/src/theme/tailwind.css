@@ -22,16 +22,23 @@
 .no-border-bottom {
 
   --inner-border-width: 0;
-  --highlight-color-focused: none;
+ 
+
+  --background: transparent; 
+  --background-activated: transparent; 
+  --background-focused: transparent; 
+  --background-hover: transparent; 
+ 
+  
+
+
 }
 
 
-.ion-item{
-  background-color: wheat;
-}
+
 
 .vertical-center {
   display: flex;
   align-items: center;
   justify-content: center;
-}
+} 

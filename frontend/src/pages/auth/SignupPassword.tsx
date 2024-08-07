@@ -140,7 +140,11 @@ const SignupPassword: React.FC = () => {
             </IonRow>
 
             <IonRow className="w-full">
-              <FormButton type="submit" disabled={formik.isSubmitting}>
+              <FormButton
+                type="submit"
+                showSpinner={formik.isSubmitting}
+                disabled={formik.isSubmitting}
+              >
                 Continue
               </FormButton>
             </IonRow>

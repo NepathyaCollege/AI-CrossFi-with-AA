@@ -41,7 +41,7 @@ const SignupEmail: React.FC = () => {
         });
 
         let emailExist = res?.data?.emailExist;
-        const targetPath = emailExist ? "/password" : "/signup/password";
+        const targetPath = emailExist ? "/login" : "/signup/password";
         history.replace({ state: { email: values.email } });
         history.push(targetPath, { email: values.email });
       } catch (error: AxiosError | unknown) {
@@ -115,7 +115,11 @@ const SignupEmail: React.FC = () => {
             </IonRow>
 
             <IonRow className="mb-2 mt-2 px-1">
-              <FormButton type="submit" disabled={false}>
+              <FormButton
+                type="submit"
+                showSpinner={formik.isSubmitting}
+                disabled={formik.isSubmitting}
+              >
                 Continue
               </FormButton>
             </IonRow>
