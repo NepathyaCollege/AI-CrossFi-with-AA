@@ -81,12 +81,19 @@ functions:
           path: /thirdWebVerification
           method: post
           cors: true
-  hello:
-    handler: src/handler.hello
+  storeTransaction:
+    handler: src/functions/authentication/transaction.storeTransaction
     events:
       - http:
-          path: /
-          method: get
+          path: transaction/{transactionHash}
+          method: post
           cors: true
           authorizer:
             name: defiAuthorizer
+  getTransaction:
+    handler: src/functions/authentication/transaction.getTransactions
+    events:
+      - http:
+          path: /transaction
+          method: get
+          cors: true

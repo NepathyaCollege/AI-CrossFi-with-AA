@@ -1,11 +1,15 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, GetCommand, PutCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
-import errorHandler from "../../common/errorHandler";
-import successHandler from "../../common/successHandler";
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import {
+  DynamoDBDocumentClient,
+  GetCommand,
+  PutCommand,
+  DeleteCommand,
+} from '@aws-sdk/lib-dynamodb';
+import errorHandler from '../../common/errorHandler';
+import successHandler from '../../common/successHandler';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
-
 
 export const handler = async (event) => {
   try {
@@ -13,7 +17,7 @@ export const handler = async (event) => {
 
     // Recreate the verification record for the user
     const thirdWebKey = await recreateVerificationForUser(userId);
-    
+
     // Remove sensitive fields
     delete thirdWebKey.userId;
 

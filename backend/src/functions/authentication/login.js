@@ -1,7 +1,7 @@
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
-import successHandler from "../../common/successHandler";
-import errorHandler from "../../common/errorHandler";
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
+const { DynamoDBDocumentClient, GetCommand } = require('@aws-sdk/lib-dynamodb');
+import successHandler from '../../common/successHandler';
+import errorHandler from '../../common/errorHandler';
 import bcrypt from 'bcryptjs';
 import { generateTokens } from './tokenVerification';
 
@@ -11,13 +11,13 @@ const docClient = DynamoDBDocumentClient.from(client);
 export const checkEmail = async (event) => {
   const { email } = JSON.parse(event.body);
   if (!email) {
-    return errorHandler({message:"Missing Email"},400);
+    return errorHandler({ message: 'Missing Email' }, 400);
   }
 
   try {
     // Check if the email exists
     const params = {
-      TableName: "Users",
+      TableName: 'Users',
       Key: {
         email: email,
       },
@@ -25,13 +25,13 @@ export const checkEmail = async (event) => {
 
     const result = await docClient.send(new GetCommand(params));
     if (!result.Item) {
-      return successHandler({ emailExist: false, message: "Email not found" });
+      return successHandler({ emailExist: false, message: 'Email not found' });
     }
 
-    return successHandler({ emailExist: true, message: "Email exists" });
+    return successHandler({ emailExist: true, message: 'Email exists' });
   } catch (err) {
     console.log(err);
-    return errorHandler({ message: "Server Error" }, 500);
+    return errorHandler({ message: 'Server Error' }, 500);
   }
 };
 
@@ -67,7 +67,7 @@ export const checkPassword = async (event) => {
       );
     }
     const userPayload = {
-      id:result.Item.id,
+      id: result.Item.id,
       email: result.Item.email,
     };
     const tokens = generateTokens(userPayload);
