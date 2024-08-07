@@ -1,6 +1,22 @@
 import React from "react";
 import { IonButton, IonSpinner } from "@ionic/react";
-import { IFormButtonProps } from "../../interfaces/IFormButtonProps";
+
+interface IFormButtonProps {
+  type: "button" | "submit" | "reset";
+  color?: string;
+
+  fill?: "clear" | "outline" | "solid";
+
+  className?: string;
+
+  disabled?: boolean;
+
+  onClick?: () => void;
+
+  children: React.ReactNode;
+
+  showSpinner?: boolean; // Add this line
+}
 
 const FormButton: React.FC<IFormButtonProps> = ({
   type,

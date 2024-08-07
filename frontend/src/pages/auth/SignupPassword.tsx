@@ -18,7 +18,7 @@ import FormError from "../../components/common/FormError";
 import FormButton from "../../components/common/FormButton";
 import { EMAIL_VERIFICATION_URL } from "../../config/apiUrl";
 import { signupPasswordValidation } from "../../form-validation-schemas/schema";
-import { ILocationState } from "../../interfaces/ILocationState";
+import { ILocationState } from "./Login";
 
 const SignupPassword: React.FC = () => {
   const history = useHistory();
@@ -66,89 +66,91 @@ const SignupPassword: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen>
-        <IonGrid className="ion-padding h-full w-full">
+        <IonGrid className="ion-padding h-full w-full  md:w-1/2 xl:w-1/3 2xl:[30%]  mx-auto  md:border md:border-zinc-800">
           <IonRow className="ion-justify-content-between flex w-full justify-between gap-3">
             <IonCol size="auto" onClick={() => history.goBack()} className="cursor-pointer">
               <IonIcon className="text-4xl" icon={arrowBackOutline} />
             </IonCol>
-            <IonCol size="auto">
-              <IonImg className="h-10 w-16" src="AppLogo.svg" />
-            </IonCol>
           </IonRow>
 
-          <IonRow>
-            <IonCol>
-              <IonText className="text-3xl font-semibold">Set Your Password</IonText>
-            </IonCol>
+          {/* middle section */}
+          <IonRow className="h-5/6  ion-align-items-center">
+            <IonGrid>
+              <IonRow>
+                <IonCol>
+                  <IonText className="text-3xl font-semibold">Set Your Password</IonText>
+                </IonCol>
+              </IonRow>
+
+              <IonRow>
+                <IonCol>
+                  <IonText className="text-lg">
+                    Add a way to protect your account. Set a password that nobody can guess. 😉
+                  </IonText>
+                </IonCol>
+              </IonRow>
+
+              <form onSubmit={formik.handleSubmit}>
+                <IonRow className="mt-8">
+                  <IonCol className="w-full">
+                    <FormInput
+                      name="email"
+                      type="email"
+                      readonly={true}
+                      placeholder="Enter your email"
+                      value={formik.values.email}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+
+                    {formik.touched.email && formik.errors.email ? (
+                      <FormError error={formik.errors.email} />
+                    ) : null}
+                  </IonCol>
+                </IonRow>
+
+                <IonRow className="mt-8">
+                  <IonCol className="relative w-full">
+                    <FormInput
+                      name="password"
+                      type="password"
+                      placeholder="Enter your password"
+                      value={formik.values.password}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                    {formik.touched.password && formik.errors.password ? (
+                      <FormError error={formik.errors.password} />
+                    ) : null}
+                    {formik.status && <FormError error={formik.status} />}
+                  </IonCol>
+                </IonRow>
+
+                <IonRow className="mb-6 w-full">
+                  <IonCol>
+                    <IonText className="mx-4 text-start text-sm">
+                      <ul className="list-inside list-disc space-y-1">
+                        <li>Must contain at least 8 characters</li>
+                        <li>At least one number</li>
+                        <li>At least one capital letter</li>
+                        <li>At least one of these symbols: !.?@#$%^&*</li>
+                      </ul>
+                    </IonText>
+                  </IonCol>
+                </IonRow>
+
+                <IonRow className="w-full">
+                  <FormButton
+                    type="submit"
+                    showSpinner={formik.isSubmitting}
+                    disabled={formik.isSubmitting}
+                  >
+                    Continue
+                  </FormButton>
+                </IonRow>
+              </form>
+            </IonGrid>
           </IonRow>
-
-          <IonRow>
-            <IonCol>
-              <IonText className="text-lg">
-                Add a way to protect your account. Set a password that nobody can guess. 😉
-              </IonText>
-            </IonCol>
-          </IonRow>
-
-          <form onSubmit={formik.handleSubmit}>
-            <IonRow className="mt-8">
-              <IonCol className="w-full">
-                <FormInput
-                  name="email"
-                  type="email"
-                  readonly={true}
-                  placeholder="Enter your email"
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
-
-                {formik.touched.email && formik.errors.email ? (
-                  <FormError error={formik.errors.email} />
-                ) : null}
-              </IonCol>
-            </IonRow>
-
-            <IonRow className="mt-8">
-              <IonCol className="relative w-full">
-                <FormInput
-                  name="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
-                {formik.touched.password && formik.errors.password ? (
-                  <FormError error={formik.errors.password} />
-                ) : null}
-                {formik.status && <FormError error={formik.status} />}
-              </IonCol>
-            </IonRow>
-
-            <IonRow className="mb-6 w-full">
-              <IonCol>
-                <IonText className="mx-4 text-start text-sm">
-                  <ul className="list-inside list-disc space-y-1">
-                    <li>Must contain at least 8 characters</li>
-                    <li>At least one number</li>
-                    <li>At least one capital letter</li>
-                    <li>At least one of these symbols: !.?@#$%^&*</li>
-                  </ul>
-                </IonText>
-              </IonCol>
-            </IonRow>
-
-            <IonRow className="w-full">
-              <FormButton
-                type="submit"
-                showSpinner={formik.isSubmitting}
-                disabled={formik.isSubmitting}
-              >
-                Continue
-              </FormButton>
-            </IonRow>
-          </form>
         </IonGrid>
       </IonContent>
     </IonPage>

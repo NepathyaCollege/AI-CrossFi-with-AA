@@ -1,6 +1,15 @@
 import React from "react";
 import { IonInput, IonRow, IonCol, IonChip } from "@ionic/react";
-import { IFormInputProps } from "../../interfaces/IFormInputProps";
+
+interface IFormInputProps {
+  name: string;
+  type: string;
+  placeholder: string;
+  value: string;
+  readonly?: boolean;
+  onChange: (e: CustomEvent) => void;
+  onBlur: (e: CustomEvent) => void;
+}
 
 const FormInput: React.FC<IFormInputProps> = ({
   name,

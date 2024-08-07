@@ -1,6 +1,11 @@
 import { IonRow, IonText } from "@ionic/react";
 import React from "react";
-import { IFormErrorProps } from "../../interfaces/IFormErrorProps";
+
+interface IFormErrorProps {
+  error: string;
+
+  className?: string;
+}
 
 const FormError: React.FC<IFormErrorProps> = ({ error, className }) => {
   return (

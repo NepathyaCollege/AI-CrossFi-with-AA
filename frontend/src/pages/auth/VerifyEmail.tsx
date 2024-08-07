@@ -21,7 +21,7 @@ import FormError from "../../components/common/FormError";
 import FormInput from "../../components/common/FormInput";
 import { VERIFY_OTP, EMAIL_VERIFICATION_URL } from "../../config/apiUrl";
 import { verifyEmailValidation } from "../../form-validation-schemas/schema";
-import { ILocationState } from "../../interfaces/ILocationState";
+import { ILocationState } from "./Login";
 
 const VerifyEmail: React.FC = () => {
   const history = useHistory();
@@ -111,78 +111,80 @@ const VerifyEmail: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen>
-        <IonGrid className="ion-padding h-full w-full">
+        <IonGrid className="ion-padding h-full w-full  md:w-1/2 xl:w-1/3 2xl:[30%]  mx-auto  md:border md:border-zinc-800">
           <IonRow className="ion-justify-content-between flex w-full justify-between gap-3">
             <IonCol size="auto" onClick={() => history.goBack()} className="cursor-pointer">
               <IonIcon className="text-4xl" icon={arrowBackOutline} />
             </IonCol>
-            <IonCol size="auto">
-              <IonImg className="h-10  w-16" src="AppLogo.svg" />
-            </IonCol>
           </IonRow>
 
-          <IonRow>
-            <IonCol>
-              <IonText className="text-3xl font-semibold">Verify your email</IonText>
-            </IonCol>
+          {/* middle section */}
+          <IonRow className="ion-justify-content-center   ion-align-items-center h-5/6 ">
+            <IonGrid>
+              <IonRow>
+                <IonCol>
+                  <IonText className="text-3xl font-semibold">Verify your email</IonText>
+                </IonCol>
+              </IonRow>
+
+              <IonRow>
+                <IonCol>
+                  <IonText className="text-lg">
+                    Check your email inbox for a 6-digit verification code that we have sent and
+                    enter it below:
+                  </IonText>
+                </IonCol>
+              </IonRow>
+
+              <form onSubmit={formik.handleSubmit}>
+                <IonRow className="mt-8">
+                  <IonCol className="relative w-full">
+                    <FormInput
+                      name="code"
+                      type="code"
+                      placeholder="CODE"
+                      value={formik.values.code}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                    {formik.touched.code && formik.errors.code ? (
+                      <FormError error={formik.errors.code} />
+                    ) : null}
+                    {formik.status && <FormError error={formik.status} />}
+                  </IonCol>
+                </IonRow>
+
+                <IonRow className="mb-6 w-full items-center">
+                  <IonCol size="8">
+                    <IonText className="my-4 text-start text-sm">
+                      Didn’t get the email? check your spam and promotions, or resend.
+                    </IonText>
+                  </IonCol>
+                  <IonCol>
+                    <IonButton
+                      className="ml-5 text-sm"
+                      type="button"
+                      fill="clear"
+                      disabled={resendDisabled}
+                      onClick={handleOtpResend}
+                    >
+                      {resendDisabled ? `Resend in ${timer}s` : "Resend"}
+                    </IonButton>
+                  </IonCol>
+                </IonRow>
+
+                <IonRow className="w-full">
+                  <FormButton
+                    type="submit"
+                    showSpinner={formik.isSubmitting}
+                    disabled={formik.isSubmitting}
+                  >
+                    Continue
+                  </FormButton>
+                </IonRow>
+              </form>
+            </IonGrid>
           </IonRow>
-
-          <IonRow>
-            <IonCol>
-              <IonText className="text-lg">
-                Check your email inbox for a 6-digit verification code that we have sent and enter
-                it below:
-              </IonText>
-            </IonCol>
-          </IonRow>
-
-          <form onSubmit={formik.handleSubmit}>
-            <IonRow className="mt-8">
-              <IonCol className="relative w-full">
-                <FormInput
-                  name="code"
-                  type="code"
-                  placeholder="CODE"
-                  value={formik.values.code}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
-                {formik.touched.code && formik.errors.code ? (
-                  <FormError error={formik.errors.code} />
-                ) : null}
-                {formik.status && <FormError error={formik.status} />}
-              </IonCol>
-            </IonRow>
-
-            <IonRow className="mb-6 w-full items-center">
-              <IonCol size="8">
-                <IonText className="my-4 text-start text-sm">
-                  Didn’t get the email? check your spam and promotions, or resend.
-                </IonText>
-              </IonCol>
-              <IonCol>
-                <IonButton
-                  className="ml-5 text-sm"
-                  type="button"
-                  fill="clear"
-                  disabled={resendDisabled}
-                  onClick={handleOtpResend}
-                >
-                  {resendDisabled ? `Resend in ${timer}s` : "Resend"}
-                </IonButton>
-              </IonCol>
-            </IonRow>
-
-            <IonRow className="w-full">
-              <FormButton
-                type="submit"
-                showSpinner={formik.isSubmitting}
-                disabled={formik.isSubmitting}
-              >
-                Continue
-              </FormButton>
-            </IonRow>
-          </form>
         </IonGrid>
       </IonContent>
     </IonPage>
