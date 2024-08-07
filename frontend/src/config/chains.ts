@@ -28,6 +28,7 @@ export interface Chain {
     amount: string;
   };
   chain: any;
+  chainId?: number;
 }
 
 // Define tokens
@@ -105,6 +106,7 @@ export const chains: Array<Chain> = [
       .filter((token) => token.chains.some((chain) => chain.chainName === "Base"))
       .map((token) => token.symbol),
     chain: baseSepolia,
+    chainId: 84532,
   },
   {
     name: "Optimism",
@@ -115,6 +117,7 @@ export const chains: Array<Chain> = [
       .filter((token) => token.chains.some((chain) => chain.chainName === "Optimism"))
       .map((token) => token.symbol),
     chain: optimismSepolia,
+    chainId: 8453,
   },
   {
     name: "Ethereum Sepolia",
@@ -125,5 +128,6 @@ export const chains: Array<Chain> = [
       .filter((token) => token.chains.some((chain) => chain.chainName === "Ethereum Sepolia"))
       .map((token) => token.symbol),
     chain: sepolia,
+    chainId: 11155111,
   },
 ];

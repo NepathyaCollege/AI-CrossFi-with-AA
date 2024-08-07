@@ -33,8 +33,13 @@ const menuItems = [
     icon: <IonIcon icon={swapVerticalOutline} />,
   },
   {
-    label: "Transactions",
-    link: "/transactions",
+    label: "TransactionList",
+    link: "/transactionList",
+    icon: <IonIcon icon={cashOutline} />,
+  },
+  {
+    label: "Transaction",
+    link: "/transaction",
     icon: <IonIcon icon={cashOutline} />,
   },
 ];

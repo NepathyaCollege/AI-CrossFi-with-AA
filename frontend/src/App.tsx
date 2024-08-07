@@ -12,6 +12,8 @@ import SignupPassword from "./pages/auth/SignupPassword";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import Home from "./pages/Home";
 import BridgeForm from "./pages/BridgeForm";
+import TransactionList from "./pages/TransactionList";
+import Transaction from "./pages/Transaction";
 
 const App: React.FC = () => {
   const history = useHistory();
@@ -20,7 +22,7 @@ const App: React.FC = () => {
   const isLoggedIn = isTokenValid(token);
   useEffect(() => {
     if (isLoggedIn) {
-      history.push("/home");
+      // history.push("/home");
     }
   }, [isLoggedIn, history]);
 
@@ -35,6 +37,8 @@ const App: React.FC = () => {
         <AuthenticatedRoute path="/home" exact component={Home} />
         <AuthenticatedRoute path="/bridge" exact component={BridgeForm} />
         <AuthenticatedRoute path="/trade" exact component={TradeForm} />
+        <AuthenticatedRoute path="/transactionList" exact component={TransactionList} />
+        <AuthenticatedRoute path="/transaction" exact component={Transaction} />
       </Switch>
     </IonRouterOutlet>
   );
