@@ -70,4 +70,6 @@ export interface IFormButtonProps {
    * @type {React.ReactNode}
    */
   children: React.ReactNode;
+
+  showSpinner?: boolean; // Add this line
 }

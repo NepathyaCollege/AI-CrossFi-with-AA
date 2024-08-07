@@ -1,20 +1,28 @@
 // src/App.tsx
 import { IonRouterOutlet } from "@ionic/react";
-import React from "react";
-import { useDispatch } from "react-redux";
-import { Route, Switch } from "react-router-dom";
-import BridgeForm from "./components/forms/BridgeForm";
+import React, { useEffect } from "react";
+import { Route, Switch, useHistory } from "react-router-dom";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
+import BridgeForm from "./components/forms/BridgeForm";
+import TradeForm from "./components/forms/TradeForm";
+import { getAccessToken, isTokenValid } from "./config/authTokens";
 import Login from "./pages/auth/Login";
 import LoginOrSignup from "./pages/auth/LoginOrSignup";
 import SignupEmail from "./pages/auth/SignupEmail";
 import SignupPassword from "./pages/auth/SignupPassword";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import Home from "./pages/Home";
-import TradeForm from "./components/forms/TradeForm";
 
 const App: React.FC = () => {
-  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const token = getAccessToken();
+  const isLoggedIn = isTokenValid(token);
+  useEffect(() => {
+    if (isLoggedIn) {
+      history.push("/home");
+    }
+  }, [isLoggedIn, history]);
 
   return (
     <IonRouterOutlet>

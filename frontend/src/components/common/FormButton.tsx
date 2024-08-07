@@ -1,5 +1,5 @@
 import React from "react";
-import { IonButton } from "@ionic/react";
+import { IonButton, IonSpinner } from "@ionic/react";
 import { IFormButtonProps } from "../../interfaces/IFormButtonProps";
 
 const FormButton: React.FC<IFormButtonProps> = ({
@@ -10,6 +10,7 @@ const FormButton: React.FC<IFormButtonProps> = ({
   disabled = false,
   onClick,
   children,
+  showSpinner = false,
 }) => {
   return (
     <IonButton
@@ -22,6 +23,8 @@ const FormButton: React.FC<IFormButtonProps> = ({
       onClick={onClick}
     >
       {children}
+
+      {showSpinner && <IonSpinner className="ml-2 text-black" name="lines" />}
     </IonButton>
   );
 };

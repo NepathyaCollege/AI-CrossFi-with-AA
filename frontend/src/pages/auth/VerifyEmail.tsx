@@ -137,24 +137,6 @@ const VerifyEmail: React.FC = () => {
           </IonRow>
 
           <form onSubmit={formik.handleSubmit}>
-            {/* <IonRow className="mt-8">
-              <IonCol className="w-full">
-                <FormInput
-                  readonly={true}
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
-
-                {formik.touched.email && formik.errors.email ? (
-                  <FormError error={formik.errors.email} />
-                ) : null}
-              </IonCol>
-            </IonRow> */}
-
             <IonRow className="mt-8">
               <IonCol className="relative w-full">
                 <FormInput
@@ -192,7 +174,11 @@ const VerifyEmail: React.FC = () => {
             </IonRow>
 
             <IonRow className="w-full">
-              <FormButton type="submit" disabled={formik.isSubmitting}>
+              <FormButton
+                type="submit"
+                showSpinner={formik.isSubmitting}
+                disabled={formik.isSubmitting}
+              >
                 Continue
               </FormButton>
             </IonRow>

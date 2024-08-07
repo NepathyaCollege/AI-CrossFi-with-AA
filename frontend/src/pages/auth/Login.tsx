@@ -117,8 +117,12 @@ const Login: React.FC = () => {
             </IonRow>
 
             <IonRow className="w-full">
-              <FormButton type="submit" disabled={formik.isSubmitting}>
-                Sigin
+              <FormButton
+                type="submit"
+                showSpinner={formik.isSubmitting}
+                disabled={formik.isSubmitting}
+              >
+                SignIn
               </FormButton>
             </IonRow>
           </form>
