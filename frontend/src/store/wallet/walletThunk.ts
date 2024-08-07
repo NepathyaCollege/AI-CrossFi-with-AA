@@ -4,9 +4,7 @@ import { createThirdwebClient } from "thirdweb";
 
 import { baseSepolia } from "thirdweb/chains";
 import { CLIENT_ID, FACTORY_ADDRESS, OAUTH_KEY, ENCRYPTION_KEY } from "../../config/thirdweb";
-
-//after logged in
-export const client = createThirdwebClient({ clientId: CLIENT_ID });
+import { createClient } from "../../config/helpers";
 
 //personal wallet
 const personalWallet = inAppWallet({
@@ -31,7 +29,7 @@ export const connectWallet = createAsyncThunk(
       // Connect to personal wallet
       const personalAccount = await personalWallet.connect({
         // clientId: CLIENT_ID,
-        client,
+        client: createClient(),
         chain: baseSepolia,
         strategy: "auth_endpoint",
         payload: JSON.stringify({ oauthKey: OAUTH_KEY }),
@@ -42,7 +40,7 @@ export const connectWallet = createAsyncThunk(
       // Connect to smart wallet
       const smartAccount = await Swallet.connect({
         chain: baseSepolia,
-        client,
+        client: createClient(),
         personalAccount,
       });
       return {
