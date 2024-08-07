@@ -5,7 +5,7 @@ import { RootState } from "../store/store";
 import Wallet from "../components/home/Wallet";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store/store";
-import { client, connectWallet } from "../store/wallet/walletThunk";
+import { connectWallet } from "../store/wallet/walletThunk";
 import { getBalance } from "../../contracts/erc20";
 import { Account } from "thirdweb/wallets";
 import { baseSepolia } from "thirdweb/chains";
