@@ -9,6 +9,7 @@ import { connectWallet } from "../store/wallet/walletThunk";
 import { getBalance } from "../../contracts/erc20";
 import { Account } from "thirdweb/wallets";
 import { baseSepolia } from "thirdweb/chains";
+import { createClient } from "../config/helpers";
 
 const Home: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -16,17 +17,18 @@ const Home: React.FC = () => {
   useEffect(() => {
     dispatch(connectWallet());
 
-    // const fetchBalance = async () => {
-    //   if (smartAccount?.address) {
-    //     let a = await getBalance({
-    //       accountAddress: smartAccount?.address,
-    //       client: client,
-    //       contractAddress: "safasfa",
-    //       chain: baseSepolia,
-    //     });
-    //   }
-    // };
-    // fetchBalance();
+    const fetchBalance = async () => {
+      // if (smartAccount?.address) {
+      //   let a = await getBalance({
+      //     accountAddress: smartAccount?.address,
+      //     client: createClient(),
+      //     contractAddress: "safasfa",
+      //     chain: baseSepolia,
+      //   });
+      // }
+    };
+    console.log(smartAccount?.address);
+    fetchBalance();
   }, [smartAccount?.address]);
 
   return (

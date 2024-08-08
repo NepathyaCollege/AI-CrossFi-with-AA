@@ -7,6 +7,7 @@ export interface IWalletState {
   smartAccount: Account | null;
   error: string | null;
   loading: boolean;
+  balance: number;
 }
 
 const initialState: IWalletState = {
@@ -14,6 +15,7 @@ const initialState: IWalletState = {
   smartAccount: null,
   error: null,
   loading: false,
+  balance: 5000,
 };
 
 const walletSlice = createSlice({
