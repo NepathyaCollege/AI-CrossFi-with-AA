@@ -14,6 +14,9 @@ import Home from "./pages/Home";
 import BridgeForm from "./pages/BridgeForm";
 import TransactionList from "./pages/TransactionList";
 import Transaction from "./pages/Transaction";
+import AIScreen from "./pages/ArtificialIntelligence";
+import ArtiicialIntelligence from "./pages/ArtificialIntelligence";
+import ChatBot from "./pages/ChatBot";
 
 const App: React.FC = () => {
   const history = useHistory();
@@ -39,6 +42,8 @@ const App: React.FC = () => {
         <AuthenticatedRoute path="/trade" exact component={TradeForm} />
         <AuthenticatedRoute path="/transactionList" exact component={TransactionList} />
         <AuthenticatedRoute path="/transaction" exact component={Transaction} />
+        <AuthenticatedRoute path="/ai" exact component={ArtiicialIntelligence} />
+        <AuthenticatedRoute path="/ai/chatbot" exact component={ChatBot} />
       </Switch>
     </IonRouterOutlet>
   );
