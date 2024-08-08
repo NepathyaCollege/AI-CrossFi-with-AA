@@ -21,7 +21,7 @@
 
 /* default color */
 :root {
-  --ion-text-color: rgba(241, 245, 249, 0.902) !important; 
+  --ion-text-color: rgba(241, 245, 249, 0.837) !important; 
 }
 
 
@@ -36,9 +36,6 @@
   --background-focused: transparent; 
   --background-hover: transparent; 
  
-  
-
-
 }
 
 
