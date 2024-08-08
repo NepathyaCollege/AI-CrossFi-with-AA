@@ -3,20 +3,19 @@ import { IonRouterOutlet } from "@ionic/react";
 import React, { useEffect } from "react";
 import { Route, Switch, useHistory } from "react-router-dom";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
-import TradeForm from "./pages/TradeForm";
 import { getAccessToken, isTokenValid } from "./config/authTokens";
+import ArtiicialIntelligence from "./pages/ArtificialIntelligence";
 import Login from "./pages/auth/Login";
 import LoginOrSignup from "./pages/auth/LoginOrSignup";
 import SignupEmail from "./pages/auth/SignupEmail";
 import SignupPassword from "./pages/auth/SignupPassword";
 import VerifyEmail from "./pages/auth/VerifyEmail";
-import Home from "./pages/Home";
 import BridgeForm from "./pages/BridgeForm";
-import TransactionList from "./pages/TransactionList";
-import Transaction from "./pages/Transaction";
-import AIScreen from "./pages/ArtificialIntelligence";
-import ArtiicialIntelligence from "./pages/ArtificialIntelligence";
 import ChatBot from "./pages/ChatBot";
+import Home from "./pages/Home";
+import TradeForm from "./pages/TradeForm";
+import Transaction from "./pages/Transaction";
+import TransactionList from "./pages/TransactionList";
 
 const App: React.FC = () => {
   const history = useHistory();
