@@ -6,12 +6,12 @@ import {Script} from "forge-std/Script.sol";
 import "../src/helpers/Token.sol";
 
 contract DeployToken is Script {
-    Token token;
+    WrappedLink token;
 
     function run() public {
         vm.startBroadcast();
         // Load environment variables
-        token = new Token();
+        token = new WrappedLink();
 
         // Stop broadcasting the transaction
         vm.stopBroadcast();
