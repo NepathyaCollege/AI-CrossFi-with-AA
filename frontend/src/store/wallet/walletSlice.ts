@@ -2,14 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 import { Account } from "thirdweb/wallets";
 import { connectWallet } from "./walletThunk";
 
-interface WalletState {
+export interface IWalletState {
   personalAccount: Account | null;
   smartAccount: Account | null;
   error: string | null;
   loading: boolean;
 }
 
-const initialState: WalletState = {
+const initialState: IWalletState = {
   personalAccount: null,
   smartAccount: null,
   error: null,

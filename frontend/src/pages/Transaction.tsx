@@ -7,15 +7,22 @@ interface ITransactionDetailProps {
   value: string;
   icon?: string;
   imageUrl?: string;
+  className?: string;
 }
 
-const TransactionDetail: React.FC<ITransactionDetailProps> = ({ label, value, icon, imageUrl }) => (
+const TransactionDetail: React.FC<ITransactionDetailProps> = ({
+  label,
+  value,
+  icon,
+  imageUrl,
+  className = "text-textfield2 ",
+}) => (
   <IonRow className="ion-padding gap-2 border-b-2 border-zinc-800">
-    <IonCol className="text-gray-100" size="12">
+    <IonCol className="text-gray-100 " size="12">
       {label}
       {/* {icon && <IonIcon icon={checkmarkCircle} className="text-green-500" />} */}
     </IonCol>
-    <IonCol size="12" className="text-text-textfield2 flex items-center">
+    <IonCol size="12" className={`flex items-center ${className}`}>
       {imageUrl && <IonImg src={imageUrl} className="w-6 h-6 inline-block mr-2" />}
       {value}
     </IonCol>
@@ -32,8 +39,12 @@ const Transaction: React.FC = () => {
   return (
     <IonContent className="ion-padding">
       <IonGrid className="h-auto w-full border-b-2 border-zinc-800 rounded-lg bg-background-secondary">
-        <TransactionDetail label="Source Transaction Hash" value="0xabc8...1636" />
-        <TransactionDetail label="Destination Transaction Hash" value="0xabc8...1636" />
+        <TransactionDetail
+          label="Source Transaction Hash"
+          className="text-blue-500"
+          value="0xabc8...1636"
+        />
+
         <TransactionDetail label="Status" value="Success" icon="checkmark-circle" />
         <TransactionDetail
           label="Source Chain"

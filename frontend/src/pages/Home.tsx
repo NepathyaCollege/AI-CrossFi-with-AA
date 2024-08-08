@@ -12,7 +12,7 @@ import { baseSepolia } from "thirdweb/chains";
 
 const Home: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { smartAccount }: Account | any = useSelector((state: RootState) => state.wallet);
+  const { smartAccount } = useSelector((state: RootState) => state.wallet);
   useEffect(() => {
     dispatch(connectWallet());
 

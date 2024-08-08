@@ -12,10 +12,17 @@
 }
 
 
+
+
 .b{
   border: 1px solid red;  
 }
 
+
+/* default color */
+:root {
+  --ion-text-color: rgba(241, 245, 249, 0.902) !important; 
+}
 
 
 /* overriding css for Ion item & Ionselect */

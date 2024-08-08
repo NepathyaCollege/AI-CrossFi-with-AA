@@ -66,9 +66,9 @@ const LoginOrSignup: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen>
-        <IonGrid>
+        <IonGrid className="ion-padding h-full w-full  md:w-1/2 xl:w-1/3 2xl:[30%]  mx-auto  md:border md:border-zinc-800">
           <IonRow className="h-screen items-center justify-center">
-            <IonCol sizeXs="12" sizeSm="8" sizeMd="6" sizeLg="5" sizeXl="4" className="p-4">
+            <IonCol>
               <IonGrid className="ion-margin-bottom">
                 <IonCol size="auto">
                   <IonImg src={"AppLogo.svg"} alt="Logo" className="mx-auto w-[45%]" />

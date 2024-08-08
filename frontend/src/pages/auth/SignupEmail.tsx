@@ -22,7 +22,7 @@ import FormError from "../../components/common/FormError";
 import FormInput from "../../components/common/FormInput";
 import { CHECK_EMAIL_URL } from "../../config/apiUrl";
 import { loginOrSignupValidation } from "../../form-validation-schemas/schema";
-import { ILocationState } from "../../interfaces/ILocationState";
+import { ILocationState } from "./Login";
 
 const SignupEmail: React.FC = () => {
   const history = useHistory();
@@ -64,74 +64,75 @@ const SignupEmail: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen>
-        <IonGrid className="ion-padding grid h-full w-full gap-2">
+        <IonGrid className="ion-padding h-full w-full  md:w-1/2 xl:w-1/3 2xl:[30%]  mx-auto  md:border md:border-zinc-800">
           <IonRow className="ion-justify-content-between flex w-full justify-between gap-3">
             <IonCol size="auto" onClick={() => history.goBack()} className="cursor-pointer">
-              <IonIcon className="text-3xl" icon={arrowBackOutline} />
-            </IonCol>
-            <IonCol size="auto">
-              <IonImg className="h-8 w-auto" src="AppLogo.svg" />
+              <IonIcon className="text-4xl" icon={arrowBackOutline} />
             </IonCol>
           </IonRow>
 
-          <IonRow className="flex justify-center">
-            <IonCol size="auto">
-              <IonImg className="h-28 w-auto" src="AppLogo.svg" />
-            </IonCol>
-          </IonRow>
+          {/* middle section */}
 
-          <IonRow>
-            <IonText className="text-2xl font-bold text-center w-full">
-              Create Your Nepathya Account
-            </IonText>
-          </IonRow>
+          <IonRow className="ion-justify-content-center  ion-align-items-center h-4/5 ">
+            <IonGrid className="gap-4">
+              <IonRow className="flex justify-center my-5">
+                <IonCol size="auto">
+                  <IonImg className="h-20 w-auto" src="AppLogo.svg" />
+                </IonCol>
+              </IonRow>
 
-          <IonRow>
-            <IonCol>
-              <IonText className="text-md font-medium opacity-50">
-                This email address doesn't have a Nepathya account yet. Let's create one now!
-                <br />
-                It only takes a minute to get started 🥳
-              </IonText>
-            </IonCol>
-          </IonRow>
+              <IonRow>
+                <IonText className="text-2xl font-bold text-center w-full my-5">
+                  Create Your Nepathya Account
+                </IonText>
+              </IonRow>
 
-          <form onSubmit={formik.handleSubmit} className="flex flex-col gap-6">
-            <IonRow>
-              <IonCol size="12">
-                <FormInput
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
-                {formik.touched.email && formik.errors.email ? (
-                  <FormError error={formik.errors.email} />
-                ) : null}
-                {formik.status && <FormError error={formik.status} />}
-              </IonCol>
-            </IonRow>
+              <IonRow className="my-5">
+                <IonCol>
+                  <IonText className="text-md font-medium text-text-textfield2">
+                    This email address doesn't have a account yet. Let's create one now!
+                  </IonText>
+                </IonCol>
+              </IonRow>
 
-            <IonRow className="mb-2 mt-2 px-1">
-              <FormButton
-                type="submit"
-                showSpinner={formik.isSubmitting}
-                disabled={formik.isSubmitting}
-              >
-                Continue
-              </FormButton>
-            </IonRow>
-          </form>
+              <form onSubmit={formik.handleSubmit} className="flex flex-col gap-6">
+                <IonRow>
+                  <IonCol size="12">
+                    <FormInput
+                      name="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={formik.values.email}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                    {formik.touched.email && formik.errors.email ? (
+                      <FormError error={formik.errors.email} />
+                    ) : null}
+                    {formik.status && <FormError error={formik.status} />}
+                  </IonCol>
+                </IonRow>
 
-          <IonRow>
-            <IonCol className="ion-padding text-center text-xs opacity-40">
-              <IonText className="font-medium">
-                By Clicking “Continue”, you acknowledge that you have read and understood, and agree
-                to Nepathya Defi's Privacy Policy.
-              </IonText>
-            </IonCol>
+                <IonRow className="mb-2 mt-2 px-1">
+                  <FormButton
+                    type="submit"
+                    showSpinner={formik.isSubmitting}
+                    disabled={formik.isSubmitting}
+                  >
+                    Continue
+                  </FormButton>
+                </IonRow>
+              </form>
+
+              <IonRow>
+                <IonCol className="ion-padding text-center text-xs opacity-40">
+                  <IonText className="font-medium">
+                    By Clicking “Continue”, you acknowledge that you have read and understood, and
+                    agree to Nepathya Defi's Privacy Policy.
+                  </IonText>
+                </IonCol>
+              </IonRow>
+            </IonGrid>
           </IonRow>
         </IonGrid>
       </IonContent>

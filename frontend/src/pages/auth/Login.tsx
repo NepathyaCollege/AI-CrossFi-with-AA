@@ -18,8 +18,13 @@ import FormError from "../../components/common/FormError";
 import FormInput from "../../components/common/FormInput";
 import { CHECK_PASSWORD_URL } from "../../config/apiUrl";
 import { loginValidation } from "../../form-validation-schemas/schema";
-import { ILocationState } from "../../interfaces/ILocationState";
+
 import { storeTokens } from "../../config/authTokens";
+
+export interface ILocationState {
+  email: string;
+  password?: string;
+}
 
 const Login: React.FC = () => {
   const history = useHistory();
@@ -57,75 +62,78 @@ const Login: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen>
-        <IonGrid className="ion-padding h-full w-full ">
+        <IonGrid className="ion-padding h-full w-full  md:w-1/2 xl:w-1/3 2xl:[30%]  mx-auto  md:border md:border-zinc-800">
           <IonRow className="ion-justify-content-between flex w-full justify-between gap-3">
             <IonCol size="auto" onClick={() => history.goBack()} className="cursor-pointer">
-              <IonIcon className="text-3xl" icon={arrowBackOutline} />
-            </IonCol>
-            <IonCol size="auto">
-              <IonImg className="h-8 w-auto" src="AppLogo.svg" />
-            </IonCol>
-          </IonRow>
-          <IonRow className="flex justify-center">
-            <IonCol size="auto">
-              <IonImg className=" h-28 w-auto" src="AppLogo.svg" />
+              <IonIcon className="text-4xl" icon={arrowBackOutline} />
             </IonCol>
           </IonRow>
 
-          {/* Form section */}
+          {/* middle section */}
+          <IonRow>
+            <IonGrid className="">
+              <IonRow className="flex justify-center">
+                <IonCol size="auto">
+                  <IonImg className="h-20" src="AppLogo.svg" />
+                </IonCol>
+              </IonRow>
 
-          <IonRow className="m-8">
-            <IonCol size="12" className="w-full text-center">
-              <IonText className="text-ce text-2xl font-bold">
-                Sign in to your Nepathya DeFi Account
-              </IonText>
-            </IonCol>
+              {/* Form section */}
+
+              <IonRow className="m-8">
+                <IonCol size="12" className="w-full text-center">
+                  <IonText className="text-ce text-2xl font-bold">
+                    Sign in to your Nepathya DeFi Account
+                  </IonText>
+                </IonCol>
+              </IonRow>
+
+              <form onSubmit={formik.handleSubmit} className="flex flex-col">
+                <IonRow>
+                  <IonCol size="12">
+                    <FormInput
+                      name="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={formik.values.email}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                    {formik.touched.email && formik.errors.email ? (
+                      <FormError error={formik.errors.email} />
+                    ) : null}
+                  </IonCol>
+                </IonRow>
+
+                <IonRow className="">
+                  <IonCol className="relative w-full">
+                    <FormInput
+                      name="password"
+                      type="password"
+                      placeholder="Enter your password"
+                      value={formik.values.password}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                    {formik.touched.password && formik.errors.password ? (
+                      <FormError error={formik.errors.password} />
+                    ) : null}
+                    {formik.status && <FormError error={formik.status} />}
+                  </IonCol>
+                </IonRow>
+
+                <IonRow className="w-full">
+                  <FormButton
+                    type="submit"
+                    showSpinner={formik.isSubmitting}
+                    disabled={formik.isSubmitting}
+                  >
+                    Login
+                  </FormButton>
+                </IonRow>
+              </form>
+            </IonGrid>
           </IonRow>
-
-          <form onSubmit={formik.handleSubmit} className="flex flex-col">
-            <IonRow>
-              <IonCol size="12">
-                <FormInput
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
-                {formik.touched.email && formik.errors.email ? (
-                  <FormError error={formik.errors.email} />
-                ) : null}
-              </IonCol>
-            </IonRow>
-
-            <IonRow className="">
-              <IonCol className="relative w-full">
-                <FormInput
-                  name="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
-                {formik.touched.password && formik.errors.password ? (
-                  <FormError error={formik.errors.password} />
-                ) : null}
-                {formik.status && <FormError error={formik.status} />}
-              </IonCol>
-            </IonRow>
-
-            <IonRow className="w-full">
-              <FormButton
-                type="submit"
-                showSpinner={formik.isSubmitting}
-                disabled={formik.isSubmitting}
-              >
-                SignIn
-              </FormButton>
-            </IonRow>
-          </form>
         </IonGrid>
       </IonContent>
     </IonPage>
