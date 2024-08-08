@@ -18,9 +18,10 @@ import useClipboard from "../../hooks/useClipboard";
 import { copyOutline } from "ionicons/icons";
 
 const Wallet: React.FC = () => {
-  const { smartAccount, loading, error } = useSelector((state: RootState) => state.wallet);
+  const { smartAccount, loading, error, balance } = useSelector((state: RootState) => state.wallet);
   const { copySuccess, error: copyError, handleCopy } = useClipboard();
   const [isOpenQrScanner, setIsOpenQrScanner] = useState<boolean>(false);
+
   const toggleQrScanner = () => {
     setIsOpenQrScanner(!isOpenQrScanner);
   };
@@ -75,7 +76,7 @@ const Wallet: React.FC = () => {
                       )}
 
                       <br />
-                      <IonText>$ {0}</IonText>
+                      <IonText>$ {balance}</IonText>
                     </>
                   )}
                 </IonCol>

@@ -19,32 +19,35 @@ import { wallet } from "ionicons/icons";
 import React, { useEffect, useState } from "react";
 import ActionSegment from "../components/form/ActionSegment";
 import { Token, tokensWithNetwork } from "../config/tokensList";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 // TODO: (Replace with actual API call)
-const fetchTokenBalance = (network: string, token: string) => {
-  return new Promise<number>((resolve) => {
-    setTimeout(() => resolve(Math.random() * 1000), 1000);
-  });
-};
+// const fetchTokenBalance = (network: string, token: string) => {
+//   return new Promise<number>((resolve) => {
+//     setTimeout(() => resolve(Math.random() * 1000), 1000);
+//   });
+// };
 
 const TradeForm: React.FC = () => {
   const [chainName, setChainName] = useState<string>("sepolia");
   const [tokenName, setTokenName] = useState<string>("");
   const [triggerToken, setTriggerToken] = useState<string>("");
+  const { balance: walletBalance } = useSelector((state: RootState) => state.wallet);
   const [targetPrice, setTargetPrice] = useState<string>("");
   const [amountUSD, setAmountUSD] = useState<string>("");
   const [action, setAction] = useState<"buy" | "sell">("buy");
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>("");
-  const [balance, setBalance] = useState<number | null>(null);
+  const [balance, setBalance] = useState<number | null>(walletBalance | 0);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (chainName && tokenName) {
-      fetchTokenBalance(chainName, tokenName).then(setBalance);
-    }
-  }, [chainName, tokenName]);
+  // useEffect(() => {
+  //   if (chainName && tokenName) {
+  //     fetchTokenBalance(chainName, tokenName).then(setBalance);
+  //   }
+  // }, [chainName, tokenName]);
 
   const handleNetworkChange = (event: any) => {
     const selectedNetwork = event.detail.value as string;
@@ -122,14 +125,14 @@ const TradeForm: React.FC = () => {
   };
 
   return (
-    <IonContent className="ion-padding">
+    <IonContent className="">
       <div className="mt-5 w-72 mx-auto">
         <ActionSegment action={action} onChange={(newAction) => setAction(newAction)} />
       </div>
 
-      <div className="ion-padding ion-margin-top ion-padding">
+      <div className="ion-padding ion-margin-top ">
         {/* Network Selection */}
-        <div className="flex ion-margin">
+        <div className="flex ion-ion-margin-vertical">
           {chainName && (
             <div className="flex w-1/2 items-center space-x-4 ml-4">
               <IonImg src={tokensWithNetwork[chainName].logoURI} className="w-16 h-16" />
@@ -173,7 +176,7 @@ const TradeForm: React.FC = () => {
         </IonItem>
 
         {/* Display Balance */}
-        {tokenName && chainName && (
+        {
           <IonItem className=" ion-margin-horizontal no-border-bottom">
             <IonIcon
               icon={wallet}
@@ -186,7 +189,7 @@ const TradeForm: React.FC = () => {
               {balance !== null ? `${balance.toFixed(2)}` : <IonSpinner name="dots"></IonSpinner>}
             </IonLabel>
           </IonItem>
-        )}
+        }
 
         {/* Token To Buy Selection */}
         <IonItem className="ion-margin">
