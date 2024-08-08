@@ -7,3 +7,9 @@
 [submodule "contracts/lib/v2-periphery"]
 	path = contracts/lib/v2-periphery
 	url = https://github.com/Uniswap/v2-periphery
+[submodule "contracts/lib/uniswap-v2-periphery"]
+	path = contracts/lib/uniswap-v2-periphery
+	url = https://github.com/Uniswap/uniswap-v2-periphery
+[submodule "contracts/lib/chainlink"]
+	path = contracts/lib/chainlink
+	url = https://github.com/smartcontractkit/chainlink
