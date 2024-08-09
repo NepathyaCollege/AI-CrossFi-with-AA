@@ -21,7 +21,9 @@ import ActionSegment from "../components/form/ActionSegment";
 import { Token, tokensWithNetwork } from "../config/tokensList";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
-<<<<<<< HEAD
+import { createClient } from "../config/helpers";
+import { getBalance } from "../../contracts/erc20";
+import { BigNumber } from "ethers";
 
 // TODO: (Replace with actual API call)
 // const fetchTokenBalance = (network: string, token: string) => {
@@ -29,12 +31,6 @@ import { RootState } from "../store/store";
 //     setTimeout(() => resolve(Math.random() * 1000), 1000);
 //   });
 // };
-=======
-import { getBalance } from "../../contracts/erc20";
-import { createClient } from "../config/helpers";
-import { BigNumber, ethers } from "ethers";
-
->>>>>>> 223a756 (fetched balance on trade form)
 
 const TradeForm: React.FC = () => {
   const [chainName, setChainName] = useState<string>("sepolia");
@@ -49,6 +45,8 @@ const TradeForm: React.FC = () => {
   const [balance, setBalance] = useState<number | null>(walletBalance | 0);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const { smartAccount } = useSelector((state: RootState) => state.wallet);
 
   // useEffect(() => {
   //   if (chainName && tokenName) {
