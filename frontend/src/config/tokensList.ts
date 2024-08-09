@@ -16,7 +16,8 @@ export interface Network {
   };
   tokens: Record<string, Token>;
   logoURI?: string;
-  chain: any; multiKeeperTokenFactory: string;
+  chain: any;
+  multiKeeperTokenFactory: string;
 }
 
 export interface TokensWithNetwork {
@@ -42,14 +43,14 @@ export const tokensWithNetwork: TokensWithNetwork = {
         name: "BTC",
         decimals: 18,
         symbol: "BTC",
-        logoURI: "https://cryptologos.cc/logos/tether-usdt-logo.png?v=032",
+        logoURI: "https://cryptologos.cc/logos/bitcoin-btc-logo.svg?v=032",
         address: "0x35f5868c9563c8b30a6c096b2e80418aa3643102",
       },
       eth: {
         name: "ETH",
         decimals: 18,
         symbol: "ETH",
-        logoURI: "https://cryptologos.cc/logos/tether-usdt-logo.png?v=032",
+        logoURI: "https://cryptologos.cc/logos/thumbs/ethereum.png?v=032",
         address: "0x7e29ee6ee5ed4195c797b06f20b0a500ea30a79c",
       },
       link: {
@@ -62,7 +63,7 @@ export const tokensWithNetwork: TokensWithNetwork = {
     },
     logoURI: "https://cdn.worldvectorlogo.com/logos/ethereum-eth.svg",
     chain: sepolia,
-    multiKeeperTokenFactory: "0x5572ac5a39327f5273f9fe0fdfa5e66894e33c29"
+    multiKeeperTokenFactory: "0x5572ac5a39327f5273f9fe0fdfa5e66894e33c29",
   },
   base: {
     priceFeed: {
@@ -95,8 +96,7 @@ export const tokensWithNetwork: TokensWithNetwork = {
     },
     logoURI: "https://altcoinsbox.com/wp-content/uploads/2023/02/base-logo-in-blue-600x600.webp",
     chain: baseSepolia,
-    multiKeeperTokenFactory: "0x5572ac5a39327f5273f9fe0fdfa5e66894e33c29"
-
+    multiKeeperTokenFactory: "0x5572ac5a39327f5273f9fe0fdfa5e66894e33c29",
   },
   optimism: {
     priceFeed: {
@@ -129,6 +129,6 @@ export const tokensWithNetwork: TokensWithNetwork = {
     },
     logoURI: "https://res.coinpaper.com/coinpaper/optimism_logo_6eba6a0c5c.png",
     chain: optimismSepolia,
-    multiKeeperTokenFactory: "0x5572ac5a39327f5273f9fe0fdfa5e66894e33c29"
+    multiKeeperTokenFactory: "0x5572ac5a39327f5273f9fe0fdfa5e66894e33c29",
   },
 };
