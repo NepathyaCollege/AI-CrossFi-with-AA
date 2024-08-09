@@ -10,9 +10,11 @@ contract AggregatorManagerDeployer is Script {
 
     function run() public {
         vm.startBroadcast();
-        aggregatorManager = AggregatorManager(0x14b2fC9e1333F30d70E1672D1859a08E8082384D); //new AggregatorManager();
-        aggregatorManager.approveAggregator(0x694AA1769357215DE4FAC081bf1f309aDC325306);
-        aggregatorManager.approveAggregator(0xc59E3633BAAC79493d908e63626716e204A45EdF);
+        aggregatorManager = new AggregatorManager();
+        aggregatorManager.approveAggregator(0x0FB99723Aee6f420beAD13e6bBB79b7E6F034298);
+
+        aggregatorManager.approveAggregator(0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1);
+        aggregatorManager.approveAggregator(0xb113F5A928BCfF189C998ab20d753a47F9dE5A61);
 
         vm.stopBroadcast();
     }

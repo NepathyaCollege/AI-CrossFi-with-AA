@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "forge-std/Script.sol";
-import "../src/chainlink/limitorderkeeper/MutliTokenKeeper.sol";
+import "../src/chainlink/limitorderkeeper/MultiTokenKeeper.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 import "../src/helpers/Token.sol";
 

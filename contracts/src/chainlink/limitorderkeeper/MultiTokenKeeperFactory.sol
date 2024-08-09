@@ -4,8 +4,8 @@ pragma solidity ^0.8.0;
 import "./MultiTokenKeeper.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 
-interface IAutomationRegistrar{
-   struct RegistrationParams {
+interface IAutomationRegistrar {
+    struct RegistrationParams {
         string name;
         bytes encryptedEmail;
         address upkeepContract;
@@ -18,9 +18,8 @@ interface IAutomationRegistrar{
         uint96 amount;
     }
 
-    function registerUpkeep(RegistrationParams calldata requestParams) external returns (uint256);  
+    function registerUpkeep(RegistrationParams calldata requestParams) external returns (uint256);
 }
-
 
 contract MultiTokenKeeperFactory {
     address public uniswapRouter;
@@ -56,15 +55,15 @@ contract MultiTokenKeeperFactory {
         // Deploy a new MultiTokenKeeper contract
         MultiTokenKeeper multiTokenKeeper = new MultiTokenKeeper(uniswapRouter, usdtAddress, aggregatorManager);
         multiTokenKeeperAddress = address(multiTokenKeeper);
-        
+
         // Approve the KeeperRegistry to spend LINK tokens
         LinkTokenInterface linkToken = LinkTokenInterface(linkTokenAddress);
         require(linkToken.transferFrom(msg.sender, address(this), linkAmount), "LINK transfer failed");
         linkToken.approve(keeperRegistryAddress, linkAmount);
 
         // Register the MultiTokenKeeper contract with the KeeperRegistry
-        IKeeperRegistry keeperRegistry = IKeeperRegistry(keeperRegistryAddress);
-        IKeeperRegistry.RegistrationParams memory params = IKeeperRegistry.RegistrationParams({
+        IAutomationRegistrar keeperRegistry = IAutomationRegistrar(keeperRegistryAddress);
+        IAutomationRegistrar.RegistrationParams memory params = IAutomationRegistrar.RegistrationParams({
             name: "MultiTokenKeeper Upkeep",
             encryptedEmail: "",
             upkeepContract: multiTokenKeeperAddress,
