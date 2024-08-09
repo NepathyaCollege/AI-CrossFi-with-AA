@@ -90,7 +90,6 @@ export const checkAllowance = async ({
     abi: erc20Abi as any,
   });
 
-  debugger;
 
   const allowance: Allowance = await readContract({
     contract,

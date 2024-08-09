@@ -17,7 +17,6 @@ export const bridgeToken = async ({
   contractAddress,
   smartAccount,
 }: IBridgeToken) => {
-  debugger;
   const contract = getContract({
     client,
     chain,

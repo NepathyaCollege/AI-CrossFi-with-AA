@@ -20,17 +20,19 @@ contract DeployMultiTokenKeeperFactory is Script {
         address keeperRegistryAddress = 0x80C55e674a34FfE730B0357E16e8852B19573f7C;
         uint256 linkAmount = 5 ether;
 
+        address owner = 0xF2EcFb4b7A57986B5f2432f507FF2432B8057d04;
+
         // Start broadcasting the transaction
         vm.startBroadcast();
 
         MultiTokenKeeperFactory multiTokenKeeperFactory = new MultiTokenKeeperFactory(
             routerAddress, usdt, aggregatorManager, keeperRegistryAddress, linkTokenAddress, linkAmount
         );
-        Token(linkTokenAddress).approve(address(multiTokenKeeperFactory), 10000 ether);
+        Token(linkTokenAddress).transfer(address(multiTokenKeeperFactory), 6 ether);
 
-        multiTokenKeeperFactory.createAndRegisterMultiTokenKeeper();
+        multiTokenKeeperFactory.createAndRegisterMultiTokenKeeper(owner);
 
-        address keeper = multiTokenKeeperFactory.getMultiTokenKeeper(msg.sender);
+        address keeper = multiTokenKeeperFactory.getMultiTokenKeeper(owner);
 
              // Mint tokens to the MultiTokenKeeper contract
         Token tokenA = Token(usdt);
