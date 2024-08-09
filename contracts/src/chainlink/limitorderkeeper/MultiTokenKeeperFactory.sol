@@ -49,8 +49,8 @@ contract MultiTokenKeeperFactory {
         linkAmount = _linkAmount;
     }
 
-    function createAndRegisterMultiTokenKeeper() external returns (address multiTokenKeeperAddress, uint256 upkeepId) {
-        require(multiTokenKeeperByOwner[msg.sender] == address(0), "MultiTokenKeeper already exists for this owner");
+    function createAndRegisterMultiTokenKeeper(address owner) external returns (address multiTokenKeeperAddress, uint256 upkeepId) {
+        require(multiTokenKeeperByOwner[owner] == address(0), "MultiTokenKeeper already exists for this owner");
 
         // Deploy a new MultiTokenKeeper contract
         MultiTokenKeeper multiTokenKeeper = new MultiTokenKeeper(uniswapRouter, usdtAddress, aggregatorManager);
@@ -58,7 +58,7 @@ contract MultiTokenKeeperFactory {
 
         // Approve the KeeperRegistry to spend LINK tokens
         LinkTokenInterface linkToken = LinkTokenInterface(linkTokenAddress);
-        require(linkToken.transferFrom(msg.sender, address(this), linkAmount), "LINK transfer failed");
+        // require(linkToken.transferFrom(msg.sender, address(this), linkAmount), "LINK transfer failed");
         linkToken.approve(keeperRegistryAddress, linkAmount);
 
         // Register the MultiTokenKeeper contract with the KeeperRegistry
@@ -68,7 +68,7 @@ contract MultiTokenKeeperFactory {
             encryptedEmail: "",
             upkeepContract: multiTokenKeeperAddress,
             gasLimit: 500000,
-            adminAddress: msg.sender,
+            adminAddress: owner,
             triggerType: 0, // Example trigger type, adjust according to your use case
             checkData: "",
             triggerConfig: "",
@@ -78,9 +78,9 @@ contract MultiTokenKeeperFactory {
         upkeepId = keeperRegistry.registerUpkeep(params);
 
         // Store the newly created MultiTokenKeeper contract address by owner
-        multiTokenKeeperByOwner[msg.sender] = multiTokenKeeperAddress;
+        multiTokenKeeperByOwner[owner] = multiTokenKeeperAddress;
 
-        emit MultiTokenKeeperCreated(msg.sender, multiTokenKeeperAddress, upkeepId);
+        emit MultiTokenKeeperCreated(owner, multiTokenKeeperAddress, upkeepId);
     }
 
     function getMultiTokenKeeper(address owner) external view returns (address) {

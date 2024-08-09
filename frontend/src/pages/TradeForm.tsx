@@ -23,6 +23,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { createClient } from "../config/helpers";
 import { getBalance } from "../../contracts/erc20";
+import { createMultiTokenKeeper, getMultiTokenKeeper } from "../../contracts/multiTokenKeeperFactory";
+import { addOrderOnMultiKeeper, getOrderManagerAddress } from "../../contracts/multiTokenKeeper"
+import { getActiveOrders, getFulfilledOrders } from "../../contracts/orderManager"
 import { BigNumber } from "ethers";
 
 const TradeForm: React.FC = () => {
@@ -38,14 +41,16 @@ const TradeForm: React.FC = () => {
   const [balance, setBalance] = useState<number | null>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [multiKeeperAddress, setMultiKeeperAddress] = useState("");
 
   const { smartAccount, loading: walletLoading } = useSelector((state: RootState) => state.wallet);
 
   //fetching token balance
   useEffect(() => {
     if (chainName && tokenName) {
-      debugger;
       fetchTokenBalance(chainName, tokenName).then(setBalance);
+      fetchMultiTokenKeeper(chainName)
+
     }
   }, [chainName, tokenName]);
 
@@ -58,14 +63,14 @@ const TradeForm: React.FC = () => {
 
   const tokenOptions = chainName
     ? Object.keys(tokensWithNetwork[chainName].tokens)
-        .filter((token) => token !== "usdt")
-        .map((tokenKey) => {
-          const token: Token = tokensWithNetwork[chainName].tokens[tokenKey];
-          return {
-            value: tokenKey,
-            label: token.name,
-          };
-        })
+      .filter((token) => token !== "usdt")
+      .map((tokenKey) => {
+        const token: Token = tokensWithNetwork[chainName].tokens[tokenKey];
+        return {
+          value: tokenKey,
+          label: token.name,
+        };
+      })
     : [];
 
   // const triggerTokenOptions = chainName
@@ -100,7 +105,7 @@ const TradeForm: React.FC = () => {
 
     if (!smartAccount) return;
 
-    const contractAddress = tokensWithNetwork[network]?.tokens[token]?.address;
+    const contractAddress = action === "buy" ? tokensWithNetwork[network]?.tokens['usdt']?.address : tokensWithNetwork[network]?.tokens[token]?.address;
     const balance = await getBalance({
       accountAddress: smartAccount.address,
       chain: tokensWithNetwork[chainName].chain,
@@ -113,6 +118,61 @@ const TradeForm: React.FC = () => {
       .toNumber();
     return flattenedBalance;
   };
+
+  const fetchMultiTokenKeeper = async (network: string) => {
+    const client = createClient();
+
+    if (!smartAccount) return;
+
+    let address: string = await getMultiTokenKeeper({
+      ownerAddress: smartAccount.address,
+      chain: tokensWithNetwork[chainName].chain,
+      client,
+      contractAddress: "0x163818e49ccc4909ed70649806153020354b843b"
+    })
+    console.log(address)
+
+    if (address.toLocaleLowerCase()
+      === "0x0000000000000000000000000000000000000000".toLowerCase()) {
+      // create keeper if no keeper created for user
+      await createMultiTokenKeeper({
+        smartAccount, client, chain: tokensWithNetwork[chainName].chain,
+        contractAddress: "0x163818e49ccc4909ed70649806153020354b843b"
+      })
+    }
+
+    address = await getMultiTokenKeeper({
+      ownerAddress: smartAccount.address,
+      chain: tokensWithNetwork[chainName].chain,
+      client,
+      contractAddress: "0x163818e49ccc4909ed70649806153020354b843b"
+    })
+
+    setMultiKeeperAddress(address);
+
+    const orderManagerAddress = await getOrderManagerAddress({
+      chain: tokensWithNetwork[chainName].chain,
+      client,
+      contractAddress: address
+    })
+
+    // active ORders
+    const activeOrders = await getActiveOrders({
+      chain: tokensWithNetwork[chainName].chain,
+      client,
+      contractAddress: orderManagerAddress
+    })
+    console.log(activeOrders)
+
+    // fullfilled ORders
+    const fullfilledOrders = await getFulfilledOrders({
+      chain: tokensWithNetwork[chainName].chain,
+      client,
+      contractAddress: orderManagerAddress
+    })
+    console.log(fullfilledOrders)
+  }
+
 
   const handleAction = () => {
     if (validateFields()) {
@@ -136,6 +196,17 @@ const TradeForm: React.FC = () => {
     await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulated delay
 
     if (action === "buy") {
+      const client = createClient();
+
+      const transactionHash = await addOrderOnMultiKeeper({
+        smartAccount, client, chain:
+          tokensWithNetwork[chainName].chain,
+        contractAddress: multiKeeperAddress
+      })
+
+      console.log(transactionHash)
+
+      // TODO open model of transaction success and give option to redirect to base
       console.log("Buying");
     } else {
       console.log("Selling");
