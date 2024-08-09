@@ -16,7 +16,7 @@ export interface Network {
   };
   tokens: Record<string, Token>;
   logoURI?: string;
-  chain:any
+  chain: any;
 }
 
 export interface TokensWithNetwork {
@@ -61,7 +61,7 @@ export const tokensWithNetwork: TokensWithNetwork = {
       },
     },
     logoURI: "https://cdn.worldvectorlogo.com/logos/ethereum-eth.svg",
-    chain:sepolia
+    chain: sepolia,
   },
   base: {
     priceFeed: {
@@ -75,25 +75,25 @@ export const tokensWithNetwork: TokensWithNetwork = {
         decimals: 18,
         symbol: "USDT",
         logoURI: "https://cryptologos.cc/logos/tether-usdt-logo.png?v=032",
-        address: "",
+        address: "0xe7A527BD98566FDc99EA72bf16c6cc4eFe3606a0",
       },
       btc: {
         name: "BTC",
         decimals: 18,
         symbol: "USDT",
         logoURI: "https://cryptologos.cc/logos/tether-usdt-logo.png?v=032",
-        address: "",
+        address: "0x981e90dE16a26f6A44e39406dD218490D7789e0D",
       },
       eth: {
         name: "ETH",
         decimals: 18,
         symbol: "USDT",
         logoURI: "https://cryptologos.cc/logos/tether-usdt-logo.png?v=032",
-        address: "",
+        address: "0x926B66bCaB5c283023045EBc84Fd215c31911f3B",
       },
     },
     logoURI: "https://altcoinsbox.com/wp-content/uploads/2023/02/base-logo-in-blue-600x600.webp",
-    chain:baseSepolia
+    chain: baseSepolia,
   },
   optimism: {
     priceFeed: {
@@ -125,6 +125,6 @@ export const tokensWithNetwork: TokensWithNetwork = {
       },
     },
     logoURI: "https://res.coinpaper.com/coinpaper/optimism_logo_6eba6a0c5c.png",
-    chain:optimismSepolia
+    chain: optimismSepolia,
   },
 };

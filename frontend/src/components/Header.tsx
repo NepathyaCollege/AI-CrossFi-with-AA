@@ -14,6 +14,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import Menu from "./Menu";
 import { GiArtificialHive } from "react-icons/gi";
+import { FaFirstOrder } from "react-icons/fa";
 
 const Header: React.FC = () => {
   const location = useLocation();
@@ -42,7 +43,14 @@ const Header: React.FC = () => {
                 <IonItem className="no-border-bottom pt-3">
                   <IonText className="mx-auto font-semibold text-2xl ion-align-items-center gap-2 flex">
                     <IonIcon icon={swapVerticalOutline} className="text-3xl" />
-                    Swap
+                    Trade
+                  </IonText>
+                </IonItem>
+              ) : path === "/orders" ? (
+                <IonItem className="no-border-bottom pt-3">
+                  <IonText className="mx-auto font-semibold text-2xl ion-align-items-center gap-2 flex">
+                    <FaFirstOrder className="text-3xl" />
+                    Orders
                   </IonText>
                 </IonItem>
               ) : path === "/transactionList" ? (
