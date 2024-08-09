@@ -7,7 +7,8 @@ export default {
         primary: "#c4ff21", //  primary color
         secondary: "#0E55A4", //  secondary color
         background: {
-          primary: "#000000", // Primary background color
+          // primary: "#000000", // Primary background color
+          primary: "#080A0B", // Primary background color new
           secondary: "#1C1C1E", // Secondary background color
           tertiary: "#2C2C2E", // Tertiary background color
         },
