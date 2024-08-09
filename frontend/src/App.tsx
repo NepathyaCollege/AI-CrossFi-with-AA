@@ -16,6 +16,7 @@ import Home from "./pages/Home";
 import TradeForm from "./pages/TradeForm";
 import Transaction from "./pages/Transaction";
 import TransactionList from "./pages/TransactionList";
+import Orders from "./pages/Order";
 
 const App: React.FC = () => {
   const history = useHistory();
@@ -43,6 +44,7 @@ const App: React.FC = () => {
         <AuthenticatedRoute path="/transaction" exact component={Transaction} />
         <AuthenticatedRoute path="/ai" exact component={ArtiicialIntelligence} />
         <AuthenticatedRoute path="/ai/chatbot" exact component={ChatBot} />
+        <AuthenticatedRoute path="/orders" exact component={Orders} />
       </Switch>
     </IonRouterOutlet>
   );

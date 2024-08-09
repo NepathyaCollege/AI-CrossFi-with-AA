@@ -25,34 +25,29 @@ import { createClient } from "../config/helpers";
 import { getBalance } from "../../contracts/erc20";
 import { BigNumber } from "ethers";
 
-// TODO: (Replace with actual API call)
-// const fetchTokenBalance = (network: string, token: string) => {
-//   return new Promise<number>((resolve) => {
-//     setTimeout(() => resolve(Math.random() * 1000), 1000);
-//   });
-// };
-
 const TradeForm: React.FC = () => {
-  const [chainName, setChainName] = useState<string>("sepolia");
+  const [chainName, setChainName] = useState<string>("base");
   const [tokenName, setTokenName] = useState<string>("");
   const [triggerToken, setTriggerToken] = useState<string>("");
-  const { balance: walletBalance } = useSelector((state: RootState) => state.wallet);
+  // const { balance: walletBalance } = useSelector((state: RootState) => state.wallet);
   const [targetPrice, setTargetPrice] = useState<string>("");
   const [amountUSD, setAmountUSD] = useState<string>("");
   const [action, setAction] = useState<"buy" | "sell">("buy");
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>("");
-  const [balance, setBalance] = useState<number | null>(walletBalance | 0);
+  const [balance, setBalance] = useState<number | null>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { smartAccount } = useSelector((state: RootState) => state.wallet);
+  const { smartAccount, loading: walletLoading } = useSelector((state: RootState) => state.wallet);
 
-  // useEffect(() => {
-  //   if (chainName && tokenName) {
-  //     fetchTokenBalance(chainName, tokenName).then(setBalance);
-  //   }
-  // }, [chainName, tokenName]);
+  //fetching token balance
+  useEffect(() => {
+    if (chainName && tokenName) {
+      debugger;
+      fetchTokenBalance(chainName, tokenName).then(setBalance);
+    }
+  }, [chainName, tokenName]);
 
   const handleNetworkChange = (event: any) => {
     const selectedNetwork = event.detail.value as string;
@@ -62,26 +57,29 @@ const TradeForm: React.FC = () => {
   };
 
   const tokenOptions = chainName
-    ? Object.keys(tokensWithNetwork[chainName].tokens).map((tokenKey) => {
-      const token: Token = tokensWithNetwork[chainName].tokens[tokenKey];
-      return {
-        value: tokenKey,
-        label: token.name,
-      };
-    })
+    ? Object.keys(tokensWithNetwork[chainName].tokens)
+        .filter((token) => token !== "usdt")
+        .map((tokenKey) => {
+          const token: Token = tokensWithNetwork[chainName].tokens[tokenKey];
+          return {
+            value: tokenKey,
+            label: token.name,
+          };
+        })
     : [];
 
-  const triggerTokenOptions = chainName
-    ? Object.keys(tokensWithNetwork[chainName].tokens)
-      .filter((tokenKey) => tokenKey !== tokenName)
-      .map((tokenKey) => {
-        const token: Token = tokensWithNetwork[chainName].tokens[tokenKey];
-        return {
-          value: tokenKey,
-          label: token.name,
-        };
-      })
-    : [];
+  // const triggerTokenOptions = chainName
+  //   ? Object.keys(tokensWithNetwork[chainName].tokens)
+  //       .filter((token) => token !== "usdt")
+  //       .filter((tokenKey) => tokenKey !== tokenName)
+  //       .map((tokenKey) => {
+  //         const token: Token = tokensWithNetwork[chainName].tokens[tokenKey];
+  //         return {
+  //           value: tokenKey,
+  //           label: token.name,
+  //         };
+  //       })
+  //   : [];
 
   const validateFields = () => {
     if (!tokenName || !targetPrice || !amountUSD) {
@@ -97,19 +95,24 @@ const TradeForm: React.FC = () => {
     return true;
   };
 
-  // TODO: (Replace with actual API call)
   const fetchTokenBalance = async (network: string, token: string) => {
     const client = createClient();
-    debugger;
-    if (!smartAccount)
-      return
-    const balance = await getBalance({ accountAddress: smartAccount.address, chain: tokensWithNetwork[chainName].chain, client, contractAddress: "0x89e7fdbd1ea30300719357a1584c28ee34bcb4be" });
-    debugger;
 
-    const flattenedBalance = BigNumber.from(balance).div(BigNumber.from("1000000000000000000")).toNumber();
+    if (!smartAccount) return;
+
+    const contractAddress = tokensWithNetwork[network]?.tokens[token]?.address;
+    const balance = await getBalance({
+      accountAddress: smartAccount.address,
+      chain: tokensWithNetwork[chainName].chain,
+      client,
+      contractAddress,
+    });
+
+    const flattenedBalance = BigNumber.from(balance)
+      .div(BigNumber.from("1000000000000000000"))
+      .toNumber();
     return flattenedBalance;
   };
-
 
   const handleAction = () => {
     if (validateFields()) {
@@ -127,6 +130,7 @@ const TradeForm: React.FC = () => {
   };
 
   const confirmAction = async () => {
+    setShowAlert(false);
     setLoading(true);
     // ! Simulated (remove this later)
     await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulated delay
@@ -143,15 +147,18 @@ const TradeForm: React.FC = () => {
     setShowAlert(false);
   };
 
+  if (walletLoading) {
+    return <IonLoading isOpen={walletLoading} message="Connecting to the wallet" duration={0} />;
+  }
+
   return (
     <IonContent className="">
       <div className="mt-5 w-72 mx-auto">
         <ActionSegment action={action} onChange={(newAction) => setAction(newAction)} />
       </div>
-
       <div className="ion-padding ion-margin-top ">
         {/* Network Selection */}
-        <div className="flex ion-ion-margin-vertical">
+        <div className="flex ion-margin-vertical ">
           {chainName && (
             <div className="flex w-1/2 items-center space-x-4 ml-4">
               <IonImg src={tokensWithNetwork[chainName].logoURI} className="w-16 h-16" />
@@ -161,7 +168,7 @@ const TradeForm: React.FC = () => {
             </div>
           )}
 
-          <IonItem className="ion-margin">
+          {/* <IonItem className="ion-margin">
             <IonSelect
               interface="popover"
               placeholder="Select Network"
@@ -174,7 +181,7 @@ const TradeForm: React.FC = () => {
                 </IonSelectOption>
               ))}
             </IonSelect>
-          </IonItem>
+          </IonItem> */}
         </div>
 
         {/* Trigger Token Selection */}
@@ -194,32 +201,17 @@ const TradeForm: React.FC = () => {
           </IonSelect>
         </IonItem>
 
-        {/* Display Balance */}
-        {
-          <IonItem className=" ion-margin-horizontal no-border-bottom">
-            <IonIcon
-              icon={wallet}
-              size="large"
-              color="primary"
-              className="ion-margin-end"
-            ></IonIcon>
-            <IonLabel>Balance : </IonLabel>
-            <IonLabel className="text-lg font-bold">
-              {balance !== null ? `${balance.toFixed(2)}` : <IonSpinner name="dots"></IonSpinner>}
-            </IonLabel>
-          </IonItem>
-        }
-
-        {/* Token To Buy Selection */}
+        {/* Token Selection */}
         <IonItem className="ion-margin">
-          <IonLabel>Token To Buy</IonLabel>
+          <IonLabel>{action === "buy" ? "Token To Buy" : "Token To Sell"}</IonLabel>
+
           <IonSelect
             placeholder="Select"
             value={triggerToken}
             interface="popover"
             onIonChange={(e) => setTriggerToken(e.detail.value!)}
           >
-            {triggerTokenOptions.map((option) => (
+            {tokenOptions.map((option) => (
               <IonSelectOption key={option.value} value={option.value}>
                 {option.label}
               </IonSelectOption>
@@ -251,7 +243,6 @@ const TradeForm: React.FC = () => {
           />
         </IonItem>
       </div>
-
       {/* Action Button */}
       <IonRow className="mx-5 mt-4">
         <IonCol>
@@ -264,6 +255,15 @@ const TradeForm: React.FC = () => {
             {action === "buy" ? "Buy" : "Sell"}
           </IonButton>
         </IonCol>
+      </IonRow>
+
+      {/* Display Balance */}
+      <IonRow className=" ion-margin-horizontal flex justify-center items-center mt-5 w-5/6 no-border-bottom">
+        <IonIcon icon={wallet} size="large" color="primary" className="ion-margin-end"></IonIcon>
+        <IonLabel>Balance : </IonLabel>
+        <IonLabel className="text-lg pl-3 font-bold">
+          {balance !== null ? `${balance.toFixed(2)}$` : "xxxx"}
+        </IonLabel>
       </IonRow>
 
       {/* Toast Notification */}
@@ -292,7 +292,6 @@ const TradeForm: React.FC = () => {
           },
         ]}
       />
-
       {/* Loader */}
       <IonLoading isOpen={loading} message={`Performing ${action} transaction...`} duration={0} />
     </IonContent>

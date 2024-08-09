@@ -22,6 +22,8 @@ import {
   swapVerticalOutline,
 } from "ionicons/icons";
 import { clearTokens } from "../config/authTokens";
+import { FaFirstOrder } from "react-icons/fa";
+
 import { GiArtificialHive } from "react-icons/gi";
 
 const menuItems = [
@@ -41,23 +43,19 @@ const menuItems = [
     icon: <IonIcon icon={swapVerticalOutline} />,
   },
   {
-    label: "TransactionList",
+    label: "Transactions",
     link: "/transactionList",
     icon: <IonIcon icon={cashOutline} />,
   },
-  // {
-  //   label: "Transaction",
-  //   link: "/transaction",
-  //   icon: <IonIcon icon={cashOutline} />,
-  // },
+  {
+    label: "Orders",
+    link: "/orders",
+    icon: <FaFirstOrder />,
+  },
+
   {
     label: "Our AI",
     link: "/ai",
-    icon: <GiArtificialHive className="text-2xl" />,
-  },
-  {
-    label: "Chatbot",
-    link: "/ai/chatbot",
     icon: <GiArtificialHive className="text-2xl" />,
   },
 ];
