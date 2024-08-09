@@ -2,14 +2,13 @@ import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import successHandler from '../../common/successHandler';
 import errorHandler from '../../common/errorHandler';
 import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb';
-import { verifyTokenEndpoint } from './tokenVerification';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
 
-export const storeTransaction = verifyTokenEndpoint(async (event) => {
+export const storeTransaction = async (event) => {
   const { transactionHash } = event.pathParameters;
-  const { email } = event.decoded;
+  const { principalId: email } = event.requestContext.authorizer;
 
   if (!transactionHash) {
     return errorHandler({ message: 'Missing transaction hash' }, 400);
@@ -31,11 +30,11 @@ export const storeTransaction = verifyTokenEndpoint(async (event) => {
     console.error('DynamoDB error:', error);
     return errorHandler({ message: 'Internal Server Error' }, 500);
   }
-});
+};
 
-export const getTransactions = verifyTokenEndpoint(async (event) => {
+export const getTransactions = async (event) => {
   const { limit = 10, lastEvaluatedKey } = event.queryStringParameters || {};
-  const { email } = event.decoded;
+  const { principalId } = event.requestContext.authorizer;
 
   // Parse and sanitize limit
   const parsedLimit = Math.min(parseInt(limit, 10), 50);
@@ -43,7 +42,7 @@ export const getTransactions = verifyTokenEndpoint(async (event) => {
     TableName: 'TransactionHistory',
     KeyConditionExpression: 'email = :email',
     ExpressionAttributeValues: {
-      ':email': { S: email },
+      ':email': { S: principalId },
     },
     Limit: parsedLimit,
     ExclusiveStartKey: lastEvaluatedKey
@@ -76,4 +75,4 @@ export const getTransactions = verifyTokenEndpoint(async (event) => {
     console.error('DynamoDB error:', error);
     return errorHandler({ message: 'Internal Server Error' }, 500);
   }
-});
+};
