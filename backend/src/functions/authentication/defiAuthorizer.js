@@ -40,7 +40,7 @@ export const handler = async (event) => {
 
   // Return the policy document
   return {
-    principalId: userPayload?.id || 'unknown',
+    principalId: userPayload?.email || 'unknown',
     policyDocument,
   };
 };
