@@ -21,6 +21,9 @@ import ActionSegment from "../components/form/ActionSegment";
 import { Token, tokensWithNetwork } from "../config/tokensList";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import { createClient } from "../config/helpers";
+import { getBalance } from "../../contracts/erc20";
+import { BigNumber } from "ethers";
 
 // TODO: (Replace with actual API call)
 // const fetchTokenBalance = (network: string, token: string) => {
@@ -43,6 +46,8 @@ const TradeForm: React.FC = () => {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const { smartAccount } = useSelector((state: RootState) => state.wallet);
+
   // useEffect(() => {
   //   if (chainName && tokenName) {
   //     fetchTokenBalance(chainName, tokenName).then(setBalance);
@@ -58,24 +63,24 @@ const TradeForm: React.FC = () => {
 
   const tokenOptions = chainName
     ? Object.keys(tokensWithNetwork[chainName].tokens).map((tokenKey) => {
+      const token: Token = tokensWithNetwork[chainName].tokens[tokenKey];
+      return {
+        value: tokenKey,
+        label: token.name,
+      };
+    })
+    : [];
+
+  const triggerTokenOptions = chainName
+    ? Object.keys(tokensWithNetwork[chainName].tokens)
+      .filter((tokenKey) => tokenKey !== tokenName)
+      .map((tokenKey) => {
         const token: Token = tokensWithNetwork[chainName].tokens[tokenKey];
         return {
           value: tokenKey,
           label: token.name,
         };
       })
-    : [];
-
-  const triggerTokenOptions = chainName
-    ? Object.keys(tokensWithNetwork[chainName].tokens)
-        .filter((tokenKey) => tokenKey !== tokenName)
-        .map((tokenKey) => {
-          const token: Token = tokensWithNetwork[chainName].tokens[tokenKey];
-          return {
-            value: tokenKey,
-            label: token.name,
-          };
-        })
     : [];
 
   const validateFields = () => {
@@ -91,6 +96,20 @@ const TradeForm: React.FC = () => {
     }
     return true;
   };
+
+  // TODO: (Replace with actual API call)
+  const fetchTokenBalance = async (network: string, token: string) => {
+    const client = createClient();
+    debugger;
+    if (!smartAccount)
+      return
+    const balance = await getBalance({ accountAddress: smartAccount.address, chain: tokensWithNetwork[chainName].chain, client, contractAddress: "0x89e7fdbd1ea30300719357a1584c28ee34bcb4be" });
+    debugger;
+
+    const flattenedBalance = BigNumber.from(balance).div(BigNumber.from("1000000000000000000")).toNumber();
+    return flattenedBalance;
+  };
+
 
   const handleAction = () => {
     if (validateFields()) {
