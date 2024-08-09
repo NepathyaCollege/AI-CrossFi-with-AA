@@ -1,6 +1,7 @@
 import { tokens } from "../config/chains";
 import { ThirdwebClient, createThirdwebClient } from "thirdweb";
 import { CLIENT_ID } from "./thirdweb";
+import { tokensWithNetwork } from "./tokensList";
 
 export const getTokenOptions = () => {
   return tokens.flatMap((token) =>
@@ -92,4 +93,21 @@ export function formatTimestamp(timestamp: string): string {
     timeZoneName: "short",
     timeZone: "UTC",
   }).format(date);
+}
+
+// Function to get token details by address
+export function getTokenDetailsByAddress(
+  address: string
+): { name: string; logoURI: string } | null {
+  for (const network of Object.values(tokensWithNetwork)) {
+    for (const token of Object.values(network.tokens)) {
+      if (token.address === address) {
+        return {
+          name: token.name,
+          logoURI: token.logoURI,
+        };
+      }
+    }
+  }
+  return null;
 }

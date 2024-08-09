@@ -27,7 +27,7 @@ const Wallet: React.FC = () => {
   };
 
   return (
-    <IonRow className="ion-align-items-center my-6 rounded-lg bg-background-secondary px-2 py-4 text-[17px]">
+    <IonRow className="ion-align-items-center my-6 rounded-lg bg-background-secondary shadow-md shadow-gray-900 px-2 py-4 text-[17px]">
       <IonGrid>
         {/* wallet address balance and icon */}
         <IonRow>
