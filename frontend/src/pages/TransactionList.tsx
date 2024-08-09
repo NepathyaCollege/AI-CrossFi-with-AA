@@ -51,7 +51,7 @@ const TransactionList: React.FC = () => {
           transactions.map((transaction, index) => (
             <IonRow
               key={index}
-              className="ion-margin-top text-sm bg-background-secondary rounded-md px-4 py-4 shadow-md shadow-black"
+              className="ion-margin-top text-sm bg-background-secondary rounded-md px-4 py-4 shadow-md"
             >
               <IonGrid>
                 <IonRow className="ion-align-items-center gap-3">
@@ -61,7 +61,7 @@ const TransactionList: React.FC = () => {
 
                   <IonCol>
                     <IonGrid>
-                      <IonRow className="ion-align1-items-center gap-2 text-gray-200 text-base ">
+                      <IonRow className="ion-align1-items-center gap-2 text-gray-300 tracking-wider font-medium text-base ">
                         {formatAddress(transaction?.transactionHash, 22)}
                       </IonRow>
                       <IonRow className="text-text-textfield2">
