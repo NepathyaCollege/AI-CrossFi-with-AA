@@ -14,22 +14,6 @@ import { createClient } from "../config/helpers";
 const Home: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { smartAccount } = useSelector((state: RootState) => state.wallet);
-  useEffect(() => {
-    dispatch(connectWallet());
-
-    const fetchBalance = async () => {
-      // if (smartAccount?.address) {
-      //   let a = await getBalance({
-      //     accountAddress: smartAccount?.address,
-      //     client: createClient(),
-      //     contractAddress: "safasfa",
-      //     chain: baseSepolia,
-      //   });
-      // }
-    };
-    console.log(smartAccount?.address);
-    fetchBalance();
-  }, [smartAccount?.address]);
 
   return (
     <IonContent className="ion-padding">
