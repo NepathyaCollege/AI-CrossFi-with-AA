@@ -25,26 +25,35 @@ contract DeployMultiTokenKeeperFactory is Script {
         // Start broadcasting the transaction
         vm.startBroadcast();
 
-        MultiTokenKeeperFactory multiTokenKeeperFactory = new MultiTokenKeeperFactory(
-            routerAddress, usdt, aggregatorManager, keeperRegistryAddress, linkTokenAddress, linkAmount
-        );
-        Token(linkTokenAddress).transfer(address(multiTokenKeeperFactory), 6 ether);
+        // MultiTokenKeeperFactory multiTokenKeeperFactory = new MultiTokenKeeperFactory(
+        //     routerAddress, usdt, aggregatorManager, keeperRegistryAddress, linkTokenAddress, linkAmount
+        // );
 
-        // multiTokenKeeperFactory.createAndRegisterMultiTokenKeeper(owner);
+        // 0x3a1c99A4Ecd699C4675F71Ff018EcF70E57A8Dd9
 
-        // address keeper = multiTokenKeeperFactory.getMultiTokenKeeper(owner);
+         MultiTokenKeeperFactory multiTokenKeeperFactory = MultiTokenKeeperFactory(0x3a1c99A4Ecd699C4675F71Ff018EcF70E57A8Dd9);
+        // new MultiTokenKeeperFactory(
+        //     routerAddress, usdt, aggregatorManager, keeperRegistryAddress, linkTokenAddress, linkAmount
+        // );
+        // Token(linkTokenAddress).transfer(address(multiTokenKeeperFactory), 3 ether);
+
+        // multiTokenKeeperFactory.createAndRegisterMultiTokenKeeper(msg.sender);
+
+        address keeper = multiTokenKeeperFactory.getMultiTokenKeeper(msg.sender);
 
         //      // Mint tokens to the MultiTokenKeeper contract
-        // Token tokenA = Token(usdt);
-        // tokenA.mint(address(keeper), 10000 ether);
+        Token tokenA = Token(usdt);
+        tokenA.mint(msg.sender, 10000 ether);
 
-        // MultiTokenKeeper(keeper).addOrder(
-        //     0x0f5C50184EF3ADF2581fd115A0eB4f3cC7F296A1,
-        //     0x0FB99723Aee6f420beAD13e6bBB79b7E6F034298,
-        //     OrderManager.OrderType.Buy,
-        //     0,
-        //     100 ether
-        // );
+        tokenA.approve(keeper,100000000 ether);
+
+        MultiTokenKeeper(keeper).addOrder(
+            0x0f5C50184EF3ADF2581fd115A0eB4f3cC7F296A1,
+            0x0FB99723Aee6f420beAD13e6bBB79b7E6F034298,
+            OrderManager.OrderType.Buy,
+            6139924380046,
+            100 ether
+        );
 
         // Deploy the contract
         // nepathyaPool = NepathyaPool(0x20Fa0Fc715121F50ffe229E0DB1504543d04cEA3); //new NepathyaPool(routerAddress, linkTokenAddress, tokenAddress);
