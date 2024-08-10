@@ -1,16 +1,9 @@
-export const CHECK_EMAIL_URL =
-  "https://0tvur9zmhh.execute-api.us-east-1.amazonaws.com/dev/checkEmail";
+const BASE_API_URL = "https://api.nepathyacollege.com/ai";
 
-export const SIGNUP_URL = "https://0tvur9zmhh.execute-api.us-east-1.amazonaws.com/dev/signup";
-export const EMAIL_VERIFICATION_URL =
-  "https://0tvur9zmhh.execute-api.us-east-1.amazonaws.com/dev/signup";
-
-export const VERIFY_OTP = "https://0tvur9zmhh.execute-api.us-east-1.amazonaws.com/dev/verifyOTP";
-
-export const CHECK_PASSWORD_URL =
-  "https://0tvur9zmhh.execute-api.us-east-1.amazonaws.com/dev/checkPassword";
-
-export const CHECK_PASSWORD_URL1 =
-  "https://0tvur9zmhh.execute-api.us-east-1.amazonaws.com/dev/checkPassword";
-
-export const FETCH_TRANSACTION_URL = "https://api.nepathyacollege.com/ai/transaction";
+export const CHECK_EMAIL_URL = `${BASE_API_URL}/checkEmail`;
+export const SIGNUP_URL = `${BASE_API_URL}/signup`;
+export const EMAIL_VERIFICATION_URL = `${BASE_API_URL}/signup`;  // Assuming this should be the same as SIGNUP_URL
+export const VERIFY_OTP = `${BASE_API_URL}/verifyOTP`;
+export const CHECK_PASSWORD_URL = `${BASE_API_URL}/checkPassword`;
+export const FETCH_TRANSACTION_URL = `${BASE_API_URL}/transaction`;
+export const GET_THIRD_WEB_KEY = `${BASE_API_URL}/getThirdWebKey`;

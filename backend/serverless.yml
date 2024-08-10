@@ -99,3 +99,12 @@ functions:
           cors: true
           authorizer:
             name: defiAuthorizer
+  recreateVerificationToken:
+    handler: src/functions/authentication/recreateVerificationHandler.handler
+    events:
+      - http:
+          path: /getThirdWebKey
+          method: get
+          cors: true
+          authorizer:
+            name: defiAuthorizer 
