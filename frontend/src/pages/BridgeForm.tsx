@@ -55,9 +55,9 @@ const MyForm: React.FC = () => {
   const [availableFromChains, setAvailableFromChains] = useState<string[]>([]);
   const [availableToChains, setAvailableToChains] = useState<string[]>([]);
 
-  useEffect(() => {
-    dispatch(connectWallet());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(connectWallet());
+  // }, [dispatch]);
 
   useEffect(() => {
     setAvailableFromChains(getAvailableChains(fromToken));

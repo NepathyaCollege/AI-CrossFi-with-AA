@@ -53,8 +53,9 @@ const ArtiicialIntelligence: React.FC = () => {
                   </IonText>
                 </IonCardTitle>
                 <IonCardSubtitle className=" text-text-textfield2 font-medium  text-justify text-sm">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat, deleniti eum,
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat, deleniti eum,
+                  nteract with our AI-powered chatbot for instant support and answers to your
+                  questions. Available 24/7 to assist with various queries and provide personalized
+                  responses.
                 </IonCardSubtitle>
               </IonCardHeader>
             </IonCard>
@@ -85,8 +86,9 @@ const ArtiicialIntelligence: React.FC = () => {
                   </IonText>
                 </IonCardTitle>
                 <IonCardSubtitle className=" text-text-textfield2 font-medium  text-justify text-sm">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat, deleniti eum,
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat, deleniti eum,
+                  Create stunning images with our AI image generator. Simply provide a prompt or
+                  description, and watch as it generates high-quality visuals tailored to your
+                  input.
                 </IonCardSubtitle>
               </IonCardHeader>
             </IonCard>

@@ -1,4 +1,6 @@
+import { IonInfiniteScrollCustomEvent } from "@ionic/core";
 import {
+  IonAlert,
   IonCol,
   IonContent,
   IonGrid,
@@ -7,8 +9,6 @@ import {
   IonInfiniteScrollContent,
   IonRow,
   IonText,
-  IonSpinner,
-  IonAlert,
 } from "@ionic/react";
 import { openOutline } from "ionicons/icons";
 import React, { useEffect } from "react";
@@ -16,7 +16,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { formatAddress, formatTimestamp } from "../config/helpers";
 import { AppDispatch, RootState } from "../store/store";
 import { fetchTransactions } from "../store/transaction/transactionThunk";
-import { IonInfiniteScrollCustomEvent } from "@ionic/core";
 
 const TransactionList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -29,6 +28,9 @@ const TransactionList: React.FC = () => {
     dispatch(fetchTransactions(nextPageToken));
   }, [dispatch]);
 
+  const handleRedirection = (transactionHash: string) => {
+    window.open(`https://ccip.chain.link/msg/${transactionHash}`, "_blank");
+  };
   const loadMoreTransaction = async (e: IonInfiniteScrollCustomEvent<void>) => {
     if (!nextPageToken) {
       e.target.disabled = true;
@@ -72,9 +74,9 @@ const TransactionList: React.FC = () => {
                   </IonCol>
 
                   <IonIcon
-                    onClick={() =>
-                      window.open(`https://ccip.chain.link/msg/${transaction?.transactionHash}`)
-                    }
+                    onClick={() => {
+                      handleRedirection(transaction?.transactionHash);
+                    }}
                     className="text-2xl cursor-pointer hover:text-blue-400"
                     icon={openOutline}
                   />
