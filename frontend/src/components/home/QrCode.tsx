@@ -106,21 +106,21 @@ const QrCode: React.FC<QrCodeProps> = ({ isOpenQrScanner, toggleQrScanner, smart
                   <IonRow className="ion-align-items-center gap-2">
                     <IonCol size="auto">
                       <IonImg
-                        className="w-7 h-7"
-                        src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=032"
-                      />
-                    </IonCol>
-                    <IonCol>USDC</IonCol>
-                  </IonRow>
-
-                  <IonRow className="ion-align-items-center gap-2">
-                    <IonCol size="auto">
-                      <IonImg
-                        className="w-7 h-7"
-                        src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=032"
+                        className="w-7 h-7 rounded-full overflow-hidden"
+                        src="https://altcoinsbox.com/wp-content/uploads/2023/02/base-logo-in-blue-600x600.webp"
                       />
                     </IonCol>
                     <IonCol>Base</IonCol>
+                  </IonRow>
+
+                  <IonRow className="ion-align-items-center gap-2 rounded-full overflow-hidden">
+                    <IonCol size="auto">
+                      <IonImg
+                        className="w-7 h-7"
+                        src="https://cdn.worldvectorlogo.com/logos/ethereum-eth.svg"
+                      />
+                    </IonCol>
+                    <IonCol>Sepolia</IonCol>
                   </IonRow>
 
                   <IonRow className="ion-align-items-center gap-2 mt-3">
