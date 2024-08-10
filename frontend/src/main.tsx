@@ -28,7 +28,7 @@ root.render(
   <React.Fragment>
     <Provider store={store}>
       <ThirdwebProvider>
-        <IonApp className="h-screen w-screen">
+        <IonApp className="h-screen  w-screen">
           <IonReactRouter>
             <App />
           </IonReactRouter>

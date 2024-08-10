@@ -1,5 +1,4 @@
 import {
-  IonAlert,
   IonButton,
   IonCol,
   IonContent,
@@ -12,21 +11,25 @@ import {
   IonRow,
   IonSelect,
   IonSelectOption,
-  IonSpinner,
   IonToast,
 } from "@ionic/react";
+import { ethers } from "ethers";
 import { wallet } from "ionicons/icons";
 import React, { useEffect, useState } from "react";
-import ActionSegment from "../components/form/ActionSegment";
-import { Token, tokensWithNetwork } from "../config/tokensList";
 import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
-import { createClient } from "../config/helpers";
 import { approveERC20, getBalance } from "../../contracts/erc20";
-import { createMultiTokenKeeper, getMultiTokenKeeper } from "../../contracts/multiTokenKeeperFactory";
-import { addOrderOnMultiKeeper, getOrderManagerAddress } from "../../contracts/multiTokenKeeper"
-import { getActiveOrders, getFulfilledOrders } from "../../contracts/orderManager"
-import { BigNumber, ethers } from "ethers";
+import { addOrderOnMultiKeeper, getOrderManagerAddress } from "../../contracts/multiTokenKeeper";
+import {
+  createMultiTokenKeeper,
+  getMultiTokenKeeper,
+} from "../../contracts/multiTokenKeeperFactory";
+import { getActiveOrders, getFulfilledOrders } from "../../contracts/orderManager";
+import ConfirmationModal from "../components/ConfirmationModal";
+import ActionSegment from "../components/form/ActionSegment";
+import { createClient } from "../config/helpers";
+import { Token, tokensWithNetwork } from "../config/tokensList";
+import { RootState } from "../store/store";
+import TransactionStatusModal from "../components/TransactionStatusModal";
 
 const TradeForm: React.FC = () => {
   const [chainName, setChainName] = useState<string>("base");
@@ -42,17 +45,18 @@ const TradeForm: React.FC = () => {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [multiKeeperAddress, setMultiKeeperAddress] = useState("");
+  const [transactionHash, setTransactionHash] = useState<string>("");
+  const [showTransactionModal, setShowTransactionModal] = useState<boolean>(false);
 
   const { smartAccount, loading: walletLoading } = useSelector((state: RootState) => state.wallet);
 
-  const multiTokenKeeperFactory = '0x05663175EB6b36eE039d89Dd9BF0454ece228935'
+  const multiTokenKeeperFactory = "0x05663175EB6b36eE039d89Dd9BF0454ece228935";
 
   //fetching token balance
   useEffect(() => {
     if (chainName && tokenName) {
       fetchTokenBalance(chainName, tokenName);
-      fetchMultiTokenKeeper(chainName)
-
+      fetchMultiTokenKeeper(chainName);
     }
   }, [chainName, tokenName, action]);
 
@@ -65,28 +69,15 @@ const TradeForm: React.FC = () => {
 
   const tokenOptions = chainName
     ? Object.keys(tokensWithNetwork[chainName].tokens)
-      .filter((token) => token !== "usdt")
-      .map((tokenKey) => {
-        const token: Token = tokensWithNetwork[chainName].tokens[tokenKey];
-        return {
-          value: tokenKey,
-          label: token.name,
-        };
-      })
+        .filter((token) => token !== "usdt")
+        .map((tokenKey) => {
+          const token: Token = tokensWithNetwork[chainName].tokens[tokenKey];
+          return {
+            value: tokenKey,
+            label: token.name,
+          };
+        })
     : [];
-
-  // const triggerTokenOptions = chainName
-  //   ? Object.keys(tokensWithNetwork[chainName].tokens)
-  //       .filter((token) => token !== "usdt")
-  //       .filter((tokenKey) => tokenKey !== tokenName)
-  //       .map((tokenKey) => {
-  //         const token: Token = tokensWithNetwork[chainName].tokens[tokenKey];
-  //         return {
-  //           value: tokenKey,
-  //           label: token.name,
-  //         };
-  //       })
-  //   : [];
 
   const validateFields = () => {
     if (!tokenName || !targetPrice || !amount) {
@@ -107,9 +98,11 @@ const TradeForm: React.FC = () => {
 
     if (!smartAccount) return;
 
-    const contractAddress = action === "buy" ? tokensWithNetwork[network]?.tokens['usdt']?.address : tokensWithNetwork[network]?.tokens[token]?.address;
+    const contractAddress =
+      action === "buy"
+        ? tokensWithNetwork[network]?.tokens["usdt"]?.address
+        : tokensWithNetwork[network]?.tokens[token]?.address;
 
-    debugger;
     const balance = await getBalance({
       accountAddress: smartAccount.address,
       chain: tokensWithNetwork[chainName].chain,
@@ -130,53 +123,55 @@ const TradeForm: React.FC = () => {
       ownerAddress: smartAccount.address,
       chain: tokensWithNetwork[chainName].chain,
       client,
-      contractAddress: multiTokenKeeperFactory
-    })
-    console.log(address)
+      contractAddress: multiTokenKeeperFactory,
+    });
+    console.log(address);
 
-    if (address.toLocaleLowerCase()
-      === "0x0000000000000000000000000000000000000000".toLowerCase()) {
+    if (
+      address.toLocaleLowerCase() === "0x0000000000000000000000000000000000000000".toLowerCase()
+    ) {
       // create keeper if no keeper created for user
       await createMultiTokenKeeper({
-        smartAccount, client, chain: tokensWithNetwork[chainName].chain,
-        contractAddress: multiTokenKeeperFactory
-      })
+        smartAccount,
+        client,
+        chain: tokensWithNetwork[chainName].chain,
+        contractAddress: multiTokenKeeperFactory,
+      });
     }
 
     address = await getMultiTokenKeeper({
       ownerAddress: smartAccount.address,
       chain: tokensWithNetwork[chainName].chain,
       client,
-      contractAddress: multiTokenKeeperFactory
-    })
+      contractAddress: multiTokenKeeperFactory,
+    });
 
     setMultiKeeperAddress(address);
 
-    console.log(`keeper address ${address}`)
+    console.log(`keeper address ${address}`);
 
     const orderManagerAddress = await getOrderManagerAddress({
       chain: tokensWithNetwork[chainName].chain,
       client,
-      contractAddress: address
-    })
+      contractAddress: address,
+    });
 
     // active ORders
     const activeOrders = await getActiveOrders({
       chain: tokensWithNetwork[chainName].chain,
       client,
-      contractAddress: orderManagerAddress
-    })
-    console.log(activeOrders)
+      contractAddress: orderManagerAddress,
+    });
+    console.log(activeOrders);
 
     // fullfilled ORders
     const fullfilledOrders = await getFulfilledOrders({
       chain: tokensWithNetwork[chainName].chain,
       client,
-      contractAddress: orderManagerAddress
-    })
-    console.log(fullfilledOrders)
-  }
-
+      contractAddress: orderManagerAddress,
+    });
+    console.log(fullfilledOrders);
+  };
 
   const handleAction = () => {
     if (validateFields()) {
@@ -196,41 +191,36 @@ const TradeForm: React.FC = () => {
   const confirmAction = async () => {
     setShowAlert(false);
     setLoading(true);
-    // ! Simulated (remove this later)
     const client = createClient();
 
-    // if(Number(amount)>)
+    let transactionHash = "";
 
     if (action === "buy") {
-
       const approveTransactionHash = await approveERC20({
         smartAccount,
         client,
         chain: tokensWithNetwork[chainName].chain,
-        contractAddress: tokensWithNetwork[chainName]?.tokens['usdt']?.address,
+        contractAddress: tokensWithNetwork[chainName]?.tokens["usdt"]?.address,
         spenderAddress: multiKeeperAddress,
         amount: "100000000000000000000000000000000000000000000000000000000000000",
-      })
+      });
 
       console.log(approveTransactionHash);
 
-      debugger;
-
-      const transactionHash = await addOrderOnMultiKeeper({
-        smartAccount: smartAccount as any, client, chain:
-          tokensWithNetwork[chainName].chain,
+      transactionHash = await addOrderOnMultiKeeper({
+        smartAccount: smartAccount as any,
+        client,
+        chain: tokensWithNetwork[chainName].chain,
         contractAddress: multiKeeperAddress,
         amount,
-        chainLinkAggregatorAddress: tokensWithNetwork[chainName]?.priceFeed['btc'],
+        chainLinkAggregatorAddress: tokensWithNetwork[chainName]?.priceFeed["btc"],
         orderType: 0,
         priceThreshold: Number(targetPrice),
-        tokenAddress: tokensWithNetwork[chainName]?.tokens[tokenName]?.address
-      })
+        tokenAddress: tokensWithNetwork[chainName]?.tokens[tokenName]?.address,
+      });
 
-      console.log(transactionHash)
-
-      // TODO open model of transaction success and give option to redirect to base
-      console.log("Buying");
+      console.log(transactionHash);
+      setShowTransactionModal(true);
     } else {
       const approveTransactionHash = await approveERC20({
         smartAccount,
@@ -239,35 +229,31 @@ const TradeForm: React.FC = () => {
         contractAddress: tokensWithNetwork[chainName]?.tokens[tokenName]?.address,
         spenderAddress: multiKeeperAddress,
         amount: "100000000000000000000000000000000000000000000000000000000000000",
-      })
+      });
 
       console.log(approveTransactionHash);
 
-      debugger;
-
-      const transactionHash = await addOrderOnMultiKeeper({
-        smartAccount: smartAccount as any, client, chain:
-          tokensWithNetwork[chainName].chain,
+      transactionHash = await addOrderOnMultiKeeper({
+        smartAccount: smartAccount as any,
+        client,
+        chain: tokensWithNetwork[chainName].chain,
         contractAddress: multiKeeperAddress,
         amount,
-        chainLinkAggregatorAddress: tokensWithNetwork[chainName]?.priceFeed['btc'],
+        chainLinkAggregatorAddress: tokensWithNetwork[chainName]?.priceFeed["btc"],
         orderType: 1,
         priceThreshold: Number(targetPrice),
-        tokenAddress: tokensWithNetwork[chainName]?.tokens[tokenName]?.address
-      })
+        tokenAddress: tokensWithNetwork[chainName]?.tokens[tokenName]?.address,
+      });
 
-      console.log(transactionHash)
+      console.log(transactionHash);
     }
 
-    setToastMessage(`${action.charAt(0).toUpperCase() + action.slice(1)} action performed`);
+    setToastMessage(`${action.charAt(0).toUpperCase() + action.slice(1)} order placed`);
     setShowToast(true);
     setLoading(false);
-    setShowAlert(false);
+    setTransactionHash(transactionHash);
+    setShowTransactionModal(true);
   };
-
-  if (walletLoading) {
-    return <IonLoading isOpen={walletLoading} message="Connecting to the wallet" duration={0} />;
-  }
 
   return (
     <IonContent className="">
@@ -285,21 +271,6 @@ const TradeForm: React.FC = () => {
               </IonLabel>
             </div>
           )}
-
-          {/* <IonItem className="ion-margin">
-            <IonSelect
-              interface="popover"
-              placeholder="Select Network"
-              value={chainName}
-              onIonChange={handleNetworkChange}
-            >
-              {Object.keys(tokensWithNetwork).map((networkKey) => (
-                <IonSelectOption key={networkKey} value={networkKey}>
-                  {networkKey.charAt(0).toUpperCase() + networkKey.slice(1)}
-                </IonSelectOption>
-              ))}
-            </IonSelect>
-          </IonItem> */}
         </div>
 
         {/* Trigger Token Selection */}
@@ -393,25 +364,30 @@ const TradeForm: React.FC = () => {
         position="bottom"
       />
 
-      {/* Confirmation Alert */}
-      <IonAlert
+      <ConfirmationModal
         isOpen={showAlert}
-        onDidDismiss={() => setShowAlert(false)}
-        header={"Confirm Action"}
-        message={`Are you sure you want to ${action} ${amount} ${triggerToken} worth of ${tokenOptions.find((option) => option.value === tokenName)?.label}?`}
-        buttons={[
-          {
-            text: "Cancel",
-            role: "cancel",
-          },
-          {
-            text: "Confirm",
-            handler: confirmAction,
-          },
-        ]}
+        onClose={() => setShowAlert(false)}
+        onConfirm={confirmAction}
+        action={action}
+        amount={amount}
+        triggerToken={triggerToken}
+        tokenName={tokenName}
+        targetPrice={targetPrice}
+        chainName={chainName}
       />
-      {/* Loader */}
-      <IonLoading isOpen={loading} message={`Performing ${action} transaction...`} duration={0} />
+
+      <TransactionStatusModal
+        isOpen={showTransactionModal}
+        onClose={() => setShowTransactionModal(false)}
+        transactionHash={transactionHash}
+      />
+
+      <IonLoading
+        className="backdrop-blur-sm"
+        isOpen={loading}
+        message={`Processing transaction...`}
+        duration={0}
+      />
     </IonContent>
   );
 };

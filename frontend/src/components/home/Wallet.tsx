@@ -27,7 +27,7 @@ const Wallet: React.FC = () => {
   };
 
   return (
-    <IonRow className="ion-align-items-center my-6 rounded-lg bg-background-secondary shadow-md shadow-gray-900 px-2 py-4 text-[17px]">
+    <IonRow className="ion-align-items-center my-6 rounded-lg bg-background-secondary shadow-background-secondary drop-shadow-lg px-2 py-4 text-[17px]">
       <IonGrid>
         {/* wallet address balance and icon */}
         <IonRow>
@@ -40,9 +40,6 @@ const Wallet: React.FC = () => {
             <IonGrid className="font-medium relative">
               <IonRow>
                 <IonCol>
-                  {error && (
-                    <IonAlert header="Error" isOpen={true} message={error} buttons={["OK"]} />
-                  )}
                   {loading ? (
                     <>
                       <IonSkeletonText
@@ -76,7 +73,7 @@ const Wallet: React.FC = () => {
                       )}
 
                       <br />
-                      <IonText>$ {balance}</IonText>
+                      <IonText> xxxxxx</IonText>
                     </>
                   )}
                 </IonCol>

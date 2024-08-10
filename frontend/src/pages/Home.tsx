@@ -10,6 +10,7 @@ import { getBalance } from "../../contracts/erc20";
 import { Account } from "thirdweb/wallets";
 import { baseSepolia } from "thirdweb/chains";
 import { createClient } from "../config/helpers";
+import Assests from "../components/home/Assests";
 
 const Home: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,22 +24,13 @@ const Home: React.FC = () => {
         </IonRow>
         <IonRow className="ion-margin-top text-text-textfield1">
           <IonText className="text-text-textfield2">
-            Transact dast and safe Nepathya AI Defi Ecosystem with your smartwallet
+            Transact dast and safe Nepathya AI Defi Ecosystem with your smartwallet.
           </IonText>
         </IonRow>
 
         <Wallet />
 
-        <IonRow>
-          <IonGrid>
-            <IonRow>
-              <IonText className="font-semibold">Recent Transactions</IonText>
-            </IonRow>
-            <IonRow>
-              <IonText className="text-text-textfield2">You have no recent transactions</IonText>
-            </IonRow>
-          </IonGrid>
-        </IonRow>
+        <Assests />
       </IonGrid>
     </IonContent>
   );

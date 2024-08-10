@@ -326,7 +326,11 @@ const MyForm: React.FC = () => {
           </IonModal>
 
           {/* Loading Spinner */}
-          <IonLoading isOpen={isLoading} message={"Processing your transaction..."} />
+          <IonLoading
+            className="backdrop-blur-sm"
+            isOpen={isLoading}
+            message={"Processing your transaction..."}
+          />
 
           {/* Toast for Error Messages */}
           <IonToast

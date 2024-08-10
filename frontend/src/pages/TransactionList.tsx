@@ -44,7 +44,15 @@ const TransactionList: React.FC = () => {
   return (
     <IonContent className="ion-padding">
       <IonGrid className="h-full w-full">
-        {error && <IonAlert isOpen={true} header={"Error"} message={error} buttons={["OK"]} />}
+        {error && (
+          <IonAlert
+            isOpen={true}
+            className="backdrop-blur-sm"
+            header={"Error"}
+            message={error}
+            buttons={["OK"]}
+          />
+        )}
         {loading && loadingSkeleton ? (
           <IonRow className="ion-justify-content-center ion-margin-top">
             <Skeletons />
