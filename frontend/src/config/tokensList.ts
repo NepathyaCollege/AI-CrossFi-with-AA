@@ -67,9 +67,9 @@ export const tokensWithNetwork: TokensWithNetwork = {
   },
   base: {
     priceFeed: {
-      btc: "0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43",
-      eth: "0x694AA1769357215DE4FAC081bf1f309aDC325306",
-      link: "0xc59E3633BAAC79493d908e63626716e204A45EdF",
+      btc: "0x0FB99723Aee6f420beAD13e6bBB79b7E6F034298",
+      eth: "0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1",
+      link: "0xb113F5A928BCfF189C998ab20d753a47F9dE5A61",
     },
     tokens: {
       usdt: {

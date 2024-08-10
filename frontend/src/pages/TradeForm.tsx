@@ -22,7 +22,7 @@ import { Token, tokensWithNetwork } from "../config/tokensList";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { createClient } from "../config/helpers";
-import { getBalance } from "../../contracts/erc20";
+import { approveERC20, getBalance } from "../../contracts/erc20";
 import { createMultiTokenKeeper, getMultiTokenKeeper } from "../../contracts/multiTokenKeeperFactory";
 import { addOrderOnMultiKeeper, getOrderManagerAddress } from "../../contracts/multiTokenKeeper"
 import { getActiveOrders, getFulfilledOrders } from "../../contracts/orderManager"
@@ -44,6 +44,8 @@ const TradeForm: React.FC = () => {
   const [multiKeeperAddress, setMultiKeeperAddress] = useState("");
 
   const { smartAccount, loading: walletLoading } = useSelector((state: RootState) => state.wallet);
+
+  const multiTokenKeeperFactory = '0xA05A6F279384044c5C60ad7384926cA39b291d85'
 
   //fetching token balance
   useEffect(() => {
@@ -128,7 +130,7 @@ const TradeForm: React.FC = () => {
       ownerAddress: smartAccount.address,
       chain: tokensWithNetwork[chainName].chain,
       client,
-      contractAddress: "0x163818e49ccc4909ed70649806153020354b843b"
+      contractAddress: multiTokenKeeperFactory
     })
     console.log(address)
 
@@ -137,7 +139,7 @@ const TradeForm: React.FC = () => {
       // create keeper if no keeper created for user
       await createMultiTokenKeeper({
         smartAccount, client, chain: tokensWithNetwork[chainName].chain,
-        contractAddress: "0x163818e49ccc4909ed70649806153020354b843b"
+        contractAddress: multiTokenKeeperFactory
       })
     }
 
@@ -145,10 +147,12 @@ const TradeForm: React.FC = () => {
       ownerAddress: smartAccount.address,
       chain: tokensWithNetwork[chainName].chain,
       client,
-      contractAddress: "0x163818e49ccc4909ed70649806153020354b843b"
+      contractAddress: multiTokenKeeperFactory
     })
 
     setMultiKeeperAddress(address);
+
+    console.log(`keeper address ${address}`)
 
     const orderManagerAddress = await getOrderManagerAddress({
       chain: tokensWithNetwork[chainName].chain,
@@ -193,15 +197,32 @@ const TradeForm: React.FC = () => {
     setShowAlert(false);
     setLoading(true);
     // ! Simulated (remove this later)
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulated delay
+    const client = createClient();
 
     if (action === "buy") {
-      const client = createClient();
+
+      const approveTransactionHash = await approveERC20({
+        smartAccount,
+        client,
+        chain: tokensWithNetwork[chainName].chain,
+        contractAddress: tokensWithNetwork[chainName]?.tokens['usdt']?.address,
+        spenderAddress: multiKeeperAddress,
+        amount: "100000000000000000000000000000000000000000000000000000000000000",
+      })
+
+      console.log(approveTransactionHash);
+
+      debugger;
 
       const transactionHash = await addOrderOnMultiKeeper({
-        smartAccount, client, chain:
+        smartAccount: smartAccount as any, client, chain:
           tokensWithNetwork[chainName].chain,
-        contractAddress: multiKeeperAddress
+        contractAddress: multiKeeperAddress,
+        amountUSD,
+        chainLinkAggregatorAddress: tokensWithNetwork[chainName]?.priceFeed['btc'],
+        orderType: 0,
+        priceThreshold: Number(targetPrice),
+        tokenAddress: tokensWithNetwork[chainName]?.tokens[tokenName]?.address
       })
 
       console.log(transactionHash)
@@ -209,7 +230,31 @@ const TradeForm: React.FC = () => {
       // TODO open model of transaction success and give option to redirect to base
       console.log("Buying");
     } else {
-      console.log("Selling");
+      const approveTransactionHash = await approveERC20({
+        smartAccount,
+        client,
+        chain: tokensWithNetwork[chainName].chain,
+        contractAddress: tokensWithNetwork[chainName]?.tokens[tokenName]?.address,
+        spenderAddress: multiKeeperAddress,
+        amount: "100000000000000000000000000000000000000000000000000000000000000",
+      })
+
+      console.log(approveTransactionHash);
+
+      debugger;
+
+      const transactionHash = await addOrderOnMultiKeeper({
+        smartAccount: smartAccount as any, client, chain:
+          tokensWithNetwork[chainName].chain,
+        contractAddress: multiKeeperAddress,
+        amountUSD,
+        chainLinkAggregatorAddress: tokensWithNetwork[chainName]?.priceFeed['btc'],
+        orderType: 1,
+        priceThreshold: Number(targetPrice),
+        tokenAddress: tokensWithNetwork[chainName]?.tokens[tokenName]?.address
+      })
+
+      console.log(transactionHash)
     }
 
     setToastMessage(`${action.charAt(0).toUpperCase() + action.slice(1)} action performed`);

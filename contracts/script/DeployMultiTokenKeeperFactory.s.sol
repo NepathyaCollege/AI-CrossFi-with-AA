@@ -18,7 +18,7 @@ contract DeployMultiTokenKeeperFactory is Script {
         address usdt = 0xe7A527BD98566FDc99EA72bf16c6cc4eFe3606a0;
         address aggregatorManager = 0xF7d7F1882d30B3A8d39A3DB46600935096aC5d50;
         address keeperRegistryAddress = 0x80C55e674a34FfE730B0357E16e8852B19573f7C;
-        uint256 linkAmount = 5 ether;
+        uint256 linkAmount = 3 ether;
 
         address owner = 0xF2EcFb4b7A57986B5f2432f507FF2432B8057d04;
 
@@ -30,21 +30,21 @@ contract DeployMultiTokenKeeperFactory is Script {
         );
         Token(linkTokenAddress).transfer(address(multiTokenKeeperFactory), 6 ether);
 
-        multiTokenKeeperFactory.createAndRegisterMultiTokenKeeper(owner);
+        // multiTokenKeeperFactory.createAndRegisterMultiTokenKeeper(owner);
 
-        address keeper = multiTokenKeeperFactory.getMultiTokenKeeper(owner);
+        // address keeper = multiTokenKeeperFactory.getMultiTokenKeeper(owner);
 
-             // Mint tokens to the MultiTokenKeeper contract
-        Token tokenA = Token(usdt);
-        tokenA.mint(address(keeper), 10000 ether);
+        //      // Mint tokens to the MultiTokenKeeper contract
+        // Token tokenA = Token(usdt);
+        // tokenA.mint(address(keeper), 10000 ether);
 
-        MultiTokenKeeper(keeper).addOrder(
-            0x0f5C50184EF3ADF2581fd115A0eB4f3cC7F296A1,
-            0x0FB99723Aee6f420beAD13e6bBB79b7E6F034298,
-            OrderManager.OrderType.Buy,
-            0,
-            100 ether
-        );
+        // MultiTokenKeeper(keeper).addOrder(
+        //     0x0f5C50184EF3ADF2581fd115A0eB4f3cC7F296A1,
+        //     0x0FB99723Aee6f420beAD13e6bBB79b7E6F034298,
+        //     OrderManager.OrderType.Buy,
+        //     0,
+        //     100 ether
+        // );
 
         // Deploy the contract
         // nepathyaPool = NepathyaPool(0x20Fa0Fc715121F50ffe229E0DB1504543d04cEA3); //new NepathyaPool(routerAddress, linkTokenAddress, tokenAddress);

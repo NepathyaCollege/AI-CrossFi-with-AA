@@ -8,19 +8,22 @@ import {IERC20} from
     "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/IERC20.sol";
 import "./AggregatorManager.sol";
 import "./OrderManager.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MultiTokenKeeper is AutomationCompatibleInterface {
+contract MultiTokenKeeper is AutomationCompatibleInterface, Ownable {
     AggregatorManager public aggregatorManager;
     OrderManager public orderManager;
 
     address public usdtAddress;
     IUniswapV2Router02 public uniswapRouter;
 
-    constructor(address _uniswapRouter, address _usdtAddress, address _aggregatorManager) {
+    constructor(address _uniswapRouter, address _usdtAddress, address _aggregatorManager, address owner)
+        Ownable(owner)
+    {
         uniswapRouter = IUniswapV2Router02(_uniswapRouter);
         usdtAddress = _usdtAddress;
         aggregatorManager = AggregatorManager(_aggregatorManager);
-        orderManager = new OrderManager();
+        orderManager = new OrderManager(address(this));
     }
 
     event Price(int256 price);
@@ -33,8 +36,10 @@ contract MultiTokenKeeper is AutomationCompatibleInterface {
         OrderManager.OrderType _orderType,
         int256 _priceThreshold,
         uint256 _amount
-    ) external {
+    ) external onlyOwner {
         require(aggregatorManager.isAggregatorApproved(_priceFeed), "Aggregator not approved");
+
+        IERC20(usdtAddress).transferFrom(msg.sender, address(this), _amount);
 
         orderManager.addOrder(_token, _priceFeed, _orderType, _priceThreshold, _amount);
     }
@@ -99,7 +104,7 @@ contract MultiTokenKeeper is AutomationCompatibleInterface {
             amount,
             0, // Accept any amount of token
             pair,
-            address(this),
+            owner(),
             block.timestamp + 15
         );
 
@@ -120,7 +125,7 @@ contract MultiTokenKeeper is AutomationCompatibleInterface {
             amount,
             0, // Accept any amount of USDT
             pair,
-            address(this),
+            owner(),
             block.timestamp + 15
         );
 

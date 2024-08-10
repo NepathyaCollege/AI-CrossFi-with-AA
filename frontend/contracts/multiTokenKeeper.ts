@@ -1,45 +1,62 @@
 
-import { getContract, prepareContractCall, readContract, sendTransaction } from "thirdweb";
+import { ThirdwebClient, getContract, prepareContractCall, readContract, sendTransaction } from "thirdweb";
 import { multiTokenKeeperAbi } from "./abis/multiTokenKeeperAbi";
+import { BigNumber } from "ethers";
 
-export const addOrderOnMultiKeeper = async ({
+// Define an interface for the input parameters
+interface AddOrderParams {
+    smartAccount: any; // Adjust the type based on your smart account type
+    client: ThirdwebClient;       // Adjust the type based on your client type
+    chain: any;     // Type of chain (e.g., 'ethereum', 'polygon')
+    contractAddress: string;
+    tokenAddress: string;
+    chainLinkAggregatorAddress: string;
+    orderType: 0 | 1;  // 0 for buy, 1 for sell
+    priceThreshold: number;
+    amountUSD: string;
+  }
+  
+
+  export const addOrderOnMultiKeeper = async ({
     smartAccount,
     client,
     chain,
-    contractAddress
-}: any): Promise<string> => {
+    contractAddress,
+    tokenAddress,
+    chainLinkAggregatorAddress,
+    orderType,
+    priceThreshold,
+    amountUSD,
+  }: AddOrderParams): Promise<string> => {
     const contract = getContract({
-        client,
-        chain,
-        address: contractAddress,
-        abi: multiTokenKeeperAbi as any,
+      client,
+      chain,
+      address: contractAddress,
+      abi: multiTokenKeeperAbi as any, // Adjust if you have a proper ABI type
     });
+  
+    const amountInEther = BigNumber.from(amountUSD).mul(BigNumber.from("1000000000000000000"));
+  
     // This method will add an order to the contract with the specified parameters.
-    // 
-    // params:
-    // - tokenAddress (string): The address of the token that the order is for.
-    // - chainlinkAggregatorAddress (string): The address of the Chainlink aggregator used to fetch price data for the order.
-    // - orderType (number): The type of order, where 0 indicates a buy order and 1 indicates a sell order.
-    // - priceThreshold (number): The target price at which to execute the order. For a buy order, this would be the maximum price; for a sell order, the minimum price.
-    // - amountToBuy (string): The amount of the token to buy, specified in its smallest unit (e.g., wei for ETH).
     const transaction = await prepareContractCall({
-        contract,
-        method: "addOrder",
-        params: [
-            "0x0f5C50184EF3ADF2581fd115A0eB4f3cC7F296A1",  // Token address
-            "0x0FB99723Aee6f420beAD13e6bBB79b7E6F034298",  // Chainlink aggregator address
-            0,  // Order type (0 for buy, 1 for sell)
-            0,  // Price threshold (target price)
-            "100000000000000000000"  // Amount to buy (in smallest unit)
-        ],
+      contract,
+      method: "addOrder",
+      params: [
+        tokenAddress,              // Token address
+        chainLinkAggregatorAddress, // Chainlink aggregator address
+        orderType,                  // Order type (0 for buy, 1 for sell)
+        priceThreshold,             // Price threshold (target price)
+        amountInEther,              // Amount to buy (in smallest unit)
+      ],
     });
-
+  
     const { transactionHash } = await sendTransaction({
-        account: smartAccount,
-        transaction,
+      account: smartAccount,
+      transaction,
     });
+  
     return transactionHash;
-};
+  };
 
 export const getOrderManagerAddress = async ({
     client,

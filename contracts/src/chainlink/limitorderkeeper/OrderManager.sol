@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract OrderManager {
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract OrderManager is Ownable {
     enum OrderType {
         Buy,
         Sell
@@ -20,12 +22,15 @@ contract OrderManager {
     Order[] public fulfilledOrders;
     uint256 public nextOrderId;
 
+    constructor(address owner) Ownable(owner) {}
+
     event OrderCreated(uint256 orderId, address token, OrderType orderType);
     event OrderProcessed(uint256 orderId);
     event OrderCanceled(uint256 orderId);
 
     function addOrder(address _token, address _priceFeed, OrderType _orderType, int256 _priceThreshold, uint256 _amount)
         external
+        onlyOwner
         returns (uint256)
     {
         activeOrders.push(
@@ -58,7 +63,7 @@ contract OrderManager {
         }
     }
 
-    function cancelOrder(uint256 orderId) external {
+    function cancelOrder(uint256 orderId) external onlyOwner {
         for (uint256 i = 0; i < activeOrders.length; i++) {
             if (activeOrders[i].id == orderId) {
                 _removeActiveOrder(i);
