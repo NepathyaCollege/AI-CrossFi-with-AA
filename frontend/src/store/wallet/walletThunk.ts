@@ -29,21 +29,17 @@ export const connectWallet = createAsyncThunk(
   "wallet/connectWallet",
   async (_, { rejectWithValue }) => {
     try {
+      const {
+        data: { thirdWebKey },
+      } = await axios.get(`${GET_THIRD_WEB_KEY}`, {
+        headers: {
+          Authorization: `Bearer ${getAccessToken()}`,
+        },
+      });
 
+      console.log(thirdWebKey);
 
-      const { data: { thirdWebKey } } = await axios.get(
-        `${GET_THIRD_WEB_KEY}`,
-        {
-          headers: {
-            Authorization: `Bearer ${getAccessToken()}`,
-          },
-        }
-      );
-
-      console.log(thirdWebKey
-      );
-
-      debugger;
+      // debugger;
       // Connect to personal wallet
       const personalAccount = await personalWallet.connect({
         // clientId: CLIENT_ID,

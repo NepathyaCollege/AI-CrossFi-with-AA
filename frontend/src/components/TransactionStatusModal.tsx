@@ -1,4 +1,5 @@
 import { IonIcon } from "@ionic/react";
+import { openOutline } from "ionicons/icons";
 import React from "react";
 
 const TransactionStatusModal: React.FC<{
@@ -40,22 +41,18 @@ const TransactionStatusModal: React.FC<{
             </svg>
           </div>
           <h3 className="text-xl font-semibold mb-4 text-green-400">Transaction Submitted</h3>
-          {/* <a
-            href={viewOnBaseURL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-400 hover:underline"
-          >
-   
-          </a> */}
-
-          <IonIcon
+          <div
             onClick={() => {
-              handleRedirection(transaction?.transactionHash);
+              handleRedirection(transactionHash);
             }}
-            className="text-2xl cursor-pointer hover:text-blue-400"
-            icon={openOutline}
-          />
+            className="gap-2 text-blue-500 items-center flex"
+          >
+            View on Base
+            <IonIcon
+              className="text-2xl cursor-pointer  text-text-textfield2 "
+              icon={openOutline}
+            />
+          </div>
         </div>
       </div>
     </>

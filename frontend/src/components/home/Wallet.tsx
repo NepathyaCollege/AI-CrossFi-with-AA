@@ -38,7 +38,7 @@ const Wallet: React.FC = () => {
           </IonCol>
           <IonCol>
             <IonGrid className="font-medium relative">
-              <IonRow>
+              <IonRow className="mt-4">
                 <IonCol>
                   {loading ? (
                     <>
@@ -58,7 +58,7 @@ const Wallet: React.FC = () => {
                       </IonText>
                       <IonIcon
                         icon={copyOutline}
-                        className="bg-background-tertiary absolute hover:brightness-150 cursor-pointer right-1.5 p-3 text-2xl top-0 my-auto rounded"
+                        className="bg-background-tertiary absolute hover:brightness-150 cursor-pointer right-1.5 p-3 text-2xl -top-2 my-auto rounded"
                         onClick={() => smartAccount?.address && handleCopy(smartAccount?.address)}
                       ></IonIcon>
                       {copySuccess && (
@@ -71,9 +71,6 @@ const Wallet: React.FC = () => {
                           {copyError}
                         </IonText>
                       )}
-
-                      <br />
-                      <IonText> xxxxxx</IonText>
                     </>
                   )}
                 </IonCol>

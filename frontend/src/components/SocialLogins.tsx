@@ -21,7 +21,10 @@ const SocialLogins: React.FC = () => {
             color="dark"
             className="w-full rounded-md border border-gray-700 bg-[rgb(13,13,13)] py-1 text-base capitalize tracking-wider"
           >
-            <IonImg className="mr-1 inline-block h-4 w-4" src="AppLogo.svg" />
+            <IonImg
+              className="mr-1 inline-block h-4 w-4"
+              src="https://cdn4.iconfinder.com/data/icons/logos-brands-7/512/google_logo-google_icongoogle-512.png"
+            />
             <IonText>Google</IonText>
           </IonButton>
         </IonCol>
@@ -32,7 +35,10 @@ const SocialLogins: React.FC = () => {
             color="dark"
             className="w-full rounded-md border border-gray-700 bg-[rgb(13,13,13)] py-1 text-base capitalize tracking-wider"
           >
-            <IonImg className="mr-1 inline-block h-4 w-4" src="AppLogo.svg" />
+            <IonImg
+              className="mr-1 inline-block h-6 w-7"
+              src="https://static.vecteezy.com/system/resources/previews/018/930/698/non_2x/facebook-logo-facebook-icon-transparent-free-png.png"
+            />
             <IonText>Facebook</IonText>
           </IonButton>
         </IonCol>

@@ -70,7 +70,7 @@ const Login: React.FC = () => {
           </IonRow>
 
           {/* middle section */}
-          <IonRow>
+          <IonRow className="ion-justify-content-center  ion-align-items-center h-4/5 ">
             <IonGrid className="">
               <IonRow className="flex justify-center">
                 <IonCol size="auto">
