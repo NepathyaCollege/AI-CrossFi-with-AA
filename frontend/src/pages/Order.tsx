@@ -123,27 +123,34 @@ const Order: React.FC = () => {
         <div className="ion-padding">Error: {error}</div>
       ) : (
         <IonGrid className="h-full w-full">
-          {ordersList?.map((transaction) => (
+          {ordersList?.map((order) => (
             <IonItemSliding
-              key={transaction?.id}
+              key={order?.id}
               className="ion-margin-top text-sm bg-background-secondary rounded-md shadow-md"
             >
-              <IonItemOptions side="end">
-                <IonItemOption color="danger" onClick={() => handleCancel(transaction?.id)}>
-                  Cancel
-                </IonItemOption>
-              </IonItemOptions>
+              {action === "pending" && (
+                <IonItemOptions side="end">
+                  <IonItemOption color="danger" onClick={() => handleCancel(order?.id)}>
+                    Cancel
+                  </IonItemOption>
+                </IonItemOptions>
+              )}
 
               <IonItem>
-                <IonGrid className="pl-4 pr-2 py-3">
-                  <IonRow className="ion-align-items-center mb-2 font-semibold text-text-textfield2 ">
+                <IonGrid className="pl-3 pr-2 py-3">
+                  <IonRow className="ion-align-items-center  mb-2 font-semibold text-text-textfield2 ">
                     <IonCol>Type</IonCol>
                     <IonCol>Token</IonCol>
-                    <IonCol>Target Price</IonCol>
-                    <IonCol>Amt</IonCol>
+                    <IonCol size="4" className="w-28 ">
+                      Target Price
+                    </IonCol>
+                    <IonCol className="">
+                      <IonText className="text-opacity-0 text-black">///</IonText>
+                      Amt
+                    </IonCol>
                   </IonRow>
                   <IonRow className="ion-align-items-center text-sm gap-3">
-                    {transaction?.orderType === 0 ? (
+                    {order?.orderType === 0 ? (
                       <IonCol className="text-green-500">Buy</IonCol>
                     ) : (
                       <IonCol className="text-red-500">Sell</IonCol>
@@ -152,14 +159,16 @@ const Order: React.FC = () => {
                     <IonCol className="flex gap-1 items-center">
                       <IonImg
                         className="w-5 h-5 -ml-2 rounded-full overflow-hidden"
-                        src={getTokenDetailsByAddress(transaction?.token)?.logoURI}
+                        src={getTokenDetailsByAddress(order?.token)?.logoURI}
                       />
-                      {getTokenDetailsByAddress(transaction?.token)?.name}
+                      {getTokenDetailsByAddress(order?.token)?.name}
                     </IonCol>
-                    <IonCol>${transaction?.targetPrice}s</IonCol>
-                    <IonCol>
-                      $1
-                      {BigNumber.from(transaction?.amount)
+                    <IonCol className="" size="4">
+                      ${order?.targetPrice}
+                    </IonCol>
+                    <IonCol size="2" className=" w-auto">
+                      $
+                      {BigNumber.from(order?.amount)
                         .div(BigNumber.from("1000000000000000000"))
                         .toString()}
                     </IonCol>

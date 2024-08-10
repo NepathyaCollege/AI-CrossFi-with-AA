@@ -30,6 +30,7 @@ import { createClient } from "../config/helpers";
 import { Token, tokensWithNetwork } from "../config/tokensList";
 import { RootState } from "../store/store";
 import TransactionStatusModal from "../components/TransactionStatusModal";
+import TransactionProcessingModal from "../components/TransactionProcessingModal";
 
 const TradeForm: React.FC = () => {
   const [chainName, setChainName] = useState<string>("base");
@@ -381,13 +382,15 @@ const TradeForm: React.FC = () => {
         onClose={() => setShowTransactionModal(false)}
         transactionHash={transactionHash}
       />
-
+      {/* 
       <IonLoading
         className="backdrop-blur-sm"
         isOpen={loading}
         message={`Processing transaction...`}
         duration={0}
-      />
+      /> */}
+
+      <TransactionProcessingModal isOpen={loading} onClose={() => {}} />
     </IonContent>
   );
 };
