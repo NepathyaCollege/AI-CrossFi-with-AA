@@ -77,6 +77,82 @@ const MyForm: React.FC = () => {
     }
   };
 
+  // Method to validate tokens and chains, and return swap details
+  const getSwapDetails = (fromToken: string, fromChain: string, toToken: string, toChain: string) => {
+    const { fromTokenDetails, fromChainDetails, toTokenDetails, toChainDetails } =
+      validateTokenAndChain(fromToken, fromChain, toToken, toChain);
+
+    // Return an object containing all the details needed for the swap
+    return {
+      fromTokenSymbol: fromTokenDetails.symbol,
+      fromTokenAddress: fromChainDetails.address,
+      fromChain,
+      toTokenSymbol: toTokenDetails.symbol,
+      toTokenAddress: toChainDetails.address,
+      toChain,
+      amount, // Swap amount (assumed static for now, could be dynamic)
+    };
+  }
+
+  // Method to retrieve the wallet balance for a given token on a specific chain
+  const getWalletBalance = async (smartAccount: any, client: any, chainDetail: any, tokenAddress: string) => {
+    // Get balance from the chain
+    const walletBalance = await getBalance({
+      accountAddress: smartAccount.address,
+      client,
+      chain: chainDetail.chain,
+      contractAddress: tokenAddress,
+    });
+
+    // Convert the balance from wei to Ether units for readability
+    return ethers.utils.formatUnits(walletBalance, 18);
+  };
+  // Method to check if the user has enough token allowance for the swap and approve if not
+  const ensureAllowance = async (smartAccount: any, client: any, chainDetail: any, swapAmount: BigNumber, tokenAddress: string) => {
+    // Retrieve the current token allowance for the router contract
+    const allowance = await checkAllowance({
+      ownerAddress: smartAccount.address,
+      spenderAddress: chainDetail.routerAddress,
+      client,
+      chain: chainDetail.chain,
+      contractAddress: tokenAddress,
+    });
+
+    const parsedBigNumberAllowance = BigNumber.from(allowance.toString());
+
+    // const swapAmountInBigNumber = BigNumber.from(swapAmount);
+
+    // If the allowance is less than the swap amount, approve more tokens
+    if (!parsedBigNumberAllowance.gte(swapAmount)) {
+      // TODO add one model to show approving is doing
+      const allowanceTransactionHash = await approveERC20({
+        smartAccount,
+        client,
+        chain: chainDetail.chain,
+        spenderAddress: chainDetail.routerAddress,
+        amount: BigNumber.from(defaultAllowanceAmount), // Approve a default high allowance
+        contractAddress: tokenAddress,
+      });
+      console.log(allowanceTransactionHash); // Log the transaction hash for debugging
+    }
+  };
+
+  // Method to perform the token bridging transaction
+  const bridgeTokenTransaction = async (swapDetails: any, destinationLaneId: string, smartAccount: any, client: any, chainDetail: any, swapAmount: BigNumber) => {
+    await bridgeToken({
+      tokenAddress: swapDetails.fromTokenAddress, // Address of the token to be bridged
+      destinationLaneId, // Lane ID for cross-chain transfer
+      receiver: smartAccount.address, // The account to receive the tokens on the destination chain
+      amount: swapAmount, // The amount of tokens to bridge
+      client,
+      contractAddress: chainDetail.routerAddress, // Router contract address for bridging
+      chain: chainDetail.chain, // Source chain information
+      smartAccount,
+    });
+  };
+
+
+
   const handleChainChange = (value: string, isFromChain: boolean) => {
     if (isFromChain) {
       setFromChain(value);
@@ -93,76 +169,38 @@ const MyForm: React.FC = () => {
     const client = createClient();
 
     try {
-      const { fromTokenDetails, fromChainDetails, toTokenDetails, toChainDetails } =
-        validateTokenAndChain(fromToken, fromChain, toToken, toChain);
 
-      const swapDetails = {
-        fromTokenSymbol: fromTokenDetails.symbol,
-        fromTokenAddress: fromChainDetails.address,
-        fromChain,
-        toTokenSymbol: toTokenDetails.symbol,
-        toTokenAddress: toChainDetails.address,
-        toChain,
-        amount: 1000,
-      };
+      const swapDetails = getSwapDetails(fromToken, fromChain, toToken, toChain);
+
+      // Retrieve chain details for the source chain
+      const chainDetail = (chainDetails as any)[swapDetails.fromChain.toLowerCase()];
+      // Get the lane ID for the cross-chain transfer
+      const destinationLaneId = chainDetails.getLaneDetails(
+        swapDetails.fromChain.toLowerCase(),
+        swapDetails.toChain.toLowerCase()
+      );
+
+      // Get the user's wallet balance for the token on the source chain
+      const balanceInEther = await getWalletBalance(smartAccount, client, chainDetail, swapDetails.fromTokenAddress);
+      console.log(balanceInEther); // Log the balance for debugging
+
+      const swapAmountInWei = ethers.utils.parseEther(swapDetails.amount);
 
       debugger;
 
-      const chainDetail = (chainDetails as any)[fromChain.toLowerCase()];
-      const destinationLaneId = chainDetails.getLaneDetails(
-        fromChain.toLowerCase(),
-        toChain.toLowerCase()
-      );
-
-      const walletBalance = await getBalance({
-        accountAddress: smartAccount.address,
-        client,
-        chain: chainDetail.chain,
-        contractAddress: swapDetails.fromTokenAddress
-      })
-
-      const balanceInEther = ethers.utils.formatUnits(walletBalance, 18);
-
-      console.log(balanceInEther);
 
 
+      // Ensure the user has enough token allowance for the swap, approving more if necessary
+      await ensureAllowance(smartAccount, client, chainDetail, swapAmountInWei, swapDetails.fromTokenAddress);
 
-      const allowance = await checkAllowance({
-        ownerAddress: smartAccount.address,
-        spenderAddress: chainDetail.routerAddress,
-        client,
-        chain: chainDetail.chain,
-        contractAddress: swapDetails.fromTokenAddress,
-      });
 
-      const parsedBigNumberAllowance = BigNumber.from(allowance.toString());
+      // Perform the bridging transaction
+      await bridgeTokenTransaction(swapDetails, destinationLaneId, smartAccount, client, chainDetail, swapAmountInWei);
 
-      const swapAmount = BigNumber.from(Math.floor(Number(swapDetails.amount))).mul(
-        BigNumber.from("1000000000000000000")
-      );
+      setIsLoading(false); // Hide loading spinner
+      setIsOpen(true); // Open confirmation modal
 
-      if (!parsedBigNumberAllowance.gte(swapAmount)) {
-        const allowaceTransactionHash = await approveERC20({
-          smartAccount,
-          client,
-          chain: chainDetail.chain,
-          spenderAddress: chainDetail.routerAddress,
-          amount: BigNumber.from(defaultAllowanceAmount),
-          contractAddress: swapDetails.fromTokenAddress,
-        });
-        console.log(allowaceTransactionHash)
-      }
 
-      await bridgeToken({
-        tokenAddress: swapDetails.fromTokenAddress,
-        destinationLaneId,
-        receiver: smartAccount.address,
-        amount: swapAmount.toString(),
-        client,
-        contractAddress: chainDetail.routerAddress,
-        chain: chainDetail.chain,
-        smartAccount,
-      });
 
       setIsLoading(false); // Hide spinner
       setIsOpen(true); // Open modal
