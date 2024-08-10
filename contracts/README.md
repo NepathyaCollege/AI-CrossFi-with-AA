@@ -13,7 +13,7 @@ This folder contains all the contracts written for the hackathon Superhack 2024.
 - **Wrapped BTC:** `0x35f5868c9563c8b30a6c096b2e80418aa3643102`
 - **Wrapped LINK:** `0x3af31c01444f14f5761b7205685bc92663d5bdfb`
 
-## Token Addresses on Sepolia
+## Token Addresses on Base Sepolia
 - **USDT:** `0xe7A527BD98566FDc99EA72bf16c6cc4eFe3606a0`
 - **Wrapped ETH:** `0x0f5C50184EF3ADF2581fd115A0eB4f3cC7F296A1`
 - **Wrapped BTC:** `0x981e90dE16a26f6A44e39406dD218490D7789e0D`

@@ -17,12 +17,12 @@ import {
   IonToast,
   IonToolbar,
 } from "@ionic/react";
-import { BigNumber } from "ethers";
+import { BigNumber, constants, ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { bridgeToken } from "../../contracts/crossChainTokenRouter";
-import { approveERC20, checkAllowance } from "../../contracts/erc20";
+import { approveERC20, checkAllowance, getBalance } from "../../contracts/erc20";
 import { chainDetails } from "../config/chains";
 import {
   createClient,
@@ -32,7 +32,6 @@ import {
   validateTokenAndChain,
 } from "../config/helpers";
 import { AppDispatch, RootState } from "../store/store";
-import { connectWallet } from "../store/wallet/walletThunk";
 import Transaction from "./Transaction";
 
 const defaultAllowanceAmount =
@@ -107,11 +106,26 @@ const MyForm: React.FC = () => {
         amount: 1000,
       };
 
+      debugger;
+
       const chainDetail = (chainDetails as any)[fromChain.toLowerCase()];
       const destinationLaneId = chainDetails.getLaneDetails(
         fromChain.toLowerCase(),
         toChain.toLowerCase()
       );
+
+      const walletBalance = await getBalance({
+        accountAddress: smartAccount.address,
+        client,
+        chain: chainDetail.chain,
+        contractAddress: swapDetails.fromTokenAddress
+      })
+
+      const balanceInEther = ethers.utils.formatUnits(walletBalance, 18);
+
+      console.log(balanceInEther);
+
+
 
       const allowance = await checkAllowance({
         ownerAddress: smartAccount.address,
@@ -128,14 +142,15 @@ const MyForm: React.FC = () => {
       );
 
       if (!parsedBigNumberAllowance.gte(swapAmount)) {
-        await approveERC20({
+        const allowaceTransactionHash = await approveERC20({
           smartAccount,
           client,
           chain: chainDetail.chain,
           spenderAddress: chainDetail.routerAddress,
-          amount: defaultAllowanceAmount,
+          amount: BigNumber.from(defaultAllowanceAmount),
           contractAddress: swapDetails.fromTokenAddress,
         });
+        console.log(allowaceTransactionHash)
       }
 
       await bridgeToken({

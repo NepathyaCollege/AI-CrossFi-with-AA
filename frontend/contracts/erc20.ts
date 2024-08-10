@@ -51,7 +51,7 @@ export const approveERC20 = async ({
   contractAddress,
   spenderAddress,
   amount,
-}: any): Promise<void> => {
+}: any): Promise<any> => {
   const contract = getContract({
     client,
     chain,
@@ -59,21 +59,16 @@ export const approveERC20 = async ({
     abi: erc20Abi as any,
   });
 
-  const test = [spenderAddress, amount];
-
-  console.log(`test===`, test);
-
   const transaction = await prepareContractCall({
     contract,
     method: "approve",
     params: [spenderAddress, amount],
   });
 
-  const { transactionHash } = await sendTransaction({
+   return sendTransaction({
     account: smartAccount,
     transaction,
   });
-  console.log(transactionHash);
 };
 
 export const checkAllowance = async ({

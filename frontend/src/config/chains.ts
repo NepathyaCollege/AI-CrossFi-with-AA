@@ -34,18 +34,18 @@ export interface Chain {
 // Define tokens
 export const tokens: Array<Token> = [
   {
-    name: "USDC",
-    symbol: "USDC",
+    name: "USDT",
+    symbol: "USDT",
     decimals: 18,
     logoURI: "https://example.com/base-token-logo.png",
     chains: [
       {
         chainName: "Base",
-        address: "0x84cEc3F89A0f28803F177575BbF7b2010A62d2Ec",
+        address: "0xe7A527BD98566FDc99EA72bf16c6cc4eFe3606a0",
       },
       {
         chainName: "Sepolia",
-        address: "0x7013F03df627CBa867d6892beCE4126D2FC0c35e",
+        address: "0x89e7fdbd1ea30300719357a1584c28ee34bcb4be",
       },
     ],
   },
@@ -107,17 +107,6 @@ export const chains: Array<Chain> = [
       .map((token) => token.symbol),
     chain: baseSepolia,
     chainId: 84532,
-  },
-  {
-    name: "Optimism",
-    symbol: "OP",
-    decimals: 18,
-    logoURI: "https://pbs.twimg.com/profile_images/1734354549496836096/-laoU9C9_400x400.jpg",
-    tokens: tokens
-      .filter((token) => token.chains.some((chain) => chain.chainName === "Optimism"))
-      .map((token) => token.symbol),
-    chain: optimismSepolia,
-    chainId: 8453,
   },
   {
     name: "Ethereum Sepolia",
