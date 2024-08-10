@@ -26,7 +26,7 @@ import { approveERC20, getBalance } from "../../contracts/erc20";
 import { createMultiTokenKeeper, getMultiTokenKeeper } from "../../contracts/multiTokenKeeperFactory";
 import { addOrderOnMultiKeeper, getOrderManagerAddress } from "../../contracts/multiTokenKeeper"
 import { getActiveOrders, getFulfilledOrders } from "../../contracts/orderManager"
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 const TradeForm: React.FC = () => {
   const [chainName, setChainName] = useState<string>("base");
@@ -34,27 +34,27 @@ const TradeForm: React.FC = () => {
   const [triggerToken, setTriggerToken] = useState<string>("");
   // const { balance: walletBalance } = useSelector((state: RootState) => state.wallet);
   const [targetPrice, setTargetPrice] = useState<string>("");
-  const [amountUSD, setAmountUSD] = useState<string>("");
+  const [amount, setAmount] = useState<string>("");
   const [action, setAction] = useState<"buy" | "sell">("buy");
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>("");
-  const [balance, setBalance] = useState<number | null>(null);
+  const [balance, setBalance] = useState<string>("0");
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [multiKeeperAddress, setMultiKeeperAddress] = useState("");
 
   const { smartAccount, loading: walletLoading } = useSelector((state: RootState) => state.wallet);
 
-  const multiTokenKeeperFactory = '0xA05A6F279384044c5C60ad7384926cA39b291d85'
+  const multiTokenKeeperFactory = '0x05663175EB6b36eE039d89Dd9BF0454ece228935'
 
   //fetching token balance
   useEffect(() => {
     if (chainName && tokenName) {
-      fetchTokenBalance(chainName, tokenName).then(setBalance);
+      fetchTokenBalance(chainName, tokenName);
       fetchMultiTokenKeeper(chainName)
 
     }
-  }, [chainName, tokenName]);
+  }, [chainName, tokenName, action]);
 
   const handleNetworkChange = (event: any) => {
     const selectedNetwork = event.detail.value as string;
@@ -89,12 +89,12 @@ const TradeForm: React.FC = () => {
   //   : [];
 
   const validateFields = () => {
-    if (!tokenName || !targetPrice || !amountUSD) {
+    if (!tokenName || !targetPrice || !amount) {
       setToastMessage("All fields must be filled");
       setShowToast(true);
       return false;
     }
-    if (action === "buy" && parseFloat(amountUSD) > (balance || 0)) {
+    if (action === "buy" && parseFloat(amount) > parseFloat(balance)) {
       setToastMessage("Insufficient balance");
       setShowToast(true);
       return false;
@@ -108,6 +108,8 @@ const TradeForm: React.FC = () => {
     if (!smartAccount) return;
 
     const contractAddress = action === "buy" ? tokensWithNetwork[network]?.tokens['usdt']?.address : tokensWithNetwork[network]?.tokens[token]?.address;
+
+    debugger;
     const balance = await getBalance({
       accountAddress: smartAccount.address,
       chain: tokensWithNetwork[chainName].chain,
@@ -115,10 +117,8 @@ const TradeForm: React.FC = () => {
       contractAddress,
     });
 
-    const flattenedBalance = BigNumber.from(balance)
-      .div(BigNumber.from("1000000000000000000"))
-      .toNumber();
-    return flattenedBalance;
+    const etherBalance = ethers.utils.formatUnits(balance, 18);
+    setBalance(etherBalance);
   };
 
   const fetchMultiTokenKeeper = async (network: string) => {
@@ -186,7 +186,7 @@ const TradeForm: React.FC = () => {
         tokenName,
         triggerToken,
         targetPrice,
-        amountUSD,
+        amount,
       });
 
       setShowAlert(true);
@@ -198,6 +198,8 @@ const TradeForm: React.FC = () => {
     setLoading(true);
     // ! Simulated (remove this later)
     const client = createClient();
+
+    // if(Number(amount)>)
 
     if (action === "buy") {
 
@@ -218,7 +220,7 @@ const TradeForm: React.FC = () => {
         smartAccount: smartAccount as any, client, chain:
           tokensWithNetwork[chainName].chain,
         contractAddress: multiKeeperAddress,
-        amountUSD,
+        amount,
         chainLinkAggregatorAddress: tokensWithNetwork[chainName]?.priceFeed['btc'],
         orderType: 0,
         priceThreshold: Number(targetPrice),
@@ -247,7 +249,7 @@ const TradeForm: React.FC = () => {
         smartAccount: smartAccount as any, client, chain:
           tokensWithNetwork[chainName].chain,
         contractAddress: multiKeeperAddress,
-        amountUSD,
+        amount,
         chainLinkAggregatorAddress: tokensWithNetwork[chainName]?.priceFeed['btc'],
         orderType: 1,
         priceThreshold: Number(targetPrice),
@@ -352,9 +354,9 @@ const TradeForm: React.FC = () => {
           <IonInput
             labelPlacement="floating"
             label={action === "buy" ? "Amount to Buy" : "Amount to Sell"}
-            value={amountUSD}
-            onIonChange={(e) => setAmountUSD(e.detail.value!)}
-            type="number"
+            value={amount}
+            onIonChange={(e) => setAmount(e.detail.value!)}
+            type="text"
             placeholder={action === "buy" ? "Enter amount " : "Enter amount to sell "}
           />
         </IonItem>
@@ -378,7 +380,7 @@ const TradeForm: React.FC = () => {
         <IonIcon icon={wallet} size="large" color="primary" className="ion-margin-end"></IonIcon>
         <IonLabel>Balance : </IonLabel>
         <IonLabel className="text-lg pl-3 font-bold">
-          {balance !== null ? `${balance.toFixed(2)}$` : "xxxx"}
+          {balance !== null ? `${Number(balance).toFixed(4)}$` : "xxxx"}
         </IonLabel>
       </IonRow>
 
@@ -396,7 +398,7 @@ const TradeForm: React.FC = () => {
         isOpen={showAlert}
         onDidDismiss={() => setShowAlert(false)}
         header={"Confirm Action"}
-        message={`Are you sure you want to ${action} ${amountUSD} ${triggerToken} worth of ${tokenOptions.find((option) => option.value === tokenName)?.label}?`}
+        message={`Are you sure you want to ${action} ${amount} ${triggerToken} worth of ${tokenOptions.find((option) => option.value === tokenName)?.label}?`}
         buttons={[
           {
             text: "Cancel",

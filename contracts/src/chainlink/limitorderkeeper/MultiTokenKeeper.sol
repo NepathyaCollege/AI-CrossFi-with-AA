@@ -39,7 +39,13 @@ contract MultiTokenKeeper is AutomationCompatibleInterface, Ownable {
     ) external onlyOwner {
         require(aggregatorManager.isAggregatorApproved(_priceFeed), "Aggregator not approved");
 
-        IERC20(usdtAddress).transferFrom(msg.sender, address(this), _amount);
+        if (_orderType == OrderManager.OrderType.Buy) {
+            IERC20(usdtAddress).transferFrom(msg.sender, address(this), _amount);
+        } else {
+            IERC20(_token).transferFrom(msg.sender,address(this), _amount);
+        }
+
+        // if()
 
         orderManager.addOrder(_token, _priceFeed, _orderType, _priceThreshold, _amount);
     }
