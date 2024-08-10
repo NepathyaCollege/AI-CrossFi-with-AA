@@ -33,6 +33,8 @@ import {
 } from "../config/helpers";
 import { AppDispatch, RootState } from "../store/store";
 import Transaction from "./Transaction";
+import InsufficientBalanceModal from "../components/InsufficientBalanceModal";
+import TransactionProcessingModal from "../components/TransactionProcessingModal";
 
 const defaultAllowanceAmount =
   "1000000000000000000000000000000000000000000000000000000000000000000000000000";
@@ -47,6 +49,10 @@ const MyForm: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showInsufficientBalanceModal, setShowInsufficientBalanceModal] = useState<boolean>(false);
+
+  // isOpen={showTransactionModal}
+  // onClose={() => setShowTransactionModal(false)}
 
   const dispatch = useDispatch<AppDispatch>();
   const { smartAccount } = useSelector((state: RootState) => state.wallet);
@@ -78,7 +84,12 @@ const MyForm: React.FC = () => {
   };
 
   // Method to validate tokens and chains, and return swap details
-  const getSwapDetails = (fromToken: string, fromChain: string, toToken: string, toChain: string) => {
+  const getSwapDetails = (
+    fromToken: string,
+    fromChain: string,
+    toToken: string,
+    toChain: string
+  ) => {
     const { fromTokenDetails, fromChainDetails, toTokenDetails, toChainDetails } =
       validateTokenAndChain(fromToken, fromChain, toToken, toChain);
 
@@ -92,10 +103,15 @@ const MyForm: React.FC = () => {
       toChain,
       amount, // Swap amount (assumed static for now, could be dynamic)
     };
-  }
+  };
 
   // Method to retrieve the wallet balance for a given token on a specific chain
-  const getWalletBalance = async (smartAccount: any, client: any, chainDetail: any, tokenAddress: string) => {
+  const getWalletBalance = async (
+    smartAccount: any,
+    client: any,
+    chainDetail: any,
+    tokenAddress: string
+  ) => {
     // Get balance from the chain
     const walletBalance = await getBalance({
       accountAddress: smartAccount.address,
@@ -105,10 +121,16 @@ const MyForm: React.FC = () => {
     });
 
     // Convert the balance from wei to Ether units for readability
-    return ethers.utils.formatUnits(walletBalance, 18);
+    return BigNumber.from(walletBalance);
   };
   // Method to check if the user has enough token allowance for the swap and approve if not
-  const ensureAllowance = async (smartAccount: any, client: any, chainDetail: any, swapAmount: BigNumber, tokenAddress: string) => {
+  const ensureAllowance = async (
+    smartAccount: any,
+    client: any,
+    chainDetail: any,
+    swapAmount: BigNumber,
+    tokenAddress: string
+  ) => {
     // Retrieve the current token allowance for the router contract
     const allowance = await checkAllowance({
       ownerAddress: smartAccount.address,
@@ -138,7 +160,14 @@ const MyForm: React.FC = () => {
   };
 
   // Method to perform the token bridging transaction
-  const bridgeTokenTransaction = async (swapDetails: any, destinationLaneId: string, smartAccount: any, client: any, chainDetail: any, swapAmount: BigNumber) => {
+  const bridgeTokenTransaction = async (
+    swapDetails: any,
+    destinationLaneId: string,
+    smartAccount: any,
+    client: any,
+    chainDetail: any,
+    swapAmount: BigNumber
+  ) => {
     await bridgeToken({
       tokenAddress: swapDetails.fromTokenAddress, // Address of the token to be bridged
       destinationLaneId, // Lane ID for cross-chain transfer
@@ -151,8 +180,6 @@ const MyForm: React.FC = () => {
     });
   };
 
-
-
   const handleChainChange = (value: string, isFromChain: boolean) => {
     if (isFromChain) {
       setFromChain(value);
@@ -164,12 +191,12 @@ const MyForm: React.FC = () => {
   const handleSwap = async () => {
     if (!smartAccount) return;
 
-    setIsLoading(true); // Show spinner
+    // console.log(ethers.utils.parseEther("11212"));
+    let parsedAmount = ethers.utils.parseEther(amount);
 
     const client = createClient();
 
     try {
-
       const swapDetails = getSwapDetails(fromToken, fromChain, toToken, toChain);
 
       // Retrieve chain details for the source chain
@@ -180,27 +207,46 @@ const MyForm: React.FC = () => {
         swapDetails.toChain.toLowerCase()
       );
 
+      debugger;
       // Get the user's wallet balance for the token on the source chain
-      const balanceInEther = await getWalletBalance(smartAccount, client, chainDetail, swapDetails.fromTokenAddress);
-      console.log(balanceInEther); // Log the balance for debugging
+      const walletBalance = await getWalletBalance(
+        smartAccount,
+        client,
+        chainDetail,
+        swapDetails.fromTokenAddress
+      );
+      console.log(walletBalance); // Log the balance for debugging
 
       const swapAmountInWei = ethers.utils.parseEther(swapDetails.amount);
 
-      debugger;
-
-
+      // insufficient balance
+      if (swapAmountInWei.gt(walletBalance)) {
+        setShowInsufficientBalanceModal(true);
+        return;
+      }
+      setIsLoading(true); // Show spinner
 
       // Ensure the user has enough token allowance for the swap, approving more if necessary
-      await ensureAllowance(smartAccount, client, chainDetail, swapAmountInWei, swapDetails.fromTokenAddress);
-
+      await ensureAllowance(
+        smartAccount,
+        client,
+        chainDetail,
+        swapAmountInWei,
+        swapDetails.fromTokenAddress
+      );
 
       // Perform the bridging transaction
-      await bridgeTokenTransaction(swapDetails, destinationLaneId, smartAccount, client, chainDetail, swapAmountInWei);
+      await bridgeTokenTransaction(
+        swapDetails,
+        destinationLaneId,
+        smartAccount,
+        client,
+        chainDetail,
+        swapAmountInWei
+      );
 
-      setIsLoading(false); // Hide loading spinner
+      // setIsLoading(false); // Hide loading spinner
       setIsOpen(true); // Open confirmation modal
-
-
 
       setIsLoading(false); // Hide spinner
       setIsOpen(true); // Open modal
@@ -345,36 +391,23 @@ const MyForm: React.FC = () => {
             </IonRow>
           </IonGrid>
 
-          <IonModal isOpen={isOpen} className="md:w-1/2 md:mx-auto">
-            <IonToolbar className="px-2">
-              <IonTitle className="ion-padding-horizontal">Transaction Details</IonTitle>
-              <IonButtons slot="end">
-                <IonButton onClick={() => setIsOpen(false)}>Close</IonButton>
-              </IonButtons>
-            </IonToolbar>
-
-            <IonContent>
-              {/* <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni illum quidem
-                recusandae ducimus quos reprehenderit. Veniam, molestias quos, dolorum consequuntur
-                nisi deserunt omnis id illo sit cum qui. Eaque, dicta.
-              </p> */}
-              <Transaction />
-            </IonContent>
-          </IonModal>
-
           {/* Loading Spinner */}
-          <IonLoading
+          <TransactionProcessingModal isOpen={isLoading} onClose={() => {}} />
+          {/* <IonLoading
             className="backdrop-blur-sm"
             isOpen={isLoading}
             message={"Processing your transaction..."}
-          />
+          /> */}
 
+          <InsufficientBalanceModal
+            onClose={() => setShowInsufficientBalanceModal(false)}
+            isOpen={showInsufficientBalanceModal}
+          />
           {/* Toast for Error Messages */}
           <IonToast
             isOpen={!!toastMessage}
             message={toastMessage || ""}
-            duration={3000}
+            // duration={3000}
             onDidDismiss={() => setToastMessage(null)}
           />
         </div>

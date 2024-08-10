@@ -114,9 +114,12 @@ const Assests: React.FC = () => {
                     </IonCol>
                     <IonCol>
                       <IonText className="font-medium">
+                        {/* {Number(balances[tokenKey])
+                          ? Number(balances[tokenKey]). toFixed(7)
+                          : "0.00"} */}
                         {Number(balances[tokenKey])
-                          ? Number(balances[tokenKey]).toFixed(7)
-                          : "xxxxxxx"}
+                          ? Number(balances[tokenKey]).toFixed(4)
+                          : "0.00"}
                       </IonText>
                     </IonCol>
                   </IonRow>
