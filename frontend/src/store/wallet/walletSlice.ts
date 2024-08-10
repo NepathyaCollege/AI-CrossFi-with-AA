@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Account } from "thirdweb/wallets";
 import { connectWallet } from "./walletThunk";
+import { ThirdwebClient } from "thirdweb";
 
 export interface IWalletState {
   personalAccount: Account | null;
@@ -8,6 +9,7 @@ export interface IWalletState {
   error: string | null;
   loading: boolean;
   balance: number;
+  client: ThirdwebClient | null;
 }
 
 const initialState: IWalletState = {
@@ -16,6 +18,7 @@ const initialState: IWalletState = {
   error: null,
   loading: false,
   balance: 5000,
+  client: null,
 };
 
 const walletSlice = createSlice({
@@ -33,6 +36,7 @@ const walletSlice = createSlice({
       .addCase(connectWallet.fulfilled, (state, action) => {
         state.personalAccount = action.payload.personalAccount;
         state.smartAccount = action.payload.smartAccount;
+        state.client = action.payload.client;
 
         state.loading = false;
       })
