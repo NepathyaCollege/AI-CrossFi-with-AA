@@ -5,6 +5,8 @@ import {Script} from "forge-std/Script.sol";
 import "../src/chainlink/NepathyaPool.sol";
 import "../src/helpers/Token.sol";
 
+import "../src/chainlink/CrossChainTokenRouter.sol";
+
 contract NepathyaPoolBaseDeployer is Script {
     NepathyaPool nepathyaPool;
 
@@ -12,26 +14,29 @@ contract NepathyaPoolBaseDeployer is Script {
         // Load environment variables
         address routerAddress = 0xD3b06cEbF099CE7DA4AcCf578aaebFDBd6e88a93;
         address linkTokenAddress = 0xE4aB69C077896252FAFBD49EFD26B5D171A32410;
-        address tokenAddress = 0x84cEc3F89A0f28803F177575BbF7b2010A62d2Ec;
+        address tokenAddress = 0xe7A527BD98566FDc99EA72bf16c6cc4eFe3606a0;
+        uint64 destinationSelector = 16015286601757825753;
 
         // Start broadcasting the transaction
         vm.startBroadcast();
 
-        // Deploy the contract
-        nepathyaPool = NepathyaPool(0x20Fa0Fc715121F50ffe229E0DB1504543d04cEA3); //new NepathyaPool(routerAddress, linkTokenAddress, tokenAddress);
-        // IERC20(linkTokenAddress).transfer(address(nepathyaPool), 1000000000000000000);
+        // Deploy the CrossChainTokenRouter
+        CrossChainTokenRouter cctr = new CrossChainTokenRouter();
 
-        // IERC20(tokenAddress).approve(address(nepathyaPool), 100000000000000000000000000000000000000);
-        // Token(tokenAddress).mint(0x75998e806D0BE5B37c5DE74AcfA0006B3C7DCdfF, 100000000000000000000000000000000000000);
+        // Create and register a new NepathyaPool using the router
+        cctr.createAndRegisterPool(destinationSelector, tokenAddress, linkTokenAddress, routerAddress);
 
-        SendParam memory sendParam = SendParam({
-            to: 0x75998e806D0BE5B37c5DE74AcfA0006B3C7DCdfF, // Replace with actual recipient address
-            amount: 1000000000 // Replace with actual amount
-        });
+        cctr.updateDestinationPool(destinationSelector, tokenAddress, tokenAddress);
 
-        nepathyaPool.sendMessagePayLINK(16015286601757825753, 0x82edE4BE52222D2EB93E9A23D6fc94645fe06Cc5, sendParam);
+        // Fetch the newly created pool's address
+        CrossChainTokenRouter.PoolInfo memory poolInfo = cctr.getPoolInfo(destinationSelector, tokenAddress);
 
-        // Stop broadcasting the transaction
+        Token(tokenAddress).approve(address(cctr), 1000000000 ether);
+
+        Token(linkTokenAddress).transfer(poolInfo.sourcePool, 3 ether);
+
+        cctr.bridgeToken(tokenAddress, destinationSelector, msg.sender, 10 ether);
+
         vm.stopBroadcast();
     }
 }

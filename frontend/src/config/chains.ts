@@ -45,7 +45,7 @@ export const tokens: Array<Token> = [
       },
       {
         chainName: "Sepolia",
-        address: "0x89e7fdbd1ea30300719357a1584c28ee34bcb4be",
+        address: "0x7013F03df627CBa867d6892beCE4126D2FC0c35e",
       },
     ],
   },
@@ -67,7 +67,7 @@ export const tokens: Array<Token> = [
 export const chainDetails = {
   base: {
     chain: baseSepolia,
-    routerAddress: "0x3af31c01444f14f5761b7205685bc92663d5bdfb",
+    routerAddress: "0xbfcb4e1eebc37cd6224f45355089037e92e8be76",
     lanes: {
       sepolia: {
         laneId: "16015286601757825753",

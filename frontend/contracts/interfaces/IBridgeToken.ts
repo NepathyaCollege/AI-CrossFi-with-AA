@@ -1,3 +1,5 @@
+import { BigNumber } from "ethers";
+
 /**
  * @interface IBridgeToken
  * @description Interface for bridging tokens across different chains.
@@ -18,10 +20,7 @@ export interface IBridgeToken {
      */
     receiver: string;
 
-    /**
-     * @property {string} amount - The amount of tokens to be bridged.
-     */
-    amount: string;
+    amount: BigNumber;
 
     /**
      * @property {any} client - The client or provider used for blockchain interactions.
