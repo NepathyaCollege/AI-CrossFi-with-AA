@@ -52,7 +52,7 @@ tokenAddress
 
   const params: any = [
     tokenAddress,
-    BigNumber.from(destinationLaneId).toBigInt(),
+    Number(destinationLaneId),
     receiver,
     BigNumber.from(amount).toBigInt(),
   ];
