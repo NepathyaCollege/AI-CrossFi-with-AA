@@ -23,8 +23,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { BigNumber } from "ethers";
 
-const multiTokenKeeperFactory = '0x05663175EB6b36eE039d89Dd9BF0454ece228935'
-
+const multiTokenKeeperFactory = "0x05663175EB6b36eE039d89Dd9BF0454ece228935";
 
 const Order: React.FC = () => {
   const [action, setAction] = useState<string>("pending");
@@ -89,6 +88,7 @@ const Order: React.FC = () => {
             client,
             contractAddress: orderManagerAddress,
           });
+          debugger;
           setOrdersList([...fulfilledOrders]);
         }
       } catch (err: any | unknown) {
@@ -128,46 +128,47 @@ const Order: React.FC = () => {
               className="ion-margin-top text-sm bg-background-secondary rounded-md px-4 py-6 shadow-md"
             >
               <IonGrid>
-                <IonRow className="ion-align-items-center font-semibold gap-3">
-                  <IonCol size="4">Token Name</IonCol>
-                  <IonCol size="3">Target Price</IonCol>
+                <IonRow className="ion-align-items-center text-sm gap-3">
+                  <IonCol>Type</IonCol>
+                  <IonCol>Token</IonCol>
+                  <IonCol>Target Price</IonCol>
                   <IonCol>Amt</IonCol>
-                  <IonCol></IonCol>
                 </IonRow>
-                <IonRow className="ion-align-items-center mt-2 gap-3">
-                  <IonCol size="4" className="flex gap-1 items-center">
+                <IonRow className="ion-align-items-center font-semibold mt-2 gap-3 relative">
+                  {transaction?.orderType === 0 ? (
+                    <IonCol className="text-green-500">Buy</IonCol>
+                  ) : (
+                    <IonCol className="text-red-500">Sell</IonCol>
+                  )}
+
+                  <IonCol className="flex gap-1 items-center">
                     <IonImg
-                      className="w-5 h-5 -ml-1 rounded-full overflow-hidden"
+                      className="w-5 h-5 -ml-2  rounded-full overflow-hidden"
                       src={getTokenDetailsByAddress(transaction?.token)?.logoURI}
                     />
                     {getTokenDetailsByAddress(transaction?.token)?.name}
                   </IonCol>
-                  <IonCol size="3">${transaction?.targetPrice}</IonCol>
+                  <IonCol>${transaction?.targetPrice}s</IonCol>
                   <IonCol>
-                    $
+                    $1
                     {BigNumber.from(transaction?.amount)
                       .div(BigNumber.from("1000000000000000000"))
                       .toString()}
                   </IonCol>
-                  <IonCol>
-                    {action === "pending" && (
-                      <IonChip
-                        onClick={() => handleCancel(transaction?.id)}
-                        className="text-xs -mt-8 mb-2 justify-center bg-red-500 text-center flex"
-                      >
-                        <IonText className="text-center">Cancel</IonText>
-                      </IonChip>
-                    )}
-                    <IonChip
-                      color={transaction?.orderType === 0 ? "success" : "danger"}
-                      className="text-xs justify-center text-center flex"
-                    >
-                      <IonText className="text-center">
-                        {transaction?.orderType === 0 ? "Buy" : "Sell"}
-                      </IonText>
-                    </IonChip>
-                  </IonCol>
                 </IonRow>
+
+                {action === "pending" && (
+                  <IonRow className="justify-end ">
+                    <IonText className="self-end item" slot="">
+                      <IonChip
+                        onClick={() => handleCancel(transaction)}
+                        className="px-2 bg-red-600 text-xs"
+                      >
+                        Cancel
+                      </IonChip>
+                    </IonText>
+                  </IonRow>
+                )}
               </IonGrid>
             </IonRow>
           ))}
