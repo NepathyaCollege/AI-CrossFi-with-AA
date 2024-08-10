@@ -1,7 +1,7 @@
 
 import { ThirdwebClient, getContract, prepareContractCall, readContract, sendTransaction } from "thirdweb";
 import { multiTokenKeeperAbi } from "./abis/multiTokenKeeperAbi";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 // Define an interface for the input parameters
 interface AddOrderParams {
@@ -13,7 +13,7 @@ interface AddOrderParams {
     chainLinkAggregatorAddress: string;
     orderType: 0 | 1;  // 0 for buy, 1 for sell
     priceThreshold: number;
-    amountUSD: string;
+    amount: string;
   }
   
 
@@ -26,7 +26,7 @@ interface AddOrderParams {
     chainLinkAggregatorAddress,
     orderType,
     priceThreshold,
-    amountUSD,
+    amount,
   }: AddOrderParams): Promise<string> => {
     const contract = getContract({
       client,
@@ -35,7 +35,7 @@ interface AddOrderParams {
       abi: multiTokenKeeperAbi as any, // Adjust if you have a proper ABI type
     });
   
-    const amountInEther = BigNumber.from(amountUSD).mul(BigNumber.from("1000000000000000000"));
+    const amoutOnWei = ethers.utils.parseUnits(amount,18);
   
     // This method will add an order to the contract with the specified parameters.
     const transaction = await prepareContractCall({
@@ -46,7 +46,7 @@ interface AddOrderParams {
         chainLinkAggregatorAddress, // Chainlink aggregator address
         orderType,                  // Order type (0 for buy, 1 for sell)
         priceThreshold,             // Price threshold (target price)
-        amountInEther,              // Amount to buy (in smallest unit)
+        amoutOnWei,              // Amount to buy (in smallest unit)
       ],
     });
   
