@@ -42,7 +42,7 @@ contract MultiTokenKeeper is AutomationCompatibleInterface, Ownable {
         if (_orderType == OrderManager.OrderType.Buy) {
             IERC20(usdtAddress).transferFrom(msg.sender, address(this), _amount);
         } else {
-            IERC20(_token).transferFrom(msg.sender,address(this), _amount);
+            IERC20(_token).transferFrom(msg.sender, address(this), _amount);
         }
 
         // if()
@@ -63,22 +63,24 @@ contract MultiTokenKeeper is AutomationCompatibleInterface, Ownable {
     {
         upkeepNeeded = false;
         OrderManager.Order[] memory activeOrders = orderManager.getActiveOrders();
+
         for (uint256 i = 0; i < activeOrders.length; i++) {
             int256 latestPrice = getLatestPrice(activeOrders[i].priceFeed);
-            // if (
-            //     // (
-            //         activeOrders[i].orderType == OrderManager.OrderType.Buy
-            //             // && latestPrice < activeOrders[i].priceThreshold
-            //     // )
-            //         // || (
-            //         //     activeOrders[i].orderType == OrderManager.OrderType.Sell
-            //         //         && latestPrice > activeOrders[i].priceThreshold
-            //         // )
-            // ) {
-            upkeepNeeded = true;
-            performData = abi.encode(activeOrders[i]);
-            break;
-            // }
+
+            if (
+                (
+                    activeOrders[i].orderType == OrderManager.OrderType.Buy
+                        && latestPrice <= activeOrders[i].priceThreshold
+                ) // Check for Buy orders
+                    || (
+                        activeOrders[i].orderType == OrderManager.OrderType.Sell
+                            && latestPrice >= activeOrders[i].priceThreshold
+                    ) // Check for Sell orders
+            ) {
+                upkeepNeeded = true;
+                performData = abi.encode(activeOrders[i]);
+                break;
+            }
         }
     }
 
