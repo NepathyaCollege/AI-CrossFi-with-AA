@@ -23,6 +23,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { BigNumber } from "ethers";
 
+const multiTokenKeeperFactory = '0xA05A6F279384044c5C60ad7384926cA39b291d85'
+
+
 const Order: React.FC = () => {
   const [action, setAction] = useState<string>("pending");
   const { smartAccount } = useSelector((state: RootState) => state.wallet);
@@ -44,7 +47,7 @@ const Order: React.FC = () => {
           ownerAddress: smartAccount?.address,
           chain: baseSepolia,
           client,
-          contractAddress: "0x163818e49ccc4909ed70649806153020354b843b",
+          contractAddress: multiTokenKeeperFactory,
         });
 
         if (
@@ -55,7 +58,7 @@ const Order: React.FC = () => {
             smartAccount,
             client,
             chain: baseSepolia,
-            contractAddress: "0x163818e49ccc4909ed70649806153020354b843b",
+            contractAddress: multiTokenKeeperFactory,
           });
         }
 
@@ -63,7 +66,7 @@ const Order: React.FC = () => {
           ownerAddress: smartAccount?.address,
           chain: baseSepolia,
           client,
-          contractAddress: "0x163818e49ccc4909ed70649806153020354b843b",
+          contractAddress: multiTokenKeeperFactory,
         });
 
         const orderManagerAddress = await getOrderManagerAddress({

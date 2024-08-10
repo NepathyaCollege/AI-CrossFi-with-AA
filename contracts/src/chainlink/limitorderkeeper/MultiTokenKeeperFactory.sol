@@ -49,11 +49,14 @@ contract MultiTokenKeeperFactory {
         linkAmount = _linkAmount;
     }
 
-    function createAndRegisterMultiTokenKeeper(address owner) external returns (address multiTokenKeeperAddress, uint256 upkeepId) {
+    function createAndRegisterMultiTokenKeeper(address owner)
+        external
+        returns (address multiTokenKeeperAddress, uint256 upkeepId)
+    {
         require(multiTokenKeeperByOwner[owner] == address(0), "MultiTokenKeeper already exists for this owner");
 
         // Deploy a new MultiTokenKeeper contract
-        MultiTokenKeeper multiTokenKeeper = new MultiTokenKeeper(uniswapRouter, usdtAddress, aggregatorManager);
+        MultiTokenKeeper multiTokenKeeper = new MultiTokenKeeper(uniswapRouter, usdtAddress, aggregatorManager, owner);
         multiTokenKeeperAddress = address(multiTokenKeeper);
 
         // Approve the KeeperRegistry to spend LINK tokens
