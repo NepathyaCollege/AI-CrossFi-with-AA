@@ -4,7 +4,7 @@ import {
   IonCol,
   IonContent,
   IonGrid,
-  IonHeader,
+  IonIcon,
   IonInput,
   IonItem,
   IonLabel,
@@ -17,13 +17,14 @@ import {
   IonToast,
   IonToolbar,
 } from "@ionic/react";
-import { BigNumber, constants, ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
+import { swapVerticalOutline } from "ionicons/icons";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { bridgeToken } from "../../contracts/crossChainTokenRouter";
 import { approveERC20, checkAllowance, getBalance } from "../../contracts/erc20";
-import { chainDetails } from "../config/chains";
+import { chainDetails, tokens } from "../config/chains";
 import {
   createClient,
   getAvailableChains,
@@ -33,8 +34,8 @@ import {
 } from "../config/helpers";
 import { AppDispatch, RootState } from "../store/store";
 import Transaction from "./Transaction";
-import InsufficientBalanceModal from "../components/InsufficientBalanceModal";
 import TransactionProcessingModal from "../components/TransactionProcessingModal";
+import InsufficientBalanceModal from "../components/InsufficientBalanceModal";
 
 const defaultAllowanceAmount =
   "1000000000000000000000000000000000000000000000000000000000000000000000000000";
@@ -49,16 +50,14 @@ const MyForm: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [showInsufficientBalanceModal, setShowInsufficientBalanceModal] = useState<boolean>(false);
-
-  // isOpen={showTransactionModal}
-  // onClose={() => setShowTransactionModal(false)}
+  const [fromTokenBalance, setFromTokenBalance] = useState<string>("0.00");
 
   const dispatch = useDispatch<AppDispatch>();
   const { smartAccount } = useSelector((state: RootState) => state.wallet);
 
   const [availableFromChains, setAvailableFromChains] = useState<string[]>([]);
   const [availableToChains, setAvailableToChains] = useState<string[]>([]);
+  const [showInsufficientBalanceModal, setShowInsufficientBalanceModal] = useState<boolean>(false);
 
   // useEffect(() => {
   //   dispatch(connectWallet());
@@ -72,17 +71,42 @@ const MyForm: React.FC = () => {
     setAvailableToChains(getAvailableChains(toToken));
   }, [toToken]);
 
-  const handleTokenChange = (value: string, isFromToken: boolean) => {
+  const handleTokenChange = async (value: string, isFromToken: boolean) => {
     const [symbol, chainName] = value.split("-");
     if (isFromToken) {
       setFromToken(symbol);
       setFromChain(chainName);
+
+      // fetch balance
+      const tokenDetails = tokens.find((token) => token.symbol === symbol);
+      if (tokenDetails) {
+        const tokenAddress = tokenDetails.chains.find(
+          (chain) => chain.chainName === chainName
+        )?.address;
+        if (tokenAddress) {
+          try {
+            const client = createClient();
+            const chainDetail = (chainDetails as any)[chainName.toLowerCase()];
+            if (chainDetail) {
+              const balance = await getWalletBalance(
+                smartAccount,
+                client,
+                chainDetail,
+                tokenAddress
+              );
+
+              setFromTokenBalance(balance.toString());
+            }
+          } catch (error) {
+            console.error("Error fetching balance:", error);
+          }
+        }
+      }
     } else {
       setToToken(symbol);
       setToChain(chainName);
     }
   };
-
   // Method to validate tokens and chains, and return swap details
   const getSwapDetails = (
     fromToken: string,
@@ -191,9 +215,6 @@ const MyForm: React.FC = () => {
   const handleSwap = async () => {
     if (!smartAccount) return;
 
-    // console.log(ethers.utils.parseEther("11212"));
-    let parsedAmount = ethers.utils.parseEther(amount);
-
     const client = createClient();
 
     try {
@@ -207,20 +228,19 @@ const MyForm: React.FC = () => {
         swapDetails.toChain.toLowerCase()
       );
 
-      debugger;
       // Get the user's wallet balance for the token on the source chain
-      const walletBalance = await getWalletBalance(
+      const balanceInEther = await getWalletBalance(
         smartAccount,
         client,
         chainDetail,
         swapDetails.fromTokenAddress
       );
-      console.log(walletBalance); // Log the balance for debugging
+      console.log(balanceInEther); // Log the balance for debugging
 
       const swapAmountInWei = ethers.utils.parseEther(swapDetails.amount);
-
+      console.log(swapAmountInWei);
       // insufficient balance
-      if (swapAmountInWei.gt(walletBalance)) {
+      if (swapAmountInWei.gt(balanceInEther)) {
         setShowInsufficientBalanceModal(true);
         return;
       }
@@ -252,7 +272,7 @@ const MyForm: React.FC = () => {
       setIsOpen(true); // Open modal
     } catch (error: any) {
       setIsLoading(false); // Hide spinner
-      setToastMessage("Error during swap: " + error.message); // Show toast message
+      setToastMessage("Error during swap: "); // Show toast message
       console.error("Error during swap", error);
     }
   };
@@ -262,107 +282,121 @@ const MyForm: React.FC = () => {
       <IonContent>
         <div>
           <IonGrid className="ion-padding">
-            <IonRow>
-              <IonCol className="ion-padding">
-                <IonLabel>Token</IonLabel>
+            <IonRow className=" gap-4">
+              <IonCol className="">
+                <IonRow>
+                  <IonCol className="ion-padding">
+                    <IonLabel>Token</IonLabel>
+                  </IonCol>
+                </IonRow>
+                <IonRow>
+                  <IonCol>
+                    <IonItem>
+                      <IonSelect
+                        interface="popover"
+                        placeholder="Select "
+                        value={fromToken ? `${fromToken}-${fromChain}` : ""}
+                        onIonChange={(e) => handleTokenChange(e.detail.value, true)}
+                      >
+                        {getTokenOptions().map((option) => (
+                          <IonSelectOption key={option.value} value={option.value}>
+                            {option.label}
+                          </IonSelectOption>
+                        ))}
+                      </IonSelect>
+                    </IonItem>
+                  </IonCol>
+                </IonRow>
               </IonCol>
-            </IonRow>
-
-            <IonRow>
               <IonCol>
-                <IonItem>
-                  <IonSelect
-                    interface="popover"
-                    placeholder="Select "
-                    value={fromToken ? `${fromToken}-${fromChain}` : ""}
-                    onIonChange={(e) => handleTokenChange(e.detail.value, true)}
-                  >
-                    {getTokenOptions().map((option) => (
-                      <IonSelectOption key={option.value} value={option.value}>
-                        {option.label}
-                      </IonSelectOption>
-                    ))}
-                  </IonSelect>
-                </IonItem>
-              </IonCol>
-            </IonRow>
+                <IonRow>
+                  <IonCol className="ion-padding">
+                    <IonLabel>From</IonLabel>
+                  </IonCol>
+                </IonRow>
 
-            <IonRow>
-              <IonCol className="ion-padding">
-                <IonLabel>From</IonLabel>
-              </IonCol>
-            </IonRow>
-
-            <IonRow>
-              <IonCol>
-                <IonItem>
-                  <IonSelect
-                    interface="popover"
-                    placeholder="Select "
-                    value={fromChain}
-                    onIonChange={(e) => handleChainChange(e.detail.value, true)}
-                    disabled={!fromToken}
-                  >
-                    {availableFromChains.map((chainName) => (
-                      <IonSelectOption key={chainName} value={chainName}>
-                        {chainName}
-                      </IonSelectOption>
-                    ))}
-                  </IonSelect>
-                </IonItem>
+                <IonRow>
+                  <IonCol>
+                    <IonItem>
+                      <IonSelect
+                        interface="popover"
+                        placeholder="Select "
+                        value={fromChain}
+                        onIonChange={(e) => handleChainChange(e.detail.value, true)}
+                        disabled={!fromToken}
+                      >
+                        {availableFromChains.map((chainName) => (
+                          <IonSelectOption key={chainName} value={chainName}>
+                            {chainName}
+                          </IonSelectOption>
+                        ))}
+                      </IonSelect>
+                    </IonItem>
+                  </IonCol>
+                </IonRow>
               </IonCol>
             </IonRow>
           </IonGrid>
 
-          <IonGrid className="ion-padding">
-            <IonRow>
-              <IonCol className="ion-padding">
-                <IonLabel>Token</IonLabel>
-              </IonCol>
-            </IonRow>
+          <IonGrid className=" flex items-center justify-center">
+            <IonIcon icon={swapVerticalOutline} className="text-3xl ion-padding-top" />
+          </IonGrid>
 
-            <IonRow>
+          <IonGrid className=" ion-padding ">
+            <IonRow className="gap-4">
               <IonCol>
-                <IonItem>
-                  <IonSelect
-                    interface="popover"
-                    placeholder="Select "
-                    value={toToken ? `${toToken}-${toChain}` : ""}
-                    onIonChange={(e) => handleTokenChange(e.detail.value, false)}
-                  >
-                    {getFilteredTokenOptions(fromToken, fromChain).map((option) => (
-                      <IonSelectOption key={option.value} value={option.value}>
-                        {option.label}
-                      </IonSelectOption>
-                    ))}
-                  </IonSelect>
-                </IonItem>
-              </IonCol>
-            </IonRow>
+                <IonRow>
+                  <IonCol className="ion-padding">
+                    <IonLabel>Token</IonLabel>
+                  </IonCol>
+                </IonRow>
 
-            <IonRow>
-              <IonCol className="ion-padding">
-                <IonLabel>To</IonLabel>
+                <IonRow>
+                  <IonCol>
+                    <IonItem>
+                      <IonSelect
+                        interface="popover"
+                        placeholder="Select "
+                        value={toToken ? `${toToken}-${toChain}` : ""}
+                        onIonChange={(e) => handleTokenChange(e.detail.value, false)}
+                      >
+                        {getFilteredTokenOptions(fromToken, fromChain).map((option) => (
+                          <IonSelectOption key={option.value} value={option.value}>
+                            {option.label}
+                          </IonSelectOption>
+                        ))}
+                      </IonSelect>
+                    </IonItem>
+                  </IonCol>
+                </IonRow>
               </IonCol>
-            </IonRow>
 
-            <IonRow>
               <IonCol>
-                <IonItem>
-                  <IonSelect
-                    interface="popover"
-                    placeholder="Select "
-                    value={toChain}
-                    onIonChange={(e) => handleChainChange(e.detail.value, false)}
-                    disabled={!toToken}
-                  >
-                    {availableToChains.map((chainName) => (
-                      <IonSelectOption key={chainName} value={chainName}>
-                        {chainName}
-                      </IonSelectOption>
-                    ))}
-                  </IonSelect>
-                </IonItem>
+                <IonRow>
+                  <IonCol className="ion-padding">
+                    <IonLabel>To</IonLabel>
+                  </IonCol>
+                </IonRow>
+
+                <IonRow>
+                  <IonCol>
+                    <IonItem>
+                      <IonSelect
+                        interface="popover"
+                        placeholder="Select "
+                        value={toChain}
+                        onIonChange={(e) => handleChainChange(e.detail.value, false)}
+                        disabled={!toToken}
+                      >
+                        {availableToChains.map((chainName) => (
+                          <IonSelectOption key={chainName} value={chainName}>
+                            {chainName}
+                          </IonSelectOption>
+                        ))}
+                      </IonSelect>
+                    </IonItem>
+                  </IonCol>
+                </IonRow>
               </IonCol>
             </IonRow>
           </IonGrid>
@@ -377,7 +411,11 @@ const MyForm: React.FC = () => {
                     label="Amount"
                     labelPlacement="floating"
                     onIonChange={(e) => setAmount(e.detail.value!)}
-                  />
+                  >
+                    <IonLabel slot="end" color="success">
+                      MAX: {fromTokenBalance}
+                    </IonLabel>
+                  </IonInput>
                 </IonItem>
               </IonCol>
             </IonRow>
@@ -403,11 +441,12 @@ const MyForm: React.FC = () => {
             onClose={() => setShowInsufficientBalanceModal(false)}
             isOpen={showInsufficientBalanceModal}
           />
+
           {/* Toast for Error Messages */}
           <IonToast
             isOpen={!!toastMessage}
             message={toastMessage || ""}
-            // duration={3000}
+            duration={3000}
             onDidDismiss={() => setToastMessage(null)}
           />
         </div>
