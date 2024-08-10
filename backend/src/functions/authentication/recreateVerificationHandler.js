@@ -1,12 +1,11 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
-  GetCommand,
   PutCommand,
-  DeleteCommand,
 } from '@aws-sdk/lib-dynamodb';
 import errorHandler from '../../common/errorHandler';
 import successHandler from '../../common/successHandler';
+import { v4 as uuidv4 } from 'uuid';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
@@ -15,13 +14,20 @@ export const handler = async (event) => {
   try {
     const userId = event.requestContext.authorizer.principalId;
 
-    // Recreate the verification record for the user
-    const thirdWebKey = await recreateVerificationForUser(userId);
+    console.log(userId);
 
-    // Remove sensitive fields
-    delete thirdWebKey.userId;
+    const { principalId: email } = event.requestContext.authorizer;
 
-    return successHandler(thirdWebKey);
+    const key = uuidv4();
+
+    const postParams = {
+      TableName: 'ThirdWebVerification',
+      Item: { email, key, userId },
+    };
+
+    await docClient.send(new PutCommand(postParams));
+
+    return successHandler({ thirdWebKey: key });
   } catch (error) {
     console.log(error);
     return errorHandler(error);
