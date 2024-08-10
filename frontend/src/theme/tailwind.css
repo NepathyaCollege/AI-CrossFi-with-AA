@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 /** other custom global styles can go here */
 
 * {
@@ -11,50 +10,53 @@
   box-sizing: border-box;
 }
 
-
-
-
-.b{
-  border: 1px solid red;  
+.b {
+  border: 1px solid red;
 }
-
 
 /* default color */
 :root {
-  --ion-text-color: rgba(241, 245, 249, 0.837) !important; 
+  --ion-text-color: rgba(241, 245, 249, 0.837) !important;
 }
-
 
 /* overriding css for Ion item & Ionselect */
 .no-border-bottom {
-
   --inner-border-width: 0;
- 
 
-  --background: transparent; 
-  --background-activated: transparent; 
-  --background-focused: transparent; 
-  --background-hover: transparent; 
- 
+  --background: transparent;
+  --background-activated: transparent;
+  --background-focused: transparent;
+  --background-hover: transparent;
 }
-
-
-
 
 .vertical-center {
   display: flex;
   align-items: center;
   justify-content: center;
-} 
+}
 
 ion-item {
-
   /* --inner-border-width: 0; */
- border-radius: 8px;
+  border-radius: 8px;
 
   /* --background: transparent; 
   --background-activated: transparent; 
   --background-focused: transparent; 
   --background-hover: transparent;  */
- 
+}
+
+.f {
+  display: flex;
+}
+
+.segment-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.segment-image {
+  width: 24px; /* Adjust size as needed */
+  height: auto;
+  margin-right: 8px; /* Space between image and text */
 }

@@ -5,10 +5,14 @@ import {
   IonContent,
   IonGrid,
   IonImg,
+  IonItemSliding,
+  IonItemOption,
+  IonItemOptions,
   IonRow,
   IonSegment,
   IonSegmentButton,
   IonText,
+  IonItem,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 import { getActiveOrders, getFulfilledOrders } from "../../contracts/orderManager";
@@ -49,9 +53,7 @@ const Order: React.FC = () => {
           contractAddress: multiTokenKeeperFactory,
         });
 
-        if (
-          address.toLocaleLowerCase() === "0x0000000000000000000000000000000000000000".toLowerCase()
-        ) {
+        if (address.toLowerCase() === "0x0000000000000000000000000000000000000000".toLowerCase()) {
           // Create keeper if no keeper created for user
           await createMultiTokenKeeper({
             smartAccount,
@@ -88,7 +90,6 @@ const Order: React.FC = () => {
             client,
             contractAddress: orderManagerAddress,
           });
-          debugger;
           setOrdersList([...fulfilledOrders]);
         }
       } catch (err: any | unknown) {
@@ -123,54 +124,49 @@ const Order: React.FC = () => {
       ) : (
         <IonGrid className="h-full w-full">
           {ordersList?.map((transaction) => (
-            <IonRow
+            <IonItemSliding
               key={transaction?.id}
-              className="ion-margin-top text-sm bg-background-secondary rounded-md px-4 py-6 shadow-md"
+              className="ion-margin-top text-sm bg-background-secondary rounded-md shadow-md"
             >
-              <IonGrid>
-                <IonRow className="ion-align-items-center text-sm gap-3">
-                  <IonCol>Type</IonCol>
-                  <IonCol>Token</IonCol>
-                  <IonCol>Target Price</IonCol>
-                  <IonCol>Amt</IonCol>
-                </IonRow>
-                <IonRow className="ion-align-items-center font-semibold mt-2 gap-3 relative">
-                  {transaction?.orderType === 0 ? (
-                    <IonCol className="text-green-500">Buy</IonCol>
-                  ) : (
-                    <IonCol className="text-red-500">Sell</IonCol>
-                  )}
+              <IonItemOptions side="end">
+                <IonItemOption color="danger" onClick={() => handleCancel(transaction?.id)}>
+                  Cancel
+                </IonItemOption>
+              </IonItemOptions>
 
-                  <IonCol className="flex gap-1 items-center">
-                    <IonImg
-                      className="w-5 h-5 -ml-2  rounded-full overflow-hidden"
-                      src={getTokenDetailsByAddress(transaction?.token)?.logoURI}
-                    />
-                    {getTokenDetailsByAddress(transaction?.token)?.name}
-                  </IonCol>
-                  <IonCol>${transaction?.targetPrice}s</IonCol>
-                  <IonCol>
-                    $1
-                    {BigNumber.from(transaction?.amount)
-                      .div(BigNumber.from("1000000000000000000"))
-                      .toString()}
-                  </IonCol>
-                </IonRow>
-
-                {action === "pending" && (
-                  <IonRow className="justify-end ">
-                    <IonText className="self-end item" slot="">
-                      <IonChip
-                        onClick={() => handleCancel(transaction)}
-                        className="px-2 bg-red-600 text-xs"
-                      >
-                        Cancel
-                      </IonChip>
-                    </IonText>
+              <IonItem>
+                <IonGrid className="pl-4 pr-2 py-3">
+                  <IonRow className="ion-align-items-center mb-2 font-semibold text-text-textfield2 ">
+                    <IonCol>Type</IonCol>
+                    <IonCol>Token</IonCol>
+                    <IonCol>Target Price</IonCol>
+                    <IonCol>Amt</IonCol>
                   </IonRow>
-                )}
-              </IonGrid>
-            </IonRow>
+                  <IonRow className="ion-align-items-center text-sm gap-3">
+                    {transaction?.orderType === 0 ? (
+                      <IonCol className="text-green-500">Buy</IonCol>
+                    ) : (
+                      <IonCol className="text-red-500">Sell</IonCol>
+                    )}
+
+                    <IonCol className="flex gap-1 items-center">
+                      <IonImg
+                        className="w-5 h-5 -ml-2 rounded-full overflow-hidden"
+                        src={getTokenDetailsByAddress(transaction?.token)?.logoURI}
+                      />
+                      {getTokenDetailsByAddress(transaction?.token)?.name}
+                    </IonCol>
+                    <IonCol>${transaction?.targetPrice}s</IonCol>
+                    <IonCol>
+                      $1
+                      {BigNumber.from(transaction?.amount)
+                        .div(BigNumber.from("1000000000000000000"))
+                        .toString()}
+                    </IonCol>
+                  </IonRow>
+                </IonGrid>
+              </IonItem>
+            </IonItemSliding>
           ))}
         </IonGrid>
       )}
