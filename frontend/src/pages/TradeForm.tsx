@@ -259,7 +259,10 @@ const TradeForm: React.FC = () => {
   return (
     <IonContent className="">
       <div className="mt-5 w-72 mx-auto">
-        <ActionSegment action={action} onChange={(newAction) => setAction(newAction)} />
+        <ActionSegment
+          action={action}
+          onChange={(newAction) => setAction(newAction as "buy" | "sell")}
+        />
       </div>
       <div className="ion-padding ion-margin-top ">
         {/* Network Selection */}
