@@ -8,6 +8,7 @@ Welcome to the DeFi project! This project leverages the power of AI to enhance t
 - [Features](#features)
 - [Prerequisites](#Prerequisites)
 - [License](#license)
+- [Contracts Documentation](contracts/README.md)
 
 ## Introduction
 
