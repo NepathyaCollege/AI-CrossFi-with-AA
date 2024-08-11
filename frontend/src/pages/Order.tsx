@@ -146,10 +146,10 @@ const Order: React.FC = () => {
                     </IonCol>
                     <IonCol className="">
                       <IonText className="text-opacity-0 text-black">///</IonText>
-                      Amt
+                      Amount
                     </IonCol>
                   </IonRow>
-                  <IonRow className="ion-align-items-center text-sm gap-3">
+                  <IonRow className="ion-align-items-center font-semibold text-sm gap-3">
                     {order?.orderType === 0 ? (
                       <IonCol className="text-green-500">Buy</IonCol>
                     ) : (
@@ -158,13 +158,13 @@ const Order: React.FC = () => {
 
                     <IonCol className="flex gap-1 items-center">
                       <IonImg
-                        className="w-5 h-5 -ml-2 rounded-full overflow-hidden"
+                        className="w-5 h-5  rounded-full overflow-hidden"
                         src={getTokenDetailsByAddress(order?.token)?.logoURI}
                       />
                       {getTokenDetailsByAddress(order?.token)?.name}
                     </IonCol>
                     <IonCol className="" size="4">
-                      ${order?.targetPrice}
+                      ${BigNumber.from(order?.priceThreshold).toString()}
                     </IonCol>
                     <IonCol size="2" className=" w-auto">
                       $

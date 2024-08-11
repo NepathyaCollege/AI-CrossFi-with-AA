@@ -1,9 +1,9 @@
 import React from "react";
-import { IonInput, IonRow, IonCol, IonChip } from "@ionic/react";
+import { IonInput, IonRow, IonCol, IonChip, IonInputPasswordToggle } from "@ionic/react";
 
 interface IFormInputProps {
   name: string;
-  type: string;
+  type: any;
   placeholder: string;
   value: string;
   readonly?: boolean;
@@ -17,8 +17,10 @@ const FormInput: React.FC<IFormInputProps> = ({
   value,
   onChange,
   onBlur,
-  // error,
+
   readonly,
+
+  type = "text",
 }) => {
   const handleIonInput = (e: CustomEvent) => {
     onChange(e);
@@ -37,12 +39,13 @@ const FormInput: React.FC<IFormInputProps> = ({
             mode="md"
             slot="start"
             color="primary"
-            className="rounded-lg px-2 text-xs font-bold text-white"
+            className="rounded-lg px-2 text-xs relative font-bold text-white"
           >
             New
           </IonChip>
 
           <IonInput
+            type={type}
             mode="md"
             readonly={readonly}
             value={value}
@@ -54,7 +57,9 @@ const FormInput: React.FC<IFormInputProps> = ({
             fill="outline"
             placeholder={placeholder}
             className="mb-6"
-          ></IonInput>
+          >
+            {type === "password" && <IonInputPasswordToggle slot="end"></IonInputPasswordToggle>}
+          </IonInput>
         </IonCol>
       </IonRow>
       {/* {error && (

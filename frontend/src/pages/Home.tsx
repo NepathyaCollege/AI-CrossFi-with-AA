@@ -18,11 +18,11 @@ const Home: React.FC = () => {
 
   return (
     <IonContent className="ion-padding">
-      <IonGrid className=" h-full w-full">
+      <IonGrid className=" h-full w-full mt-2">
         <IonRow>
           <IonText className="text-xl font-semibold">Nepathya AI Defi Wallet</IonText>
         </IonRow>
-        <IonRow className="ion-margin-top text-text-textfield1">
+        <IonRow className="py-2 text-text-textfield1">
           <IonText className="text-text-textfield2">
             Transact dast and safe Nepathya AI Defi Ecosystem with your smartwallet.
           </IonText>
