@@ -36,7 +36,7 @@ const ArtiicialIntelligence: React.FC = () => {
         {/* Chat bot */}
         <IonRow className="gap-5 mb-7 ion-justify-content-center w-full">
           <IonCol size="12" className="">
-            <IonCard className=" rounded-lg flex  gap-4 shadow-black shadow-md  ion-padding ">
+            <IonCard className=" rounded-lg flex  gap-4  shadow-md  ion-padding ">
               <figure className="flex items-center">
                 <IonImg src="ChatBot.png" className="w-20  h-20 rounded-full  overflow-hidden" />
               </figure>
@@ -66,7 +66,7 @@ const ArtiicialIntelligence: React.FC = () => {
 
         <IonRow className="gap-5 mb-7 ion-justify-content-center w-full">
           <IonCol size="12" className="">
-            <IonCard className=" rounded-lg flex  gap-4 shadow-black  shadow-md  ion-padding ">
+            <IonCard className=" rounded-lg flex  gap-4   shadow-md  ion-padding ">
               <figure className="flex items-center">
                 <IonImg
                   src="ImageGenerator.png"

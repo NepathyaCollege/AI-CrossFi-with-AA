@@ -15,7 +15,8 @@ const BridgeStatusModal: React.FC<{
 
   return (
     <>
-      <div className="fixed inset-0 flex items-center justify-center z-50 p-4 ">
+      <div className="fixed inset-0 flex  backdrop bg-black bg-opacity-70  items-center justify-center z-50 p-4 ">
+        {" "}
         <div className=" p-8 rounded-lg shadow-lg w-3/4  max-w-lg flex flex-col items-center border-2 border-zinc-800 justify-center bg-background-secondary relative">
           <button
             onClick={onClose}
@@ -39,7 +40,7 @@ const BridgeStatusModal: React.FC<{
               />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold mb-4 text-green-400">Bridge Sucessfull</h3>
+          <h3 className="text-lg font-semibold mb-4 text-green-400">Bridge Sucessfull</h3>{" "}
           <div
             onClick={() => {
               handleRedirection(transactionHash);

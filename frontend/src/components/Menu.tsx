@@ -11,20 +11,12 @@ import {
   IonMenuToggle,
   IonToolbar,
 } from "@ionic/react";
-import {
-  cashOutline,
-  chatbubbleEllipsesOutline,
-  homeOutline,
-  logOutOutline,
-  optionsOutline,
-  personOutline,
-  settingsOutline,
-  swapVerticalOutline,
-} from "ionicons/icons";
-import { clearTokens } from "../config/authTokens";
+import { cashOutline, homeOutline, logOutOutline, swapVerticalOutline } from "ionicons/icons";
 import { FaFirstOrder } from "react-icons/fa";
+import { clearTokens } from "../config/authTokens";
 
 import { GiArtificialHive } from "react-icons/gi";
+import { TbBuildingBridge } from "react-icons/tb";
 
 const menuItems = [
   {
@@ -35,7 +27,7 @@ const menuItems = [
   {
     label: "Bridge",
     link: "/bridge",
-    icon: <IonIcon icon={optionsOutline} />,
+    icon: <TbBuildingBridge />,
   },
   {
     label: "Trade",
@@ -56,7 +48,7 @@ const menuItems = [
   {
     label: "Our AI",
     link: "/ai",
-    icon: <GiArtificialHive className="text-2xl" />,
+    icon: <GiArtificialHive className="text-[27px]" />,
   },
 ];
 
@@ -64,22 +56,24 @@ const Menu = () => {
   return (
     <IonMenu type="overlay" contentId="main-content">
       <IonHeader>
-        <IonToolbar>
-          <IonImg className="mt-2 h-16 w-32 pl-4" src="AppLogo.svg" />
+        <IonToolbar className="pb-3">
+          <IonImg className="mt-2 h-16  w-32 pl-4" src="AppLogo.svg" />
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonGrid className="mt-3">
+        <IonGrid className="mt-3 pl-1">
           {menuItems.map((item, index) => (
             <IonMenuToggle key={index}>
               <IonItem
                 className="no-border-bottom  hover:bg-background-tertiary  my-1"
                 routerLink={item.link}
               >
-                <IonCol className="text-2xl flex mr-2" size="auto">
+                <IonCol className="text-[27px] flex mr-2" size="auto">
                   {item.icon}
                 </IonCol>
-                <IonLabel className="flex  w-full items-center gap-3">{item.label}</IonLabel>
+                <IonLabel className="flex  font-medium w-full items-center gap-3">
+                  {item.label}
+                </IonLabel>
               </IonItem>
             </IonMenuToggle>
           ))}
@@ -92,7 +86,7 @@ const Menu = () => {
               <IonCol className="text-3xl flex mr-2" size="auto">
                 <IonIcon icon={logOutOutline} />
               </IonCol>
-              <IonLabel>Logout</IonLabel>
+              <IonLabel className="font-medium">Logout</IonLabel>
             </IonItem>
           </IonMenuToggle>
         </IonGrid>

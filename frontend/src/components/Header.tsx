@@ -9,12 +9,13 @@ import {
   IonText,
   IonToolbar,
 } from "@ionic/react";
-import { cashOutline, optionsSharp, swapVerticalOutline } from "ionicons/icons";
+import { optionsSharp, swapVerticalOutline } from "ionicons/icons";
 import React from "react";
+import { FaFirstOrder } from "react-icons/fa";
+import { GiArtificialHive } from "react-icons/gi";
+import { TbBuildingBridge } from "react-icons/tb";
 import { useLocation } from "react-router-dom";
 import Menu from "./Menu";
-import { GiArtificialHive } from "react-icons/gi";
-import { FaFirstOrder } from "react-icons/fa";
 
 const Header: React.FC = () => {
   const location = useLocation();
@@ -25,13 +26,14 @@ const Header: React.FC = () => {
       <Menu />
       <div id="main-content">
         <IonHeader>
-          <IonToolbar className="bg-background-secondary py-2">
+          <IonToolbar mode="md" className="bg-background-secondary py-2">
+            {" "}
             <IonButtons slot="start">
               <IonMenuButton className="mt-2 ml-1 text-4xl " />
             </IonButtons>
             <IonGrid className="w-5/6 ">
               {path === "/home" ? (
-                <IonImg className="mx-auto mt-2 h-16 w-32" src="AppLogo.svg" />
+                <IonImg className="mx-auto mt-2 h-14  w-28" src="AppLogo.svg" />
               ) : path === "/bridge" ? (
                 <IonItem className="no-border-bottom pt-3">
                   <IonText className="mx-auto font-semibold text-2xl ion-align-items-center gap-2 flex">
@@ -56,8 +58,7 @@ const Header: React.FC = () => {
               ) : path === "/transactionList" ? (
                 <IonItem className="no-border-bottom pt-3">
                   <IonText className="mx-auto font-semibold text-2xl ion-align-items-center gap-2 flex">
-                    <IonIcon icon={cashOutline} className="text-3xl" />
-                    Transactions
+                    <TbBuildingBridge className="text-3xl" /> Transactions
                   </IonText>
                 </IonItem>
               ) : path === "/ai" ? (

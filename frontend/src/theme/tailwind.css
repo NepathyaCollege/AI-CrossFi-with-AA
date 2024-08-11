@@ -60,3 +60,9 @@ ion-item {
   height: auto;
   margin-right: 8px; /* Space between image and text */
 }
+
+.menu-button {
+  font-size: 120px;
+  width: 52px;
+  height: 52px;
+}
