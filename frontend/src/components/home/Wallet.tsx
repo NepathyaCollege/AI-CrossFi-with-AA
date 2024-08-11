@@ -54,7 +54,7 @@ const Wallet: React.FC = () => {
                   ) : (
                     <>
                       <IonText>
-                        {smartAccount?.address && formatAddress(smartAccount?.address, 20)}
+                        {smartAccount?.address && formatAddress(smartAccount?.address, 17)}
                       </IonText>
                       <IonIcon
                         icon={copyOutline}

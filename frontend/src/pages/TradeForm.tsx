@@ -384,7 +384,7 @@ const TradeForm: React.FC = () => {
       />
       {/* 
       <IonLoading
-        className="backdrop-blur-sm"
+
         isOpen={loading}
         message={`Processing transaction...`}
         duration={0}

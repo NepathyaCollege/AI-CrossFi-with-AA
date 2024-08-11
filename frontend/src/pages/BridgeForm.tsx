@@ -273,7 +273,7 @@ const MyForm: React.FC = () => {
       setIsOpen(true); // Open modal
     } catch (error: any) {
       setIsLoading(false); // Hide spinner
-      setToastMessage("Error during swap: "); // Show toast message
+      setToastMessage("Please, fill all missing fields"); // Show toast message
       console.error("Error during swap", error);
     }
   };
@@ -430,13 +430,7 @@ const MyForm: React.FC = () => {
             </IonRow>
           </IonGrid>
 
-          {/* Loading Spinner */}
           <TransactionProcessingModal isOpen={isLoading} onClose={() => {}} />
-          {/* <IonLoading
-            className="backdrop-blur-sm"
-            isOpen={isLoading}
-            message={"Processing your transaction..."}
-          /> */}
 
           <InsufficientBalanceModal
             onClose={() => setShowInsufficientBalanceModal(false)}

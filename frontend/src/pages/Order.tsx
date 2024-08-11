@@ -192,10 +192,10 @@ interface ActionSegmentProps {
 
 const ActionSegment: React.FC<ActionSegmentProps> = ({ action, onChange }) => (
   <IonSegment mode="ios" value={action} onIonChange={(e) => onChange(e.detail.value as string)}>
-    <IonSegmentButton value="pending" className="p-2 font-medium text-lg">
+    <IonSegmentButton value="pending" className="p-1 font-medium text-base">
       In-Order
     </IonSegmentButton>
-    <IonSegmentButton value="completed" className="p-2 font-medium text-lg">
+    <IonSegmentButton value="completed" className="p-1 font-medium text-base">
       Completed
     </IonSegmentButton>
   </IonSegment>
@@ -209,7 +209,7 @@ const Skeletons = () => {
         .map((_, index) => (
           <IonRow
             key={index}
-            className="ion-margin-top w-full animate-pulse h-28 bg-background-secondary rounded-md"
+            className="ion-margin-top w-full animate-pulse h-16 bg-background-secondary rounded-md"
           ></IonRow>
         ))}
     </>
