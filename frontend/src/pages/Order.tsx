@@ -25,7 +25,7 @@ import {
 } from "../../contracts/multiTokenKeeperFactory";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 const multiTokenKeeperFactory = "0x05663175EB6b36eE039d89Dd9BF0454ece228935";
 
@@ -83,6 +83,7 @@ const Order: React.FC = () => {
             client,
             contractAddress: orderManagerAddress,
           });
+          debugger;
           setOrdersList([...activeOrders]);
         } else if (action === "completed") {
           const fulfilledOrders = await getFulfilledOrders({
@@ -164,13 +165,10 @@ const Order: React.FC = () => {
                       {getTokenDetailsByAddress(order?.token)?.name}
                     </IonCol>
                     <IonCol className="" size="4">
-                      ${BigNumber.from(order?.priceThreshold).toString()}
+                      ${ethers.utils.formatUnits(order?.priceThreshold, 8)}
                     </IonCol>
                     <IonCol size="2" className=" w-auto">
-                      $
-                      {BigNumber.from(order?.amount)
-                        .div(BigNumber.from("1000000000000000000"))
-                        .toString()}
+                      ${ethers.utils.formatUnits(order?.amount, 18)}
                     </IonCol>
                   </IonRow>
                 </IonGrid>
