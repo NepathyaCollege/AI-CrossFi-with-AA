@@ -183,7 +183,7 @@ const MyForm: React.FC = () => {
         amount: BigNumber.from(defaultAllowanceAmount), // Approve a default high allowance
         contractAddress: tokenAddress,
       });
-      console.log(allowanceTransactionHash); // Log the transaction hash for debugging
+      console.log(allowanceTransactionHash); // Log the transaction hash for `deb`ugging
     }
   };
 

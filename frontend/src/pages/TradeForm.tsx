@@ -196,7 +196,6 @@ const TradeForm: React.FC = () => {
     const client = createClient();
 
     let transactionHash = "";
-    debugger;
     if (action === "buy") {
       const approveTransactionHash = await approveERC20({
         smartAccount,

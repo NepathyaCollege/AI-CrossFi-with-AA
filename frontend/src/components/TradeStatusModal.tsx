@@ -45,11 +45,11 @@ const TradeStatusModal: React.FC<{
             onClick={() => {
               handleRedirection(transactionHash);
             }}
-            className="gap-2 text-blue-500 items-center flex"
+            className="gap-2 text-blue-500 hover:underline cursor-pointer  items-center flex"
           >
             View on Base
             <IonIcon
-              className="text-2xl cursor-pointer  text-text-textfield2 "
+              className="text-2xl cursor-pointer hover:text-blue-500  text-text-textfield2 "
               icon={openOutline}
             />
           </div>

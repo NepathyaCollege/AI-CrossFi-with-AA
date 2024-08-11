@@ -83,7 +83,6 @@ const Order: React.FC = () => {
             client,
             contractAddress: orderManagerAddress,
           });
-          debugger;
           setOrdersList([...activeOrders]);
         } else if (action === "completed") {
           const fulfilledOrders = await getFulfilledOrders({
