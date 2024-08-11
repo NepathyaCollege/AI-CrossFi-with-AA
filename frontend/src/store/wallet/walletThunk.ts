@@ -39,7 +39,6 @@ export const connectWallet = createAsyncThunk(
 
       console.log(thirdWebKey);
 
-      // debugger;
       // Connect to personal wallet
       const personalAccount = await personalWallet.connect({
         // clientId: CLIENT_ID,
@@ -49,7 +48,6 @@ export const connectWallet = createAsyncThunk(
         payload: JSON.stringify({ thirdWebKey }),
         encryptionKey: ENCRYPTION_KEY,
       });
-      // debugger;
 
       // Connect to smart wallet
       const smartAccount = await Swallet.connect({
