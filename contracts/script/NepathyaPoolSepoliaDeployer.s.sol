@@ -14,14 +14,14 @@ contract PoolSepoliaDeployer is Script {
         // Load environment variables
         address routerAddress = 0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59;
         address linkTokenAddress = 0x779877A7B0D9E8603169DdbD7836e478b4624789;
-        address tokenAddress = 0x1A6dfc65762fb50F5BE9a27cFCba568e3640047b;
+        address tokenAddress = 0xBE9A39C775073A71dF550678f22a07B3201f26fC;
 
         // Start broadcasting the transaction
         vm.startBroadcast();
 
         // Deploy the contract
         // Pool = Pool(0x5E6E79109C3Df8FA071889CD2cDa3627f8d97606); // new Pool(routerAddress, linkTokenAddress);
-        pool = new Pool(routerAddress, linkTokenAddress, tokenAddress, PoolOperationMode.TRANSFER_ONLY);
+        pool = new Pool(routerAddress, linkTokenAddress, tokenAddress, PoolOperationMode.BURN_AND_MINT);
 
         // CrossChainTokenRouter cctr = new CrossChainTokenRouter();
 

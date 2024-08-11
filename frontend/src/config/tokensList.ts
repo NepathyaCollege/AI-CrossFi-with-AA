@@ -37,7 +37,7 @@ export const tokensWithNetwork: TokensWithNetwork = {
         decimals: 18,
         symbol: "USDT",
         logoURI: "https://cryptologos.cc/logos/tether-usdt-logo.png?v=032",
-        address: "0x89e7fdbd1ea30300719357a1584c28ee34bcb4be",
+        address: "0xBE9A39C775073A71dF550678f22a07B3201f26fC",
       },
       btc: {
         name: "BTC",

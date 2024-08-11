@@ -49,6 +49,7 @@ const MyForm: React.FC = () => {
   const [toToken, setToToken] = useState<string>("");
   const [toChain, setToChain] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
+  const [bridgeAmount,setBridgeAmount1] = useState("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -65,6 +66,16 @@ const MyForm: React.FC = () => {
   // useEffect(() => {
   //   dispatch(connectWallet());
   // }, [dispatch]);
+
+  const setBridgeAmount = async(e:any)=>{
+
+    const brigeValue = e.detail.value;
+    console.log(brigeValue)
+    setAmount(brigeValue)
+    setBridgeAmount1(brigeValue);
+    debugger;
+  }
+
 
   useEffect(() => {
     setAvailableFromChains(getAvailableChains(fromToken));
@@ -129,7 +140,7 @@ const MyForm: React.FC = () => {
       toTokenSymbol: toTokenDetails.symbol,
       toTokenAddress: toChainDetails.address,
       toChain,
-      amount, // Swap amount (assumed static for now, could be dynamic)
+      amount:bridgeAmount, // Swap amount (assumed static for now, could be dynamic)
     };
   };
 
@@ -240,7 +251,7 @@ const MyForm: React.FC = () => {
         swapDetails.fromTokenAddress
       );
       console.log(balanceInEther); // Log the balance for debugging
-
+debugger;
       const swapAmountInWei = ethers.utils.parseEther(swapDetails.amount);
       console.log(swapAmountInWei);
       // insufficient balance
@@ -416,7 +427,7 @@ const MyForm: React.FC = () => {
                     value={amount}
                     label="Amount"
                     labelPlacement="floating"
-                    onIonChange={(e) => setAmount(e.detail.value!)}
+                    onIonChange={(e) => setBridgeAmount(e)}
                   >
                     <IonLabel slot="end" color="success">
                       MAX: {Number(fromTokenBalance).toFixed(4)}
