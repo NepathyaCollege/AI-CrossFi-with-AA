@@ -56,7 +56,7 @@ contract BaseDeployTokenAndAddLiquidity is Script {
         // Start broadcasting transactions
 
         // Deploy the token
-        token = new Token();
+        token = Token(0x1689E7B1F10000AE47eBfE339a4f69dECd19F602); //new Token();
 
         // Mint some tokens for the sender
         token.mint(msg.sender, 1000 ether);

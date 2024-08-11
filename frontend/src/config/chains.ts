@@ -51,14 +51,18 @@ export const tokens: Array<Token> = [
   },
 
   {
-    name: "Sepolia Test Token",
-    symbol: "SEPOLIA",
+    name: "Eth",
+    symbol: "Eth",
     decimals: 18,
     logoURI: "https://example.com/sepolia-token-logo.png",
     chains: [
       {
-        chainName: "Ethereum Sepolia",
-        address: "0xabcdefabcdefabcdefabcdefabcdefabcdefabcdef",
+        chainName: "Sepolia",
+        address: "0x7e29ee6ee5ed4195c797b06f20b0a500ea30a79c",
+      },
+      {
+        chainName: "Base",
+        address: "0x0f5C50184EF3ADF2581fd115A0eB4f3cC7F296A1",
       },
     ],
   },
@@ -67,7 +71,7 @@ export const tokens: Array<Token> = [
 export const chainDetails = {
   base: {
     chain: baseSepolia,
-    routerAddress: "0xbfcb4e1eebc37cd6224f45355089037e92e8be76",
+    routerAddress: "0xFC32a5413768594E1B7b750A21a62C84dFa04D13",
     lanes: {
       sepolia: {
         laneId: "16015286601757825753",

@@ -1,17 +1,19 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.20;
 
-import "./NepathyaPool.sol";
+import "./Pool.sol";
 import {SendParam} from "./interface/SendParam.sol";
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
+import "../helpers/Token.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract CrossChainTokenRouter {
-    /**
-     * @dev Struct to hold source and destination pool addresses.
-     */
+contract CrossChainTokenRouter is Ownable {
     struct PoolInfo {
         address sourcePool;
         address destinationPool;
     }
+
+    constructor() Ownable(msg.sender) {}
 
     /**
      * @dev Mapping from chain ID and token address to PoolInfo.
@@ -23,31 +25,27 @@ contract CrossChainTokenRouter {
 
     // Event emitted when a pool is registered
     event PoolRegistered(uint64 destinationSelector, address token, address sourcePool, address destPool);
-
     event DestinationPoolUpdated(uint64 destinationSelector, address token, address oldDestPool, address newDestPool);
+
+    function setPoolTrack(uint64 destinationSelector, address tokenAddress, address sourcePool, address destinationPool)
+        external onlyOwner
+    {
+        require(tokenAddress != address(0), "Token address cannot be zero");
+        require(sourcePool != address(0), "Source pool cannot be zero address");
+        require(destinationPool != address(0), "Destination pool cannot be zero address");
+
+        // Update the poolTrack mapping with the provided details
+        poolTrack[destinationSelector][tokenAddress] =
+            PoolInfo({sourcePool: sourcePool, destinationPool: destinationPool});
+
+        // Emit an event to log the registration of the pool
+        emit PoolRegistered(destinationSelector, tokenAddress, sourcePool, destinationPool);
+    }
 
     // Function to get the PoolInfo
     function getPoolInfo(uint64 destinationSelector, address token) external view returns (PoolInfo memory) {
         return poolTrack[destinationSelector][token];
     }
-
-    /**
-     * @dev Function to register and create a new NepathyaPool
-     */
-    function createAndRegisterPool(uint64 destinationSelector, address token, address linkToken, address routerAddress)
-        external
-    {
-
-        // Create a new NepathyaPool contract
-        NepathyaPool newPool = new NepathyaPool(routerAddress, linkToken, token);
-
-        // Register the newly created pool
-        poolTrack[destinationSelector][token] = PoolInfo({sourcePool: address(newPool), destinationPool: address(0)});
-
-        emit PoolRegistered(destinationSelector, token, address(newPool), address(0));
-    }
-
-    // Function to bridge tokens
 
     function bridgeToken(address tokenAddress, uint256 destinationSelector, address receiver, uint256 amount)
         external
@@ -64,21 +62,8 @@ contract CrossChainTokenRouter {
         IERC20(tokenAddress).approve(poolInfo.sourcePool, amount);
 
         // Call the sendMessagePayLINK function on the source pool
-        NepathyaPool(poolInfo.sourcePool).sendMessagePayLINK(
+        Pool(poolInfo.sourcePool).sendMessagePayLINK(
             destinationSelector64, poolInfo.destinationPool, SendParam({to: receiver, amount: amount})
         );
-    }
-
-    /**
-     * @dev Function to update the destination pool for a specific token and chain ID.
-     */
-    function updateDestinationPool(uint64 destinationSelector, address token, address newDestPool) external {
-        PoolInfo storage poolInfo = poolTrack[destinationSelector][token];
-        require(poolInfo.sourcePool != address(0), "Source pool not registered");
-
-        address oldDestPool = poolInfo.destinationPool;
-        poolInfo.destinationPool = newDestPool;
-
-        emit DestinationPoolUpdated(destinationSelector, token, oldDestPool, newDestPool);
     }
 }

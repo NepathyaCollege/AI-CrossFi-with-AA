@@ -10,20 +10,29 @@ import {IERC20} from
 import {SafeERC20} from
     "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/utils/SafeERC20.sol";
 import {SendParam} from "./interface/SendParam.sol";
+import "../helpers/Token.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract NepathyaPool is CCIPReceiver {
+enum PoolOperationMode {
+    BURN_AND_MINT,
+    TRANSFER_ONLY
+}
+
+contract Pool is CCIPReceiver, Ownable {
     using SafeERC20 for IERC20;
 
-    error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
+    error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees);
 
     IERC20 private s_linkToken;
 
-    IERC20 public token;
+    Token public token;
 
     bytes32 private s_lastReceivedMessageId; // Store the last received messageId.
-    string private s_lastReceivedText; // Store the last received text.
 
     SendParam public testSendParam;
+
+    // Variable to store the current operation mode of the pool
+    PoolOperationMode public operationMode;
 
     // Event emitted when a message is sent to another chain.
     // The chain selector of the destination chain.
@@ -42,16 +51,27 @@ contract NepathyaPool is CCIPReceiver {
     /// @notice Constructor initializes the contract with the router address.
     /// @param _router The address of the router contract.
     /// @param _link The address of the link contract.
-    constructor(address _router, address _link, address _token) CCIPReceiver(_router) {
+    constructor(address _router, address _link, address _token, PoolOperationMode _operationMode)
+        CCIPReceiver(_router)
+        Ownable(msg.sender)
+    {
         s_linkToken = IERC20(_link);
-        token = IERC20(_token);
+        token = Token(_token);
+        operationMode = _operationMode;
     }
 
     function sendMessagePayLINK(uint64 _destinationChainSelector, address _receiver, SendParam calldata _sendParam)
         external
         returns (bytes32 messageId)
     {
-        // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
+        if (operationMode == PoolOperationMode.BURN_AND_MINT) {
+            // Burn tokens from the sender's address before sending
+            token.burnFrom(msg.sender, _sendParam.amount);
+        } else if (operationMode == PoolOperationMode.TRANSFER_ONLY) {
+            // Transfer tokens to the contract
+            token.transferFrom(msg.sender, address(this), _sendParam.amount);
+        }
+
         Client.EVM2AnyMessage memory evm2AnyMessage = _buildCCIPMessage(_receiver, _sendParam, address(s_linkToken));
 
         // Initialize a router client instance to interact with cross-chain router
@@ -59,16 +79,12 @@ contract NepathyaPool is CCIPReceiver {
 
         // Get the fee required to send the CCIP message
         uint256 fees = router.getFee(_destinationChainSelector, evm2AnyMessage);
-
         if (fees > s_linkToken.balanceOf(address(this))) {
             revert NotEnoughBalance(s_linkToken.balanceOf(address(this)), fees);
         }
 
         // Approve the Router to transfer LINK tokens on contract's behalf. It will spend the fees in LINK
         s_linkToken.approve(address(router), fees);
-
-        token.transferFrom(msg.sender, address(this), _sendParam.amount);
-
         // Send the CCIP message through the router and store the returned CCIP message ID
         messageId = router.ccipSend(_destinationChainSelector, evm2AnyMessage);
 
@@ -111,7 +127,12 @@ contract NepathyaPool is CCIPReceiver {
 
         testSendParam = sendParam;
 
-        token.transfer(sendParam.to, sendParam.amount);
+        // Handle tokens based on the operation mode
+        if (operationMode == PoolOperationMode.BURN_AND_MINT) {
+            token.mint(sendParam.to, sendParam.amount);
+        } else if (operationMode == PoolOperationMode.TRANSFER_ONLY) {
+            token.transfer(sendParam.to, sendParam.amount);
+        }
 
         emit MessageReceived(
             any2EvmMessage.messageId,

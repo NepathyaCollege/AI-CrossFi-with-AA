@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.20;
 
-import "./NepathyaPool.sol";
+import "./Pool.sol";
 import "lib/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 
 enum OperationType {
@@ -93,7 +93,7 @@ contract Router {
 
         IERC20(toToken).approve(sourcePool, amountOut);
 
-        NepathyaPool(sourcePool).sendMessagePayLINK(chainId, destPool, SendParam({to: receiver, amount: amountOut}));
+        Pool(sourcePool).sendMessagePayLINK(chainId, destPool, SendParam({to: receiver, amount: amountOut}));
 
         emit SwapExecuted(msg.sender, fromToken, toToken, amountIn, amountOut);
         emit BridgeExecuted(msg.sender, toToken, chainId, receiver, amountOut);
@@ -108,7 +108,7 @@ contract Router {
         IERC20(tokenAddress).approve(poolInfo.sourcePool, amount);
 
         // Call the sendMessagePayLINK function on the source pool
-        NepathyaPool(poolInfo.sourcePool).sendMessagePayLINK(
+        Pool(poolInfo.sourcePool).sendMessagePayLINK(
             chainId, poolInfo.destinationPool, SendParam({to: receiver, amount: amount})
         );
 
