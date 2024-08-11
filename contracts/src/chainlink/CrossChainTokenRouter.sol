@@ -28,7 +28,8 @@ contract CrossChainTokenRouter is Ownable {
     event DestinationPoolUpdated(uint64 destinationSelector, address token, address oldDestPool, address newDestPool);
 
     function setPoolTrack(uint64 destinationSelector, address tokenAddress, address sourcePool, address destinationPool)
-        external onlyOwner
+        external
+        onlyOwner
     {
         require(tokenAddress != address(0), "Token address cannot be zero");
         require(sourcePool != address(0), "Source pool cannot be zero address");

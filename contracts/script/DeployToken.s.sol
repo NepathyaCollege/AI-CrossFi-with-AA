@@ -3,15 +3,15 @@ pragma solidity ^0.8.20;
 
 import {Script} from "forge-std/Script.sol";
 // import "../src/chainlink/helpers/Token.sol";
-import "../src/helpers/Token.sol";
+import "../src/helpers/USDT.sol";
 
 contract DeployToken is Script {
-    Token token;
+    USDT token;
 
     function run() public {
         vm.startBroadcast();
         // Load environment variables
-        token = Token(0x1689E7B1F10000AE47eBfE339a4f69dECd19F602);
+        token = new USDT();
 
         // Token token = new Token("USDT", "USDT", 18);
 
