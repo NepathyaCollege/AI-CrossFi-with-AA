@@ -14,7 +14,7 @@ contract PoolBaseDeployer is Script {
         // // Load environment variables base sepolia
         address routerAddress = 0xD3b06cEbF099CE7DA4AcCf578aaebFDBd6e88a93;
         address linkTokenAddress = 0xE4aB69C077896252FAFBD49EFD26B5D171A32410;
-        address tokenAddress = 0x981e90dE16a26f6A44e39406dD218490D7789e0D;
+        address tokenAddress = 0xe7A527BD98566FDc99EA72bf16c6cc4eFe3606a0;
 
         // Start broadcasting the transaction
         vm.startBroadcast();

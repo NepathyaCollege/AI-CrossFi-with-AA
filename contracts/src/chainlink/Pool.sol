@@ -22,6 +22,7 @@ contract Pool is CCIPReceiver, Ownable {
     using SafeERC20 for IERC20;
 
     error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees);
+    error UnauthorizedSender(uint64 sourceChain, address sender);
 
     IERC20 private s_linkToken;
 
@@ -33,6 +34,9 @@ contract Pool is CCIPReceiver, Ownable {
 
     // Variable to store the current operation mode of the pool
     PoolOperationMode public operationMode;
+
+    // Mapping to store allowed chain selectors and sender addresses
+    mapping(uint64 => address) public allowedSenders;
 
     // Event emitted when a message is sent to another chain.
     // The chain selector of the destination chain.
@@ -58,6 +62,13 @@ contract Pool is CCIPReceiver, Ownable {
         s_linkToken = IERC20(_link);
         token = Token(_token);
         operationMode = _operationMode;
+    }
+
+    /// @notice Adds an allowed sender for a specific chain selector
+    /// @param _chainSelector The chain selector for the source chain
+    /// @param _sender The address of the allowed sender on that chain
+    function addAllowedSender(uint64 _chainSelector, address _sender) external onlyOwner {
+        allowedSenders[_chainSelector] = _sender;
     }
 
     function sendMessagePayLINK(uint64 _destinationChainSelector, address _receiver, SendParam calldata _sendParam)
@@ -122,6 +133,13 @@ contract Pool is CCIPReceiver, Ownable {
 
     /// Handle a received message
     function _ccipReceive(Client.Any2EVMMessage memory any2EvmMessage) internal override {
+        address allowedSender = allowedSenders[any2EvmMessage.sourceChainSelector];
+        address decodedSender = abi.decode(any2EvmMessage.sender, (address));
+
+        if (allowedSender != decodedSender) {
+            revert UnauthorizedSender(any2EvmMessage.sourceChainSelector, decodedSender);
+        }
+
         s_lastReceivedMessageId = any2EvmMessage.messageId; // Fetch the messageId
         (SendParam memory sendParam) = abi.decode(any2EvmMessage.data, (SendParam)); // ABI-decoding of the sent data
 
