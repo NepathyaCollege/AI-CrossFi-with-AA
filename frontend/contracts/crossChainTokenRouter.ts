@@ -21,7 +21,6 @@ export const bridgeToken = async ({
     abi: crossChainTokenRouterAbis as any,
   });
 
-  debugger;
   const transaction = await prepareContractCall({
     contract,
     // Pass the method signature that you want to call
@@ -37,7 +36,6 @@ export const bridgeToken = async ({
       transaction,
     });
     return transactionHash;
-
   } catch (error) {
     console.log(error);
   }

@@ -27,18 +27,21 @@ const InsufficientBalanceModal: React.FC<{
             ×
           </button>
           <div className="flex justify-center mb-4">
-            <MdError className="text-red-500 text-4xl" />
+            <MdError className=" text-red-500 text-4xl" />
           </div>
-          <h3 className="text-xl font-semibold mb-4 text-red-500 ">Insufficient Balance</h3>
-          <h3
+          <h3 className="text-xl font-semibold mb-4 ">Insufficient Balance</h3>
+          <div
             onClick={() => {
               handleRedirection();
             }}
-            className="mb-2 cursor-pointer flex gap-2 items-center"
+            className="gap-2 text-blue-500 hover:underline cursor-pointer  items-center flex"
           >
             Click here to mint Test USDC
-            <IonIcon className="text-2xl cursor-pointer hover:text-blue-400" icon={openOutline} />
-          </h3>
+            <IonIcon
+              className="text-2xl cursor-pointer hover:text-blue-500  text-text-textfield2 "
+              icon={openOutline}
+            />
+          </div>
         </div>
       </div>
     </>
