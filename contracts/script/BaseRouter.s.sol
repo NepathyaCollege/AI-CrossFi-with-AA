@@ -6,7 +6,7 @@ import "../src/chainlink/CrossChainTokenRouter.sol";
 import "../src/helpers/Token.sol";
 
 contract BaseRouter is Script {
-    NepathyaPool nepathyaPool;
+    Pool pool;
 
     function run() public {
         // Load environment variables

@@ -17,6 +17,8 @@ import TradeForm from "./pages/TradeForm";
 import Transaction from "./pages/Transaction";
 import TransactionList from "./pages/TransactionList";
 import Orders from "./pages/Order";
+import 'core-js/features/bigint';
+
 
 const App: React.FC = () => {
   const history = useHistory();

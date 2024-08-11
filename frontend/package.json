@@ -33,6 +33,7 @@
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.7.2",
     "babel-polyfill": "^6.26.0",
+    "core-js": "^3.38.0",
     "ethers": "^5.7.2",
     "formik": "^2.4.6",
     "ionicons": "^7.0.0",

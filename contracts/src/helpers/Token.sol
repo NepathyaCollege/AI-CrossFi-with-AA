@@ -2,13 +2,17 @@
 pragma solidity ^0.8.20;
 
 import {ERC20Permit, ERC20} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-/// @title A contract representing an ERC20Permit used for representing liquidity pool ownership.
-contract Token is ERC20Permit {
+contract Token is ERC20Permit, Ownable {
     uint8 internal immutable tokenDecimals;
 
-    constructor() ERC20("USDC", "USDC") ERC20Permit("USDC") {
-        tokenDecimals = 18;
+    constructor(string memory tokenName, string memory tokenSymbol, uint8 _tokenDecimals)
+        Ownable(msg.sender)
+        ERC20(tokenName, tokenSymbol)
+        ERC20Permit(tokenName)
+    {
+        tokenDecimals = _tokenDecimals;
     }
 
     /// @notice Mint new LP tokens and transfer them to an account.
