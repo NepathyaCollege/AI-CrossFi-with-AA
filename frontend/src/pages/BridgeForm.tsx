@@ -36,6 +36,7 @@ import { AppDispatch, RootState } from "../store/store";
 import Transaction from "./Transaction";
 import TransactionProcessingModal from "../components/TransactionProcessingModal";
 import InsufficientBalanceModal from "../components/InsufficientBalanceModal";
+import BridgeStatusModal from "../components/BridgeStatusModal";
 
 const defaultAllowanceAmount =
   "1000000000000000000000000000000000000000000000000000000000000000000000000000";
@@ -43,6 +44,7 @@ const defaultAllowanceAmount =
 const MyForm: React.FC = () => {
   const history = useHistory();
   const [fromToken, setFromToken] = useState<string>("");
+  const [showTransactionModal, setShowTransactionModal] = useState<boolean>(false);
   const [fromChain, setFromChain] = useState<string>("");
   const [toToken, setToToken] = useState<string>("");
   const [toChain, setToChain] = useState<string>("");
@@ -51,6 +53,7 @@ const MyForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [fromTokenBalance, setFromTokenBalance] = useState<string>("0.00");
+  const [transactionHash, setTransactionHash] = useState<any>("");
 
   const dispatch = useDispatch<AppDispatch>();
   const { smartAccount } = useSelector((state: RootState) => state.wallet);
@@ -185,7 +188,7 @@ const MyForm: React.FC = () => {
   };
 
   // Method to perform the token bridging transaction
-  const bridgeTokenTransaction = async (
+  const bridgeTokenTransaction = (
     swapDetails: any,
     destinationLaneId: string,
     smartAccount: any,
@@ -193,7 +196,7 @@ const MyForm: React.FC = () => {
     chainDetail: any,
     swapAmount: BigNumber
   ) => {
-    await bridgeToken({
+    return bridgeToken({
       tokenAddress: swapDetails.fromTokenAddress, // Address of the token to be bridged
       destinationLaneId, // Lane ID for cross-chain transfer
       receiver: smartAccount.address, // The account to receive the tokens on the destination chain
@@ -257,7 +260,7 @@ const MyForm: React.FC = () => {
       );
 
       // Perform the bridging transaction
-      await bridgeTokenTransaction(
+      const tHash = await bridgeTokenTransaction(
         swapDetails,
         destinationLaneId,
         smartAccount,
@@ -265,15 +268,17 @@ const MyForm: React.FC = () => {
         chainDetail,
         swapAmountInWei
       );
+      setTransactionHash(tHash);
 
       // setIsLoading(false); // Hide loading spinner
       setIsOpen(true); // Open confirmation modal
 
       setIsLoading(false); // Hide spinner
       setIsOpen(true); // Open modal
+      setShowTransactionModal(true);
     } catch (error: any) {
       setIsLoading(false); // Hide spinner
-      setToastMessage("Error during swap: "); // Show toast message
+      setToastMessage("Please, fill all missing fields"); // Show toast message
       console.error("Error during swap", error);
     }
   };
@@ -414,7 +419,7 @@ const MyForm: React.FC = () => {
                     onIonChange={(e) => setAmount(e.detail.value!)}
                   >
                     <IonLabel slot="end" color="success">
-                      MAX: {fromTokenBalance}
+                      MAX: {Number(fromTokenBalance).toFixed(4)}
                     </IonLabel>
                   </IonInput>
                 </IonItem>
@@ -430,17 +435,17 @@ const MyForm: React.FC = () => {
             </IonRow>
           </IonGrid>
 
-          {/* Loading Spinner */}
           <TransactionProcessingModal isOpen={isLoading} onClose={() => {}} />
-          {/* <IonLoading
-            className="backdrop-blur-sm"
-            isOpen={isLoading}
-            message={"Processing your transaction..."}
-          /> */}
 
           <InsufficientBalanceModal
             onClose={() => setShowInsufficientBalanceModal(false)}
             isOpen={showInsufficientBalanceModal}
+          />
+
+          <BridgeStatusModal
+            isOpen={showTransactionModal}
+            onClose={() => setShowTransactionModal(false)}
+            transactionHash={transactionHash}
           />
 
           {/* Toast for Error Messages */}

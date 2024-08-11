@@ -50,7 +50,6 @@ const Assests: React.FC = () => {
                 contractAddress,
               });
               console.log(bigBalance);
-              // debugger;
 
               // const balance = BigNumber.from(bigBalance)
               //   .div(BigNumber.from("1000000000000000000"))

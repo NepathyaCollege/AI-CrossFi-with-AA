@@ -24,18 +24,19 @@ import {
   getMultiTokenKeeper,
 } from "../../contracts/multiTokenKeeperFactory";
 import { getActiveOrders, getFulfilledOrders } from "../../contracts/orderManager";
-import ConfirmationModal from "../components/ConfirmationModal";
+import TradeConfirmationModal from "../components/TradeConfirmationModal";
 import ActionSegment from "../components/form/ActionSegment";
 import { createClient } from "../config/helpers";
 import { Token, tokensWithNetwork } from "../config/tokensList";
 import { RootState } from "../store/store";
-import TransactionStatusModal from "../components/TransactionStatusModal";
+
 import TransactionProcessingModal from "../components/TransactionProcessingModal";
+import TradeStatusModal from "../components/TradeStatusModal";
 
 const TradeForm: React.FC = () => {
   const [chainName, setChainName] = useState<string>("base");
   const [tokenName, setTokenName] = useState<string>("");
-  const [triggerToken, setTriggerToken] = useState<string>("");
+  const [triggerToken, setTriggerToken] = useState<"btc" | "eth" | "link">("btc");
   // const { balance: walletBalance } = useSelector((state: RootState) => state.wallet);
   const [targetPrice, setTargetPrice] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
@@ -65,7 +66,7 @@ const TradeForm: React.FC = () => {
     const selectedNetwork = event.detail.value as string;
     setChainName(selectedNetwork);
     setTokenName("");
-    setTriggerToken("");
+    // setTriggerToken("");
   };
 
   const tokenOptions = chainName
@@ -195,7 +196,7 @@ const TradeForm: React.FC = () => {
     const client = createClient();
 
     let transactionHash = "";
-
+    debugger;
     if (action === "buy") {
       const approveTransactionHash = await approveERC20({
         smartAccount,
@@ -208,15 +209,16 @@ const TradeForm: React.FC = () => {
 
       console.log(approveTransactionHash);
 
+      console.log(triggerToken);
       transactionHash = await addOrderOnMultiKeeper({
         smartAccount: smartAccount as any,
         client,
         chain: tokensWithNetwork[chainName].chain,
         contractAddress: multiKeeperAddress,
         amount,
-        chainLinkAggregatorAddress: tokensWithNetwork[chainName]?.priceFeed["btc"],
+        chainLinkAggregatorAddress: tokensWithNetwork[chainName]?.priceFeed[triggerToken],
         orderType: 0,
-        priceThreshold: Number(targetPrice),
+        priceThreshold: ethers.utils.parseUnits(targetPrice, 8),
         tokenAddress: tokensWithNetwork[chainName]?.tokens[tokenName]?.address,
       });
 
@@ -240,9 +242,9 @@ const TradeForm: React.FC = () => {
         chain: tokensWithNetwork[chainName].chain,
         contractAddress: multiKeeperAddress,
         amount,
-        chainLinkAggregatorAddress: tokensWithNetwork[chainName]?.priceFeed["btc"],
+        chainLinkAggregatorAddress: tokensWithNetwork[chainName]?.priceFeed[triggerToken],
         orderType: 1,
-        priceThreshold: Number(targetPrice),
+        priceThreshold: ethers.utils.parseUnits(targetPrice, 8),
         tokenAddress: tokensWithNetwork[chainName]?.tokens[tokenName]?.address,
       });
 
@@ -259,7 +261,10 @@ const TradeForm: React.FC = () => {
   return (
     <IonContent className="">
       <div className="mt-5 w-72 mx-auto">
-        <ActionSegment action={action} onChange={(newAction) => setAction(newAction as 'buy'|'sell')} />
+        <ActionSegment
+          action={action}
+          onChange={(newAction) => setAction(newAction as "buy" | "sell")}
+        />
       </div>
       <div className="ion-padding ion-margin-top ">
         {/* Network Selection */}
@@ -279,9 +284,9 @@ const TradeForm: React.FC = () => {
           <IonLabel>Trigger Token</IonLabel>
           <IonSelect
             placeholder="Select"
-            value={tokenName}
+            value={triggerToken}
             interface="popover"
-            onIonChange={(e) => setTokenName(e.detail.value!)}
+            onIonChange={(e) => setTriggerToken(e.detail.value!)}
           >
             {tokenOptions.map((option) => (
               <IonSelectOption key={option.value} value={option.value}>
@@ -297,9 +302,9 @@ const TradeForm: React.FC = () => {
 
           <IonSelect
             placeholder="Select"
-            value={triggerToken}
+            value={tokenName}
             interface="popover"
-            onIonChange={(e) => setTriggerToken(e.detail.value!)}
+            onIonChange={(e) => setTokenName(e.detail.value!)}
           >
             {tokenOptions.map((option) => (
               <IonSelectOption key={option.value} value={option.value}>
@@ -365,7 +370,7 @@ const TradeForm: React.FC = () => {
         position="bottom"
       />
 
-      <ConfirmationModal
+      <TradeConfirmationModal
         isOpen={showAlert}
         onClose={() => setShowAlert(false)}
         onConfirm={confirmAction}
@@ -377,14 +382,14 @@ const TradeForm: React.FC = () => {
         chainName={chainName}
       />
 
-      <TransactionStatusModal
+      <TradeStatusModal
         isOpen={showTransactionModal}
         onClose={() => setShowTransactionModal(false)}
         transactionHash={transactionHash}
       />
       {/* 
       <IonLoading
-        className="backdrop-blur-sm"
+
         isOpen={loading}
         message={`Processing transaction...`}
         duration={0}

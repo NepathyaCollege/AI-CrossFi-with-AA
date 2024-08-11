@@ -52,7 +52,7 @@ const QrCode: React.FC<QrCodeProps> = ({ isOpenQrScanner, toggleQrScanner, smart
                   fgColor="#ffff
 "
                   bgColor="fs31"
-                  size={300}
+                  size={270}
                   value={smartAddress ? smartAddress : ""}
                 />
               </IonRow>
@@ -60,7 +60,7 @@ const QrCode: React.FC<QrCodeProps> = ({ isOpenQrScanner, toggleQrScanner, smart
               <IonRow className="ion-justify-content-center w-[310px] mt-10 mx-auto">
                 <IonCol
                   size="12"
-                  className="px-3 py-2 relative bg-background-primary border-2 border-zinc-700 rounded-md"
+                  className="px-3 py-2 text-xl relative bg-background-primary border-2 border-zinc-700 rounded-md"
                 >
                   <IonText>
                     {smartAddress ? formatAddress(smartAddress, 20) : "xxxxx...xxxxxx"}
@@ -84,7 +84,7 @@ const QrCode: React.FC<QrCodeProps> = ({ isOpenQrScanner, toggleQrScanner, smart
               </IonRow>
               <IonRow>
                 <IonCol
-                  className=" text-center text-text-textfield2 font-medium mt-6 mx-auto"
+                  className=" text-center text-base text-text-textfield2 font-medium mt-6 mx-auto"
                   size="10"
                 >
                   Copy the wallet address to send funds to this wallet.

@@ -47,7 +47,7 @@ const TransactionList: React.FC = () => {
         {error && (
           <IonAlert
             isOpen={true}
-            className="backdrop-blur-sm"
+            className=" backdrop bg-black bg-opacity-70"
             header={"Error"}
             message={error}
             buttons={["OK"]}
@@ -72,7 +72,7 @@ const TransactionList: React.FC = () => {
                   <IonCol>
                     <IonGrid>
                       <IonRow className="ion-align1-items-center gap-2 text-gray-300 tracking-wider font-medium text-base ">
-                        {formatAddress(transaction?.transactionHash, 22)}
+                        {formatAddress(transaction?.transactionHash, 20)}
                       </IonRow>
                       <IonRow className="text-text-textfield2">
                         {formatTimestamp(transaction?.timestamp)}

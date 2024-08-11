@@ -14,7 +14,7 @@ interface CustomModalProps {
   chainName: string;
 }
 
-const ConfirmationModal: React.FC<CustomModalProps> = ({
+const TradeConfirmationModal: React.FC<CustomModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
@@ -33,7 +33,7 @@ const ConfirmationModal: React.FC<CustomModalProps> = ({
 
   return (
     <>
-      <div className="fixed inset-0  backdrop-blur-sm z-40" onClick={onClose} />
+      <div className="fixed inset-0  backdrop bg-black bg-opacity-70 z-40" onClick={onClose} />
       <div className="fixed inset-0  flex items-center justify-center z-50 p-4">
         <div className="text-white drop-shadow-lg border-2  border-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md relative bg-background-secondary ">
           <button
@@ -84,7 +84,7 @@ const ConfirmationModal: React.FC<CustomModalProps> = ({
                 <strong>Target Price:</strong> {targetPrice}
               </p>
               <p>
-                <strong>Amount:</strong> {amount} {triggerToken}
+                <strong>Amount:</strong> {amount}
               </p>
             </div>
           </div>
@@ -102,4 +102,4 @@ const ConfirmationModal: React.FC<CustomModalProps> = ({
   );
 };
 
-export default ConfirmationModal;
+export default TradeConfirmationModal;

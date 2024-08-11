@@ -8,10 +8,10 @@ interface ActionSegmentProps {
 
 const ActionSegment: React.FC<ActionSegmentProps> = ({ action, onChange }) => (
   <IonSegment mode="ios" value={action} onIonChange={(e) => onChange(e.detail.value as string)}>
-    <IonSegmentButton value="buy" className="p-2 font-medium text-lg">
+    <IonSegmentButton value="buy" className="p-1.5 font-medium text-base">
       Buy
     </IonSegmentButton>
-    <IonSegmentButton value="sell" className="p-2 font-medium text-lg">
+    <IonSegmentButton value="sell" className="p-1.5 font-medium text-base">
       Sell
     </IonSegmentButton>
   </IonSegment>

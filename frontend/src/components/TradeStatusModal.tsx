@@ -2,7 +2,7 @@ import { IonIcon } from "@ionic/react";
 import { openOutline } from "ionicons/icons";
 import React from "react";
 
-const TransactionStatusModal: React.FC<{
+const TradeStatusModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
   transactionHash: string;
@@ -15,9 +15,9 @@ const TransactionStatusModal: React.FC<{
 
   return (
     <>
-      <div className="fixed inset-0  backdrop-blur-sm z-40 " onClick={onClose} />
+      <div className="fixed inset-0 b   backdrop bg-black bg-opacity-70 z-40 " onClick={onClose} />
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4 ">
-        <div className=" p-8 rounded-lg shadow-lg w-full  max-w-lg flex flex-col items-center border-2 border-zinc-800 justify-center bg-background-secondary relative">
+        <div className=" p-8 rounded-lg shadow-lg w-3/4  max-w-lg flex flex-col items-center border-2 border-zinc-800 justify-center bg-background-secondary relative">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-2xl text-gray-300 hover:text-gray-100 transition-colors"
@@ -59,4 +59,4 @@ const TransactionStatusModal: React.FC<{
   );
 };
 
-export default TransactionStatusModal;
+export default TradeStatusModal;
