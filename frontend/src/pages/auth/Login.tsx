@@ -11,7 +11,7 @@ import {
 import axios, { AxiosError } from "axios";
 import { useFormik } from "formik";
 import { arrowBackOutline } from "ionicons/icons";
-import React from "react";
+import React, { useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import FormButton from "../../components/common/FormButton";
 import FormError from "../../components/common/FormError";
@@ -20,6 +20,7 @@ import { CHECK_PASSWORD_URL } from "../../config/apiUrl";
 import { loginValidation } from "../../form-validation-schemas/schema";
 
 import { storeTokens } from "../../config/authTokens";
+import { FaEye } from "react-icons/fa";
 
 export interface ILocationState {
   email: string;
@@ -29,6 +30,7 @@ export interface ILocationState {
 const Login: React.FC = () => {
   const history = useHistory();
   const location = useLocation<ILocationState>();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const formik = useFormik({
     initialValues: { email: location.state?.email || "", password: "" },
@@ -59,6 +61,7 @@ const Login: React.FC = () => {
     },
   });
 
+  const togglePassword = () => {};
   return (
     <IonPage>
       <IonContent fullscreen>

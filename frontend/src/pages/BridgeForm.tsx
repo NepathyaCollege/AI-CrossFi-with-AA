@@ -95,7 +95,8 @@ const MyForm: React.FC = () => {
                 tokenAddress
               );
 
-              setFromTokenBalance(balance.toString());
+              // setFromTokenBalance(balance.toString());
+              setFromTokenBalance(ethers.utils.formatUnits(balance.toString(), 18));
             }
           } catch (error) {
             console.error("Error fetching balance:", error);
@@ -423,7 +424,7 @@ const MyForm: React.FC = () => {
             <IonRow className="ion-padding-top">
               <IonCol>
                 <IonButton expand="block" color="primary" onClick={handleSwap}>
-                  Swap
+                  Bridge
                 </IonButton>
               </IonCol>
             </IonRow>
