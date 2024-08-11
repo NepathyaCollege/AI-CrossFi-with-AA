@@ -24,7 +24,7 @@ const Home: React.FC = () => {
         </IonRow>
         <IonRow className="py-2 text-text-textfield1">
           <IonText className="text-text-textfield2">
-            Transact dast and safe Nepathya AI Defi Ecosystem with your smartwallet.
+            Transact fast and safe Nepathya AI Defi Ecosystem with your smartwallet.
           </IonText>
         </IonRow>
 
