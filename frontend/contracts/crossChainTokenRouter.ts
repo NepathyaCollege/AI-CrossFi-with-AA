@@ -4,7 +4,6 @@ import { getContract, prepareContractCall, readContract, sendTransaction } from 
 import { crossChainTokenRouterAbis } from "./abis/crossChainTokenRouter";
 import { IBridgeToken } from "./interfaces/IBridgeToken";
 
-
 export const bridgeToken = async ({
   tokenAddress,
   destinationLaneId,
@@ -22,14 +21,13 @@ export const bridgeToken = async ({
     abi: crossChainTokenRouterAbis as any,
   });
 
-  
   const transaction = await prepareContractCall({
     contract,
     // Pass the method signature that you want to call
     method: "bridgeToken",
     // and the params for that method
     // Their types are automatically inferred based on the method signature
-    params:[tokenAddress,BigNumber.from(destinationLaneId),receiver,amount],
+    params: [tokenAddress, BigNumber.from(destinationLaneId), receiver, amount],
   });
 
   try {
@@ -37,8 +35,8 @@ export const bridgeToken = async ({
       account: smartAccount,
       transaction,
     });
+    return transactionHash;
 
-    console.log(transactionHash);
   } catch (error) {
     console.log(error);
   }
