@@ -63,7 +63,9 @@ export const connectWallet = createAsyncThunk(
         smartAccount: smartAccount,
         client: client,
       };
-    } catch (_error) {
+    } catch (error) {
+      console.log(error);
+
       return rejectWithValue("Failed to connect wallet");
     }
   }
